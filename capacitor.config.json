@@ -1,6 +1,6 @@
 {
-  "appId": "in.clarioloop.app",
-  "appName": "ClarioLoop",
+  "appId": "in.cloop.app",
+  "appName": "Cloop",
   "webDir": "dist",
   "bundledWebRuntime": false,
   "server": {

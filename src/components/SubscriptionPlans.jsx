@@ -48,7 +48,7 @@ export default function SubscriptionPlans({ activeFirm, onSubscriptionUpdated })
           Integrated Razorpay Billing
         </span>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-          Subscribe to ClarioLoop for {activeFirm?.name}
+          Subscribe to Cloop for {activeFirm?.name}
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto">
           Secure UPI, Debit/Credit Card, and NetBanking payments powered directly by Razorpay.

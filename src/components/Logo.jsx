@@ -43,7 +43,7 @@ export default function Logo({ size = 'default', showTagline = false, className 
       <div className="flex flex-col text-left">
         <div className="flex items-center gap-1.5">
           <span className={`font-black tracking-tight text-slate-900 ${isLarge ? 'text-2xl' : isSmall ? 'text-base' : 'text-xl'}`}>
-            Clario<span className="text-indigo-600">Loop</span>
+            C<span className="text-indigo-600">loop</span>
           </span>
           <span className="text-[9px] uppercase font-extrabold tracking-widest px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200/80">
             AI

@@ -57,7 +57,7 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
             </h1>
 
             <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed pt-2">
-              ClarioLoop sends recurring monthly document requests, provides a passwordless mobile upload link for your clients, verifies invoices with AI, and <strong>stops reminders automatically</strong> once submitted.
+              Cloop sends recurring monthly document requests, provides a passwordless mobile upload link for your clients, verifies invoices with AI, and <strong>stops reminders automatically</strong> once submitted.
             </p>
 
             {/* Hero Action CTAs */}
@@ -110,7 +110,7 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
                   <div className="w-3 h-3 rounded-full bg-amber-500/80" />
                   <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
                   <span className="text-[11px] font-mono text-slate-400 pl-3">
-                    app.clarioloop.com • Apex Chartered Accountants Workspace
+                    app.cloop.com • Apex Chartered Accountants Workspace
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -226,13 +226,13 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">
-              The ClarioLoop Solution
+              The Cloop Solution
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
               How Modern CA Firms Manage Workflow
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              ClarioLoop integrates cleanly with your existing accounting and compliance software stack.
+              Cloop integrates cleanly with your existing accounting and compliance software stack.
             </p>
           </div>
 
@@ -257,7 +257,7 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
 
             <div className="bg-gradient-to-br from-indigo-600 to-blue-700 text-white p-5 rounded-2xl shadow-md border border-indigo-500">
               <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-200">Client Document Collection</span>
-              <h4 className="text-base font-extrabold text-white mt-1">ClarioLoop AI</h4>
+              <h4 className="text-base font-extrabold text-white mt-1">Cloop AI</h4>
               <p className="text-xs text-indigo-100 mt-1">
                 <strong>Replaces WhatsApp/Email chasing</strong> with automated collection, instant AI extraction & auto-stop reminders.
               </p>
@@ -271,7 +271,7 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900">
-              How ClarioLoop Simplifies Your Practice in 3 Steps
+              How Cloop Simplifies Your Practice in 3 Steps
             </h2>
             <p className="text-sm text-slate-500 mt-2">
               Designed from the ground up for Chartered Accountants, Tax Consultants & Bookkeepers
@@ -399,7 +399,7 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
           <Logo size="small" showTagline={true} />
           
           <div className="text-xs text-slate-500 text-center sm:text-right">
-            <p>© 2026 ClarioLoop Technologies. Designed for Chartered Accountants & Bookkeepers.</p>
+            <p>© 2026 Cloop Technologies. Designed for Chartered Accountants & Bookkeepers.</p>
             <p className="text-[11px] text-slate-400 mt-0.5">
               Secure MongoDB Atlas Cluster0 • Groq AI Document Copilot • Capacitor Android Ready
             </p>

@@ -225,7 +225,7 @@ setTimeout(seedInitialData, 2000);
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ONLINE',
-    app: 'ClarioLoop',
+    app: 'Cloop',
     environment: process.env.NODE_ENV || 'development',
     mongoStatus: mongoose.connection.readyState === 1 ? 'CONNECTED' : 'DISCONNECTED',
     groqConfigured: !!process.env.GROQ_API_KEY,
@@ -538,5 +538,5 @@ if (fs.existsSync(distDir)) {
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`🚀 ClarioLoop Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Cloop Server running on http://localhost:${PORT}`);
 });

@@ -25,7 +25,7 @@ export default function AIAssistantModal({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'Hello CA Rajesh! I am your ClarioLoop AI Compliance Assistant. I can analyze invoices, detect missing GST documents, verify GSTIN formats, and generate client reminder messages. How can I assist your practice today?'
+      content: 'Hello CA Rajesh! I am your Cloop AI Compliance Assistant. I can analyze invoices, detect missing GST documents, verify GSTIN formats, and generate client reminder messages. How can I assist your practice today?'
     }
   ]);
   const [inputMsg, setInputMsg] = useState('');
@@ -166,7 +166,7 @@ Bank Reference No (BRN): HDFC88391209384`);
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-white">ClarioLoop AI Copilot</h3>
+                <h3 className="text-base font-bold text-white">Cloop AI Copilot</h3>
                 <span className="text-[10px] bg-teal-500/20 text-teal-300 border border-teal-500/40 px-2 py-0.5 rounded-full font-bold">
                   Powered by Groq LLM
                 </span>

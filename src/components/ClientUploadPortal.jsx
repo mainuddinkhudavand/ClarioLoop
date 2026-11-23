@@ -329,7 +329,7 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
 
       {/* Footer */}
       <footer className="p-4 text-center text-slate-400 text-[11px] border-t border-slate-800">
-        Powered by ClarioLoop • Multi-Tenant Document Automation for Indian CA Practices
+        Powered by Cloop • Multi-Tenant Document Automation for Indian CA Practices
       </footer>
     </div>
   );

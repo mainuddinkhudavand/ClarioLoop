@@ -44,7 +44,7 @@ export default function RazorpayModal({
           key: 'rzp_test_YourKeyHere',
           amount: totalPayable * 100, // paise
           currency: 'INR',
-          name: 'ClarioLoop B2B SaaS',
+          name: 'Cloop B2B SaaS',
           description: `${plan.name} Subscription for ${firm.name}`,
           image: '/logo.svg',
           handler: function (response) {
@@ -110,7 +110,7 @@ export default function RazorpayModal({
               <div className="flex items-center gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wider text-blue-300">Razorpay Trusted</span>
               </div>
-              <h3 className="text-sm font-extrabold text-white">ClarioLoop Subscription Checkout</h3>
+              <h3 className="text-sm font-extrabold text-white">Cloop Subscription Checkout</h3>
             </div>
           </div>
 
