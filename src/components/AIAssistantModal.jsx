@@ -43,13 +43,12 @@ Invoice Date: 18-November-2026
 Billed To: NexGen Digital Solutions Pvt Ltd, Pune (GSTIN: 27AABCN8492K1Z9)
 
 Description: IT Hardware Server Rack 42U with Dual PDU
-HSN Code: 8471
-Quantity: 1 Unit
+HSN Code: 8471 | Quantity: 1 Unit
 Taxable Value: ₹ 75,000.00
 CGST @ 9%: ₹ 6,750.00
 SGST @ 9%: ₹ 6,750.00
 Total Amount: ₹ 88,500.00
-Payment Terms: Net 30 Days. Bank: ICICI Bank A/c 001105001234, IFSC: ICIC0000011`);
+Payment Terms: Net 30 Days. Bank: ICICI Bank A/c 001105001234`);
     } else if (type === 'gst') {
       setDocText(`GOODS AND SERVICES TAX PAYMENT CHALLAN (Form GST PMT-06)
 CPIN: 26112700481920
@@ -58,10 +57,9 @@ GSTIN: 27AABCN8492K1Z9
 Legal Name: NexGen Digital Solutions Pvt Ltd
 Tax Period: October 2026
 
-Major Head (0005) - Central Goods and Services Tax (CGST): ₹ 12,450.00
-Major Head (0006) - State Goods and Services Tax (SGST): ₹ 12,450.00
-Interest / Penalty: ₹ 0.00
-Total Challan Amount: ₹ 24,900.00 (Twenty Four Thousand Nine Hundred Rupees Only)
+CGST (0005): ₹ 12,450.00
+SGST (0006): ₹ 12,450.00
+Total Challan Amount: ₹ 24,900.00
 Mode of Payment: E-Payment (Net Banking - HDFC Bank)
 Bank Reference No (BRN): HDFC88391209384`);
     }
@@ -72,7 +70,6 @@ Bank Reference No (BRN): HDFC88391209384`);
     setAnalyzing(true);
     setAnalysisResult(null);
 
-    // Call server AI endpoint or high-precision simulation
     try {
       const res = await fetch('http://localhost:5000/api/ai/analyze', {
         method: 'POST',
@@ -85,14 +82,12 @@ Bank Reference No (BRN): HDFC88391209384`);
         setAnalyzing(false);
         return;
       }
-    } catch (e) {
-      // Fallback to local Groq-style parser
-    }
+    } catch (e) {}
 
     setTimeout(() => {
       const lower = docText.toLowerCase();
       let category = 'Accounting & Bookkeeping';
-      let docType = 'B2B Tax Invoice (Input Tax Credit Eligible)';
+      let docType = 'B2B Tax Invoice (ITC Eligible)';
       let supplier = 'Acme Industrial Components Pvt Ltd';
       let invNo = 'AIC/26-27/0849';
       let date = '18-Nov-2026';
@@ -122,11 +117,11 @@ Bank Reference No (BRN): HDFC88391209384`);
         },
         flags: [
           'GSTIN syntax structure 100% verified',
-          'Eligible for GSTR-2B Input Tax Credit (ITC)',
-          'Clear arithmetic match (Taxable + CGST + SGST)',
-          'No duplicate invoice detected in ledger'
+          'Eligible for GSTR-2B Input Tax Credit',
+          'Clear arithmetic match (Taxable + Taxes)',
+          'No duplicate invoice found in ledger'
         ],
-        aiSummary: `High-fidelity ${docType} successfully verified for ${supplier}. Ready to sync into accounting records.`
+        aiSummary: `High-fidelity ${docType} verified for ${supplier}. Ready to sync.`
       });
       setAnalyzing(false);
     }, 1200);
@@ -140,14 +135,14 @@ Bank Reference No (BRN): HDFC88391209384`);
     setIsTyping(true);
 
     setTimeout(() => {
-      let reply = "I have noted that for your compliance checklist. In ClarioLoop, you can set recurring rules so this request triggers automatically every month!";
+      let reply = "I have noted that for your compliance checklist. In Cloop, you can set recurring rules so this request triggers automatically every month!";
       const q = userText.toLowerCase();
       if (q.includes('gst') || q.includes('3b')) {
-        reply = "For monthly GSTR-3B filing, ClarioLoop recommends collecting: 1) Sales Invoices / B2B register, 2) Purchase bills (to match with GSTR-2B), 3) Bank statements, and 4) Tax payment challan. You can schedule this as a recurring monthly request template!";
+        reply = "For monthly GSTR-3B filing, Cloop recommends collecting: 1) Sales Invoices, 2) Purchase bills (to match with GSTR-2B), 3) Bank statements, and 4) Tax payment challan.";
       } else if (q.includes('reminder') || q.includes('whatsapp')) {
-        reply = "ClarioLoop's reminder engine can send reminders via WhatsApp and Email. Crucially, the moment the client uploads all pending files, all automated follow-ups STOP immediately so your clients are never spammed.";
+        reply = "Cloop's reminder engine can send reminders via WhatsApp and Email. Crucially, the moment the client uploads all pending files, all automated follow-ups STOP immediately so your clients are never spammed.";
       } else if (q.includes('tally') || q.includes('clear')) {
-        reply = "Exactly! ClarioLoop does not compete with Tally or ClearTax. It replaces manual WhatsApp and Email document chasing so that your firm receives all bills on time before preparing filings in Tally or ClearTax.";
+        reply = "Cloop does not compete with Tally or ClearTax. It replaces manual WhatsApp and Email document chasing so that your firm receives all bills on time before preparing filings.";
       }
       setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
       setIsTyping(false);
@@ -155,72 +150,81 @@ Bank Reference No (BRN): HDFC88391209384`);
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh] animate-scaleUp">
+    <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+      <div className="bg-white w-full max-w-4xl rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[94vh] sm:max-h-[90vh] my-auto animate-scaleUp">
         
-        {/* Modal Header */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-teal-950 text-white p-4 px-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-teal-500/20 border border-teal-400/30 flex items-center justify-center text-teal-300">
-              <Sparkles className="w-5 h-5 text-teal-400" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-white">Cloop AI Copilot</h3>
-                <span className="text-[10px] bg-teal-500/20 text-teal-300 border border-teal-500/40 px-2 py-0.5 rounded-full font-bold">
-                  Powered by Groq LLM
-                </span>
+        {/* Modal Header (Mobile Responsive: Stacks neatly on small screens) */}
+        <div className="bg-slate-900 text-white p-3.5 sm:p-5 flex flex-col gap-3 border-b border-slate-800">
+          {/* Top Row: Title + Close Button */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600/30 border border-indigo-400/40 flex items-center justify-center text-indigo-400 shrink-0">
+                <Sparkles className="w-4 h-4" />
               </div>
-              <p className="text-xs text-slate-300">Document Reader, Entity Extractor & Compliance Assistant</p>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm sm:text-base font-extrabold text-white truncate">Cloop AI Copilot</h3>
+                  <span className="text-[9px] bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 px-1.5 py-0.2 rounded-full font-bold shrink-0">
+                    Groq LLM
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400 truncate hidden sm:block">
+                  Document Reader, Entity Extractor & Compliance Assistant
+                </p>
+              </div>
             </div>
+
+            <button
+              onClick={onClose}
+              className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 shrink-0 transition-colors"
+              title="Close Copilot"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Bottom Row: Tab Switcher (Takes full width on mobile) */}
+          <div className="grid grid-cols-2 sm:flex sm:w-auto gap-2 bg-slate-800/80 p-1 rounded-xl text-xs font-bold">
             <button
               onClick={() => setActiveTab('doc-analyzer')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                activeTab === 'doc-analyzer' ? 'bg-teal-600 text-white shadow-sm' : 'text-slate-300 hover:bg-slate-800'
+              className={`py-1.5 px-3 rounded-lg text-center transition-all ${
+                activeTab === 'doc-analyzer' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
               }`}
             >
               Document Reader
             </button>
             <button
               onClick={() => setActiveTab('chat')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                activeTab === 'chat' ? 'bg-teal-600 text-white shadow-sm' : 'text-slate-300 hover:bg-slate-800'
+              className={`py-1.5 px-3 rounded-lg text-center transition-all ${
+                activeTab === 'chat' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
               }`}
             >
               Ask AI Assistant
-            </button>
-            <button
-              onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 ml-2"
-            >
-              <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
         {/* Tab 1: AI Document Analyzer */}
         {activeTab === 'doc-analyzer' && (
-          <div className="p-6 overflow-y-auto flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="p-3.5 sm:p-6 overflow-y-auto flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            
             {/* Input Side */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                  <FileText className="w-4 h-4 text-teal-600" />
-                  <span>Paste Invoice, Bank or GST Document Text</span>
+            <div className="space-y-3 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5 truncate">
+                  <FileText className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                  <span>Invoice or GST Document Text</span>
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   <button 
                     onClick={() => loadSample('invoice')} 
-                    className="text-[11px] font-semibold text-teal-700 bg-teal-50 hover:bg-teal-100 px-2 py-1 rounded"
+                    className="text-[10px] font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded-md border border-indigo-200/80"
                   >
-                    + Sample Tax Invoice
+                    + Tax Invoice
                   </button>
                   <button 
                     onClick={() => loadSample('gst')} 
-                    className="text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded"
+                    className="text-[10px] font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded-md border border-blue-200/80"
                   >
                     + GST PMT-06
                   </button>
@@ -230,15 +234,15 @@ Bank Reference No (BRN): HDFC88391209384`);
               <textarea
                 value={docText}
                 onChange={(e) => setDocText(e.target.value)}
-                placeholder="Paste OCR text, invoice contents, bank statement lines, or GST challan details here..."
-                rows={12}
-                className="w-full text-xs font-mono p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:outline-none resize-none"
+                placeholder="Paste OCR text, invoice contents, or bank statements here..."
+                rows={7}
+                className="w-full text-xs font-mono p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none leading-relaxed"
               />
 
               <button
                 onClick={handleAnalyze}
                 disabled={analyzing || !docText.trim()}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition-all disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition-all disabled:opacity-50"
               >
                 {analyzing ? (
                   <>
@@ -248,83 +252,83 @@ Bank Reference No (BRN): HDFC88391209384`);
                 ) : (
                   <>
                     <Cpu className="w-4 h-4" />
-                    <span>Run AI Classification & Entity Extraction</span>
+                    <span>Run AI Classification & Extraction</span>
                   </>
                 )}
               </button>
             </div>
 
             {/* Output / Extraction Results Side */}
-            <div className="bg-slate-50 rounded-xl border border-slate-200 p-4 flex flex-col justify-between">
+            <div className="bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-200 p-3.5 sm:p-4 flex flex-col justify-between min-w-0">
               {analysisResult ? (
-                <div className="space-y-4">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 bg-teal-100 px-2 py-0.5 rounded">
+                <div className="space-y-3.5 min-w-0">
+                  <div className="min-w-0">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-md inline-block mb-1">
                       {analysisResult.category}
                     </span>
-                    <h4 className="text-base font-extrabold text-slate-900 mt-1">
+                    <h4 className="text-sm sm:text-base font-extrabold text-slate-900 break-words">
                       {analysisResult.documentType}
                     </h4>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed break-words">
                       {analysisResult.aiSummary}
                     </p>
                   </div>
 
                   {/* Extracted Fields Matrix */}
-                  <div className="bg-white rounded-lg border border-slate-200/80 p-3 space-y-2 text-xs">
+                  <div className="bg-white rounded-xl border border-slate-200/80 p-3 space-y-2 text-xs min-w-0 overflow-hidden">
                     <div className="font-bold text-slate-900 border-b border-slate-100 pb-1 flex items-center justify-between">
-                      <span>Extracted Financial Fields</span>
+                      <span>Extracted Fields</span>
                       <span className="text-[10px] text-emerald-600 font-mono">
                         {Math.round(analysisResult.confidence * 100)}% Confidence
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-[11px]">
-                      <div>
-                        <span className="text-slate-400 block">Supplier Name</span>
-                        <strong className="text-slate-800">{analysisResult.extractedData.supplierName || 'N/A'}</strong>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] min-w-0">
+                      <div className="min-w-0">
+                        <span className="text-slate-400 block text-[10px]">Supplier Name</span>
+                        <strong className="text-slate-800 truncate block">{analysisResult.extractedData.supplierName || 'N/A'}</strong>
                       </div>
-                      <div>
-                        <span className="text-slate-400 block">Invoice / Ref No</span>
-                        <strong className="text-slate-800">{analysisResult.extractedData.invoiceNumber || 'N/A'}</strong>
+                      <div className="min-w-0">
+                        <span className="text-slate-400 block text-[10px]">Invoice / Ref No</span>
+                        <strong className="text-slate-800 truncate block">{analysisResult.extractedData.invoiceNumber || 'N/A'}</strong>
                       </div>
-                      <div>
-                        <span className="text-slate-400 block">Supplier GSTIN</span>
-                        <strong className="text-slate-800 font-mono text-teal-700">{analysisResult.extractedData.gstin || 'N/A'}</strong>
+                      <div className="min-w-0">
+                        <span className="text-slate-400 block text-[10px]">Supplier GSTIN</span>
+                        <strong className="text-indigo-700 font-mono break-all block">{analysisResult.extractedData.gstin || 'N/A'}</strong>
                       </div>
-                      <div>
-                        <span className="text-slate-400 block">Total Amount</span>
-                        <strong className="text-emerald-700 font-bold">{analysisResult.extractedData.totalAmount || 'N/A'}</strong>
+                      <div className="min-w-0">
+                        <span className="text-slate-400 block text-[10px]">Total Amount</span>
+                        <strong className="text-emerald-700 font-bold block">{analysisResult.extractedData.totalAmount || 'N/A'}</strong>
                       </div>
                     </div>
                   </div>
 
                   {/* Compliance & Validation Flags */}
-                  <div>
-                    <span className="text-xs font-bold text-slate-700 block mb-1.5">Compliance Verification Checks:</span>
-                    <div className="space-y-1.5">
+                  <div className="min-w-0">
+                    <span className="text-xs font-bold text-slate-700 block mb-1">Compliance Checks:</span>
+                    <div className="space-y-1">
                       {analysisResult.flags.map((flag, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-[11px] text-slate-700 bg-white p-2 rounded border border-slate-200/60">
-                          <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                          <span>{flag}</span>
+                        <div key={idx} className="flex items-start gap-1.5 text-[11px] text-slate-700 bg-white p-2 rounded-lg border border-slate-200/60 min-w-0">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                          <span className="break-words">{flag}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-400">
-                  <FileSearch className="w-12 h-12 text-slate-300 mb-3" />
-                  <h4 className="font-bold text-slate-700 text-sm">No Document Analyzed Yet</h4>
-                  <p className="text-xs text-slate-500 mt-1 max-w-xs">
-                    Paste text or choose a sample on the left, then click analyze to watch AI extract compliance fields.
+                <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-400 min-h-[160px]">
+                  <FileSearch className="w-10 h-10 text-slate-300 mb-2" />
+                  <h4 className="font-bold text-slate-700 text-xs sm:text-sm">No Document Analyzed Yet</h4>
+                  <p className="text-[11px] text-slate-500 mt-1 max-w-xs">
+                    Paste text or choose a sample, then click analyze to watch AI extract compliance fields.
                   </p>
                 </div>
               )}
 
-              <div className="mt-4 pt-3 border-t border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
+              <div className="mt-3 pt-2 border-t border-slate-200 text-[10px] text-slate-500 flex items-center justify-between">
                 <span>Model: Groq LLaMA 3.3 70B</span>
-                <span className="text-teal-600 font-semibold">Active Engine</span>
+                <span className="text-indigo-600 font-semibold">Active Engine</span>
               </div>
             </div>
           </div>
@@ -332,19 +336,19 @@ Bank Reference No (BRN): HDFC88391209384`);
 
         {/* Tab 2: AI Chatbot */}
         {activeTab === 'chat' && (
-          <div className="p-4 flex flex-col flex-1 h-[520px]">
-            <div className="flex-1 overflow-y-auto space-y-3 p-2">
+          <div className="p-3 sm:p-4 flex flex-col flex-1 h-[450px] sm:h-[500px] min-w-0">
+            <div className="flex-1 overflow-y-auto space-y-3 p-1 min-w-0">
               {messages.map((m, i) => (
                 <div 
                   key={i} 
-                  className={`flex gap-3 text-xs ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex gap-2 sm:gap-3 text-xs ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {m.role === 'assistant' && (
-                    <div className="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center shrink-0">
-                      <Bot className="w-4 h-4" />
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                      <Bot className="w-3.5 h-3.5" />
                     </div>
                   )}
-                  <div className={`p-3 rounded-2xl max-w-[80%] leading-relaxed ${
+                  <div className={`p-2.5 sm:p-3 rounded-2xl max-w-[85%] leading-relaxed break-words ${
                     m.role === 'user' 
                       ? 'bg-slate-900 text-white rounded-tr-none' 
                       : 'bg-slate-100 text-slate-800 rounded-tl-none border border-slate-200'
@@ -354,26 +358,26 @@ Bank Reference No (BRN): HDFC88391209384`);
                 </div>
               ))}
               {isTyping && (
-                <div className="flex items-center gap-2 text-xs text-slate-400 pl-10">
-                  <span className="w-2 h-2 rounded-full bg-teal-500 animate-ping" />
-                  <span>AI assistant is formulating advice...</span>
+                <div className="flex items-center gap-2 text-xs text-slate-400 pl-8">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-ping" />
+                  <span>AI assistant is typing...</span>
                 </div>
               )}
             </div>
 
             {/* Input Bar */}
-            <div className="pt-3 border-t border-slate-200 flex items-center gap-2">
+            <div className="pt-2.5 border-t border-slate-200 flex items-center gap-2 min-w-0">
               <input
                 type="text"
                 value={inputMsg}
                 onChange={(e) => setInputMsg(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder="Ask about required GST documents, client follow-up templates, or audit checklists..."
-                className="flex-1 text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                placeholder="Ask about GST documents, follow-ups, checklists..."
+                className="flex-1 text-xs px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none min-w-0"
               />
               <button
                 onClick={handleSendMessage}
-                className="bg-teal-600 hover:bg-teal-700 text-white p-2.5 rounded-xl transition-colors"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 rounded-xl transition-colors shrink-0"
               >
                 <Send className="w-4 h-4" />
               </button>

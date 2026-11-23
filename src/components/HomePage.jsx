@@ -109,8 +109,8 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
                   <div className="w-3 h-3 rounded-full bg-rose-500/80" />
                   <div className="w-3 h-3 rounded-full bg-amber-500/80" />
                   <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                  <span className="text-[11px] font-mono text-slate-400 pl-3">
-                    app.cloop.com • Apex Chartered Accountants Workspace
+                  <span className="text-[10px] sm:text-[11px] font-mono text-slate-400 pl-1 sm:pl-3 truncate max-w-[180px] sm:max-w-none">
+                    app.cloop.com • Apex CA Workspace
                   </span>
                 </div>
                 <div className="flex items-center gap-2">

@@ -38,13 +38,13 @@ export default function Dashboard({
             <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
             <span>Multi-Tenant CA Practice Workspace</span>
           </div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl md:text-2xl font-black text-white">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-black text-white break-words">
               {activeFirm?.name || 'Chartered Accountants'}
             </h1>
             <button
               onClick={onOpenFirmSwitcher}
-              className="text-[11px] font-bold bg-indigo-600/40 hover:bg-indigo-600/60 border border-indigo-400/30 text-indigo-300 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1"
+              className="text-[10px] sm:text-[11px] font-bold bg-indigo-600/40 hover:bg-indigo-600/60 border border-indigo-400/30 text-indigo-300 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 shrink-0"
             >
               <span>Switch Practice</span>
             </button>
