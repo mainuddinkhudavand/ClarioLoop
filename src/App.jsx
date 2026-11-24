@@ -16,6 +16,7 @@ import ClientCRMView from './components/ClientCRMView';
 import AIAssistantModal from './components/AIAssistantModal';
 import FirmSwitcherModal from './components/FirmSwitcherModal';
 import MobileBottomNav from './components/MobileBottomNav';
+import MobileSidebarDrawer from './components/MobileSidebarDrawer';
 import { mockFirms } from './data/mockData';
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
   const [firms, setFirms] = useState(mockFirms);
   const [activeFirmId, setActiveFirmId] = useState('firm-1');
   const [isFirmSwitcherOpen, setIsFirmSwitcherOpen] = useState(false);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
 
   // App workspace inner tab
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -80,6 +82,7 @@ export default function App() {
           onOpenAI={() => setIsAIModalOpen(true)}
           activeFirm={activeFirm}
           onOpenFirmSwitcher={() => setIsFirmSwitcherOpen(true)}
+          onOpenMobileMenu={() => setIsMobileDrawerOpen(true)}
         />
       )}
 
@@ -231,6 +234,17 @@ export default function App() {
         activeFirmId={activeFirmId}
         onSelectFirm={(id) => setActiveFirmId(id)}
         onRegisterNewFirm={handleRegisterNewFirm}
+      />
+
+      {/* Mobile Sidebar Navigation Drawer */}
+      <MobileSidebarDrawer
+        isOpen={isMobileDrawerOpen}
+        onClose={() => setIsMobileDrawerOpen(false)}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        activeFirm={activeFirm}
+        onOpenFirmSwitcher={() => setIsFirmSwitcherOpen(true)}
+        onBackHome={() => setCurrentView('home')}
       />
 
       {/* Native-Style Mobile Bottom Navigation Bar (Hidden in client upload portal view) */}

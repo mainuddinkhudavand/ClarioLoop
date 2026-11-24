@@ -64,15 +64,15 @@ export default function Dashboard({
             <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
             <span>Universal Document Workflow Platform</span>
           </div>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
             <h1 className="text-base sm:text-xl md:text-2xl font-black text-white break-words leading-tight">
               {activeFirm?.name || 'Chartered Accountants'}
             </h1>
             <button
               onClick={onOpenFirmSwitcher}
-              className="w-fit inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold bg-indigo-600/40 hover:bg-indigo-600/60 border border-indigo-400/30 text-indigo-200 px-2.5 py-1 rounded-lg transition-colors shrink-0"
+              className="w-fit inline-flex items-center gap-1.5 text-xs font-bold bg-indigo-600/50 hover:bg-indigo-600/80 border border-indigo-400/40 text-indigo-100 px-3 py-1.5 rounded-xl transition-all shadow-xs shrink-0"
             >
-              <span>Switch Practice</span>
+              <span>{activeFirm?.city || 'India'} • Switch ▼</span>
             </button>
           </div>
           <p className="text-xs md:text-sm text-slate-300 mt-1 truncate">

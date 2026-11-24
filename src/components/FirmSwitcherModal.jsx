@@ -86,10 +86,10 @@ export default function FirmSwitcherModal({
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex border-b border-slate-100 bg-slate-50 px-5 pt-3 gap-3 text-xs font-bold">
+        <div className="flex border-b border-slate-100 bg-slate-50 px-3 sm:px-5 pt-3 gap-2 sm:gap-3 text-xs font-bold overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveTab('list')}
-            className={`pb-3 border-b-2 transition-all ${
+            className={`pb-3 border-b-2 whitespace-nowrap transition-all ${
               activeTab === 'list' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -97,7 +97,7 @@ export default function FirmSwitcherModal({
           </button>
           <button
             onClick={() => setActiveTab('create')}
-            className={`pb-3 border-b-2 transition-all flex items-center gap-1.5 ${
+            className={`pb-3 border-b-2 whitespace-nowrap transition-all flex items-center gap-1.5 ${
               activeTab === 'create' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -108,7 +108,7 @@ export default function FirmSwitcherModal({
 
         {/* Tab 1: List & Switch */}
         {activeTab === 'list' && (
-          <div className="p-5 overflow-y-auto space-y-3 flex-1">
+          <div className="p-3 sm:p-5 overflow-y-auto space-y-3 flex-1">
             <div className="text-[11px] text-slate-500 mb-2 font-medium">
               Choose a Chartered Accountant practice to enter its isolated workspace:
             </div>
@@ -123,52 +123,55 @@ export default function FirmSwitcherModal({
                     onSelectFirm(firm.id);
                     onClose();
                   }}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-center justify-between ${
+                  className={`p-3 sm:p-4 rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-3 ${
                     isSelected 
                       ? 'border-indigo-600 bg-indigo-50/50 shadow-xs ring-1 ring-indigo-600/30' 
                       : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-xs'
                   }`}
                 >
-                  <div className="flex items-center gap-3.5">
+                  <div className="flex items-center gap-3 min-w-0">
                     <div 
-                      className="w-11 h-11 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-sm"
+                      className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center font-black text-white text-xs sm:text-sm shadow-sm shrink-0"
                       style={{ backgroundColor: firm.brandingColor || '#4f46e5' }}
                     >
                       {firm.logoInitials}
                     </div>
 
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-sm font-extrabold text-slate-900">{firm.name}</h4>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 break-words leading-tight">{firm.name}</h4>
                         {isSelected && (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-600 text-white">
+                          <span className="text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-600 text-white shrink-0">
                             Active
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-slate-600 font-medium">{firm.partnerName}</p>
+                      <p className="text-[11px] sm:text-xs text-slate-600 font-medium truncate mt-0.5">{firm.partnerName}</p>
                       
-                      <div className="flex items-center gap-3 text-[11px] text-slate-400 mt-1">
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3" /> {firm.city}
+                      <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] text-slate-400 mt-1 flex-wrap">
+                        <span className="flex items-center gap-0.5">
+                          <MapPin className="w-3 h-3 shrink-0" /> {firm.city}
                         </span>
                         <span>•</span>
-                        <span className="font-mono">{firm.icaiNumber}</span>
+                        <span className="font-mono text-[10px]">{firm.icaiNumber}</span>
                         <span>•</span>
                         <span><strong>{firm.clients?.length || 0}</strong> Clients</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     {isSelected ? (
-                      <div className="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center">
+                      <div className="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-xs">
                         <Check className="w-4 h-4" />
                       </div>
                     ) : (
-                      <span className="text-xs font-bold text-indigo-600 hover:text-indigo-800 px-3 py-1.5 rounded-lg bg-indigo-50">
+                      <button 
+                        type="button"
+                        className="text-xs font-bold text-indigo-600 hover:text-white hover:bg-indigo-600 px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200/80 transition-all shadow-xs"
+                      >
                         Switch
-                      </span>
+                      </button>
                     )}
                   </div>
                 </div>

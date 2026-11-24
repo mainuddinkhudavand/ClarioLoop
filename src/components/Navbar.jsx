@@ -9,7 +9,8 @@ import {
   Home,
   Building2,
   ChevronDown,
-  Plus
+  Plus,
+  Menu
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -17,7 +18,8 @@ export default function Navbar({
   setCurrentView, 
   onOpenAI, 
   activeFirm, 
-  onOpenFirmSwitcher 
+  onOpenFirmSwitcher,
+  onOpenMobileMenu
 }) {
   const isHome = currentView === 'home';
 
@@ -27,6 +29,17 @@ export default function Navbar({
         
         {/* Brand Logo & Switcher */}
         <div className="flex items-center gap-2 sm:gap-6 min-w-0">
+          {/* Mobile Menu Hamburger (Visible on mobile when in CA Workspace) */}
+          {!isHome && onOpenMobileMenu && (
+            <button
+              onClick={onOpenMobileMenu}
+              className="md:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shrink-0"
+              title="Open Navigation Menu"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+          )}
+
           <button 
             onClick={() => setCurrentView('home')} 
             className="focus:outline-none text-left shrink-0"
