@@ -12,7 +12,8 @@ import {
   Building2,
   ChevronDown,
   GitBranch,
-  FileText
+  FileText,
+  UserPlus
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -24,6 +25,7 @@ export default function Sidebar({
 }) {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'crm', label: 'Client Acquisition CRM', icon: UserPlus, count: 248, highlight: true },
     { id: 'requests', label: 'Requests', icon: FileCheck2, count: activeFirm?.requests?.length || 0 },
     { id: 'documents', label: 'Documents', icon: FileText, count: 10 },
     { id: 'clients', label: 'Clients', icon: Users, count: activeFirm?.clients?.length || 0 },

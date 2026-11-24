@@ -25,6 +25,7 @@ export default function Dashboard({
   onOpenPortal, 
   onOpenReminders,
   onOpenFirmSwitcher,
+  onOpenCRM,
   onNavigateTab
 }) {
   const clients = activeFirm?.clients || [];
@@ -80,6 +81,15 @@ export default function Dashboard({
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {onOpenCRM && (
+            <button
+              onClick={onOpenCRM}
+              className="flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border border-indigo-400/40 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-md"
+            >
+              <Users className="w-3.5 h-3.5 text-cyan-300" />
+              <span>CRM Pipeline (248)</span>
+            </button>
+          )}
           <button
             onClick={onOpenReminders}
             className="flex items-center gap-1.5 sm:gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold transition-all"

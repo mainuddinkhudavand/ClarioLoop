@@ -47,16 +47,9 @@ export default function Logo({ size = 'default', showTagline = false, className 
       </div>
 
       <div className="flex flex-col text-left min-w-0">
-        <div className="flex items-center gap-1 sm:gap-1.5">
+        <div className="flex items-center">
           <span className={`font-black tracking-tight ${inverted ? 'text-white' : 'text-slate-900'} ${isLarge ? 'text-2xl' : isSmall ? 'text-base' : 'text-lg sm:text-xl'}`}>
             C<span className="text-indigo-500">loop</span>
-          </span>
-          <span className={`text-[9px] uppercase font-extrabold tracking-widest px-1.5 py-0.5 rounded-md shrink-0 ${
-            inverted 
-              ? 'bg-indigo-950/80 text-indigo-300 border border-indigo-700/80' 
-              : 'bg-indigo-50 text-indigo-700 border border-indigo-200/80'
-          }`}>
-            TM
           </span>
         </div>
         {showTagline && (

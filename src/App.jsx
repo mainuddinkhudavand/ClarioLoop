@@ -12,6 +12,7 @@ import SubscriptionPlans from './components/SubscriptionPlans';
 import ReportsView from './components/ReportsView';
 import WorkflowsView from './components/WorkflowsView';
 import DocumentsView from './components/DocumentsView';
+import ClientCRMView from './components/ClientCRMView';
 import AIAssistantModal from './components/AIAssistantModal';
 import FirmSwitcherModal from './components/FirmSwitcherModal';
 import MobileBottomNav from './components/MobileBottomNav';
@@ -161,6 +162,18 @@ export default function App() {
                 }}
                 onOpenReminders={() => setActiveTab('reminders')}
                 onOpenFirmSwitcher={() => setIsFirmSwitcherOpen(true)}
+                onOpenCRM={() => setActiveTab('crm')}
+              />
+            )}
+
+            {activeTab === 'crm' && (
+              <ClientCRMView 
+                activeFirm={activeFirm}
+                onConvertToClient={(client) => {
+                  handleAddClientToFirm(activeFirm.id, client);
+                  setActiveTab('clients');
+                }}
+                onBack={() => setActiveTab('dashboard')}
               />
             )}
 

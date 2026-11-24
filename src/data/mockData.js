@@ -798,3 +798,224 @@ export const mockAllDocuments = [
     extractedSummary: 'Due in 3 days • QA compliance requirement before PO release'
   }
 ];
+
+// ==========================================
+// CLIENT ACQUISITION CRM MODULE (From Proposal)
+// "From First Enquiry to Final Document"
+// ==========================================
+
+export const crmDashboardMetrics = {
+  totalLeads: 248,
+  followUpsDue: 36,
+  convertedClients: 42,
+  potentialRevenue: '₹4.8 Lakh',
+  conversionRate: '16.9%',
+  avgDealCycleDays: 8
+};
+
+export const crmPipelineStages = [
+  { id: 'NEW', name: 'New Prospect', color: 'bg-blue-500', lightColor: 'bg-blue-50 text-blue-700 border-blue-200' },
+  { id: 'CONTACTED', name: 'Contacted', color: 'bg-purple-500', lightColor: 'bg-purple-50 text-purple-700 border-purple-200' },
+  { id: 'INTERESTED', name: 'Interested', color: 'bg-indigo-500', lightColor: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+  { id: 'PROPOSAL_SENT', name: 'Proposal Sent', color: 'bg-amber-500', lightColor: 'bg-amber-50 text-amber-700 border-amber-200' },
+  { id: 'NEGOTIATION', name: 'Negotiation', color: 'bg-orange-500', lightColor: 'bg-orange-50 text-orange-700 border-orange-200' },
+  { id: 'CONVERTED', name: 'Converted', color: 'bg-emerald-500', lightColor: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  { id: 'LOST', name: 'Lost', color: 'bg-slate-400', lightColor: 'bg-slate-100 text-slate-600 border-slate-300' }
+];
+
+export const mockCrmLeads = [
+  {
+    id: 'lead-1',
+    companyName: 'Paramount Infotech Solutions LLP',
+    contactPerson: 'Vikramaditya Rao',
+    email: 'vikram@paramountinfo.in',
+    phone: '+91 98201 12345',
+    industry: 'Finance & Accounting',
+    serviceRequired: 'Monthly GST & Bookkeeping Retainer',
+    expectedValue: 45000,
+    source: 'Website Form',
+    stage: 'NEGOTIATION',
+    priority: 'HIGH',
+    aiScore: 92,
+    aiCategory: 'Hot Prospect',
+    aiSummary: 'High probability closing. Needs full year bookkeeping and GST filing for 2 branches. Recommended quote: ₹45,000/quarter.',
+    followUpDue: 'Today, 4:00 PM',
+    isOverdue: false,
+    assignedTo: 'CA Rajesh Sharma',
+    createdDate: '2026-11-20',
+    notes: 'Discussed scope over phone. Agreed on scope, awaiting partner signoff on retainer contract.',
+    interactions: [
+      { id: 'act-1', type: 'call', date: '2026-11-21', note: 'Discovery call completed. Inquired about GSTR-9 annual reconciliation.' },
+      { id: 'act-2', type: 'whatsapp', date: '2026-11-23', note: 'Dispatched standard engagement proposal via WhatsApp.' }
+    ]
+  },
+  {
+    id: 'lead-2',
+    companyName: 'Aura Health Innovations Pvt Ltd',
+    contactPerson: 'Dr. Neha Shenoy',
+    email: 'neha@aurahealth.co',
+    phone: '+91 98334 56789',
+    industry: 'Healthcare',
+    serviceRequired: 'Internal Audit & TPA Compliance Checklist',
+    expectedValue: 80000,
+    source: 'WhatsApp Enquiry',
+    stage: 'PROPOSAL_SENT',
+    priority: 'HIGH',
+    aiScore: 88,
+    aiCategory: 'Hot Prospect',
+    aiSummary: 'Fast growing clinic chain in Mumbai. Immediate requirement for automated medical bill collection before insurer submission.',
+    followUpDue: 'Tomorrow, 11:30 AM',
+    isOverdue: false,
+    assignedTo: 'Pooja V.',
+    createdDate: '2026-11-22',
+    notes: 'Proposal sent with multi-tier pricing. Follow-up meeting scheduled on Google Meet.',
+    interactions: [
+      { id: 'act-3', type: 'whatsapp', date: '2026-11-22', note: 'Initial inbound query received from website widget.' }
+    ]
+  },
+  {
+    id: 'lead-3',
+    companyName: 'BlueSky Logistics & Freight',
+    contactPerson: 'Harshvardhan Kapoor',
+    email: 'harsh@blueskylogistics.com',
+    phone: '+91 99100 44556',
+    industry: 'Logistics & Supply Chain',
+    serviceRequired: 'E-Way Bill & Transport Vendor KYC',
+    expectedValue: 60000,
+    source: 'Referral',
+    stage: 'INTERESTED',
+    priority: 'MEDIUM',
+    aiScore: 75,
+    aiCategory: 'Warm Lead',
+    aiSummary: 'Wants automated document link for 50+ truck drivers and vendor fleet fitness papers.',
+    followUpDue: 'Yesterday (Overdue)',
+    isOverdue: true,
+    assignedTo: 'Rohan Mehta',
+    createdDate: '2026-11-18',
+    notes: 'Missed call yesterday. Needs urgent follow-up nudge.',
+    interactions: [
+      { id: 'act-4', type: 'call', date: '2026-11-19', note: 'Brief introduction call. Client interested in mobile camera upload.' }
+    ]
+  },
+  {
+    id: 'lead-4',
+    companyName: 'Kaveri Cotton Exports',
+    contactPerson: 'Murugan Sundaram',
+    email: 'murugan@kavericotton.in',
+    phone: '+91 98400 99881',
+    industry: 'Manufacturing & Industrial',
+    serviceRequired: 'Export Incentive RoDTEP & GST Refund Filing',
+    expectedValue: 120000,
+    source: 'Excel Import',
+    stage: 'CONVERTED',
+    priority: 'HIGH',
+    aiScore: 98,
+    aiCategory: 'Won Client',
+    aiSummary: 'Converted successfully! Deal value ₹1,20,000. Ready to onboard into Document Collection workspace.',
+    followUpDue: 'Completed',
+    isOverdue: false,
+    assignedTo: 'CA Rajesh Sharma',
+    createdDate: '2026-11-14',
+    notes: 'Won contract. Converting to active CA client workspace now.',
+    interactions: [
+      { id: 'act-5', type: 'email', date: '2026-11-23', note: 'Signed engagement letter received. Advance payment deposited.' }
+    ]
+  },
+  {
+    id: 'lead-5',
+    companyName: 'Zenith Legal Advocates',
+    contactPerson: 'Adv. Manisha Trivedi',
+    email: 'manisha@zenithlegal.com',
+    phone: '+91 97112 33445',
+    industry: 'Legal & Compliance',
+    serviceRequired: 'Client Trademark & Secretarial Document Intake',
+    expectedValue: 35000,
+    source: 'Direct Form',
+    stage: 'CONTACTED',
+    priority: 'MEDIUM',
+    aiScore: 68,
+    aiCategory: 'Warm Lead',
+    aiSummary: 'Advocate partnership looking to replace email follow-ups with automated client links.',
+    followUpDue: '26-Nov, 2:00 PM',
+    isOverdue: false,
+    assignedTo: 'Pooja V.',
+    createdDate: '2026-11-23',
+    notes: 'Emailed portfolio and brochure. Waiting for partner response.',
+    interactions: [
+      { id: 'act-6', type: 'email', date: '2026-11-23', note: 'Information packet delivered.' }
+    ]
+  },
+  {
+    id: 'lead-6',
+    companyName: 'SmartNest Home Automation',
+    contactPerson: 'Akshay Deshmukh',
+    email: 'akshay@smartnest.in',
+    phone: '+91 98920 66778',
+    industry: 'HR & Recruitment',
+    serviceRequired: 'Employee KYC & Background Verification',
+    expectedValue: 25000,
+    source: 'Website Form',
+    stage: 'NEW',
+    priority: 'LOW',
+    aiScore: 54,
+    aiCategory: 'New Lead',
+    aiSummary: 'Fresh inbound enquiry via website. Needs employee onboarding checklist for 15 new hires.',
+    followUpDue: 'Today, 6:00 PM',
+    isOverdue: false,
+    assignedTo: 'CA Rajesh Sharma',
+    createdDate: '2026-11-24',
+    notes: 'New lead assigned from website form.',
+    interactions: []
+  }
+];
+
+export const crmSaaSPackages = [
+  {
+    id: 'CRM_ONLY',
+    name: 'Client Acquisition CRM',
+    priceINR: '₹999',
+    period: 'per month',
+    badge: 'CRM Alone',
+    description: 'Capture leads, manage pipeline stages, record interaction logs, and schedule automated follow-ups.',
+    features: [
+      'One-tap lead capture & web form integrations',
+      '7-stage Kanban sales pipeline',
+      'Click-to-call, WhatsApp & Email logs',
+      'Follow-up calendar & overdue task alerts',
+      'AI lead scoring & pitch drafting (Groq LLaMA)',
+      'Lead sources & conversion rate reports'
+    ]
+  },
+  {
+    id: 'DOC_ONLY',
+    name: 'Document Automation',
+    priceINR: '₹1,999',
+    period: 'per month',
+    badge: 'Doc Alone',
+    description: 'Passwordless client upload link, recurring checklists, automated reminders, and AI OCR extraction.',
+    features: [
+      'Passwordless mobile client upload portal',
+      'Recurring document checklist engine',
+      'Stop-on-upload automated reminders (WhatsApp & Email)',
+      'Groq AI OCR invoice reader & entity extractor',
+      'Multi-tenant CA firm partition isolation'
+    ]
+  },
+  {
+    id: 'COMBINED',
+    name: 'Combined All-in-One CRM + Workflows',
+    priceINR: '₹2,499',
+    period: 'per month',
+    badge: 'Best Value • Combined',
+    recommended: true,
+    description: 'From First Enquiry to Final Document. Seamlessly capture leads, close deals, and 1-click convert into active document workflows.',
+    features: [
+      'Everything in Client Acquisition CRM',
+      'Everything in Document Automation',
+      '1-Click "Convert Lead to Client" workflow bridge',
+      'Combined client history & compliance records',
+      'Priority WhatsApp API delivery',
+      'Save ₹499/month compared to separate subscriptions'
+    ]
+  }
+];

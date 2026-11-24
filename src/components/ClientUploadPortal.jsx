@@ -412,7 +412,7 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
 
       {/* 3. Footer */}
       <footer className="p-4 text-center text-slate-500 text-[10px] sm:text-[11px] border-t border-slate-800">
-        Powered by Cloop™ • Multi-Tenant Client Document Collection for CA Firms
+        Powered by Cloop • Multi-Tenant Client Document Collection for CA Firms
       </footer>
 
     </div>
