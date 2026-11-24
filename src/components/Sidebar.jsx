@@ -10,7 +10,9 @@ import {
   CreditCard,
   ArrowLeft,
   Building2,
-  ChevronDown
+  ChevronDown,
+  GitBranch,
+  FileText
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -21,13 +23,14 @@ export default function Sidebar({
   onOpenFirmSwitcher 
 }) {
   const menuItems = [
-    { id: 'dashboard', label: 'Practice Overview', icon: LayoutDashboard },
-    { id: 'clients', label: 'Clients Directory', icon: Users, count: activeFirm?.clients?.length || 0 },
-    { id: 'requests', label: 'Checklist Requests', icon: FileCheck2, count: activeFirm?.requests?.length || 0 },
-    { id: 'portal', label: 'Client Upload Portal', icon: Smartphone, highlight: true },
-    { id: 'ai-analyzer', label: 'AI Document Reader', icon: Sparkles },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'requests', label: 'Requests', icon: FileCheck2, count: activeFirm?.requests?.length || 0 },
+    { id: 'documents', label: 'Documents', icon: FileText, count: 10 },
+    { id: 'clients', label: 'Clients', icon: Users, count: activeFirm?.clients?.length || 0 },
+    { id: 'workflows', label: 'Workflows', icon: GitBranch, count: 10 },
+    { id: 'reports', label: 'Reports', icon: BarChart3 },
     { id: 'reminders', label: 'Smart Reminders', icon: BellRing },
-    { id: 'reports', label: 'Compliance Reports', icon: BarChart3 },
+    { id: 'ai-analyzer', label: 'AI Copilot Reader', icon: Sparkles },
     { id: 'subscriptions', label: 'Subscription Plans', icon: CreditCard },
   ];
 
@@ -38,7 +41,7 @@ export default function Sidebar({
         <button
           onClick={onOpenFirmSwitcher}
           className="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 transition-all text-left"
-          title="Click to Switch CA Practice"
+          title="Click to Switch Practice / Company"
         >
           <div className="flex items-center gap-2.5 overflow-hidden">
             <div 
@@ -97,19 +100,11 @@ export default function Sidebar({
       {/* Bottom Switch to Home button */}
       <div className="p-3 border-t border-slate-100 space-y-2">
         <button
-          onClick={onOpenFirmSwitcher}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors"
-        >
-          <Building2 className="w-3.5 h-3.5" />
-          <span>+ Register New CA Firm</span>
-        </button>
-
-        <button
           onClick={onBackHome}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-bold transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Exit to Home Page</span>
+          <span>Back to Landing Page</span>
         </button>
       </div>
     </aside>

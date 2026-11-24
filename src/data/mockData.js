@@ -387,3 +387,414 @@ export const subscriptionTiers = [
     recommended: false
   }
 ];
+
+// ==========================================
+// 7 CORE PILLAR FEATURES (From ClarioLoop Blueprint)
+// ==========================================
+export const coreFeatures = [
+  {
+    id: 'doc-collection',
+    title: 'Document Collection',
+    tagline: 'Passwordless client upload link',
+    description: 'Instant, secure client portal link requiring zero app downloads or passwords. Mobile-first camera document snapping.',
+    icon: 'UploadCloud',
+    badge: 'Core Engine',
+    color: 'indigo'
+  },
+  {
+    id: 'ai-classification',
+    title: 'AI Classification',
+    tagline: 'Groq LLaMA-3.3-70B OCR & Vision',
+    description: 'Auto-detects document category, extracts invoice number, date, GSTIN, and gross amounts with 98%+ precision.',
+    icon: 'Cpu',
+    badge: 'AI Powered',
+    color: 'purple'
+  },
+  {
+    id: 'missing-doc-detection',
+    title: 'Missing Document Detection',
+    tagline: 'Zero compliance loopholes',
+    description: 'Instantly identifies missing monthly bills, unfiled bank statements, or missing KYC files across all client accounts.',
+    icon: 'FileSearch',
+    badge: 'Automated',
+    color: 'rose'
+  },
+  {
+    id: 'automated-reminders',
+    title: 'Automated Reminders',
+    tagline: 'Multi-channel WhatsApp & Email',
+    description: 'Polite, automated follow-ups scheduled until submission. Automatically halts reminders the second the client uploads.',
+    icon: 'BellRing',
+    badge: 'Smart Nudge',
+    color: 'blue'
+  },
+  {
+    id: 'deadline-tracking',
+    title: 'Deadline Tracking',
+    tagline: 'Statutory compliance calendar',
+    description: 'Dynamic countdowns for GSTR-1, GSTR-3B, Advance Tax, TDS, and internal corporate approval milestones.',
+    icon: 'Calendar',
+    badge: 'Timelines',
+    color: 'amber'
+  },
+  {
+    id: 'secure-compliant',
+    title: 'Secure & Compliant',
+    tagline: '256-bit bank grade encryption',
+    description: 'Strict multi-tenant cryptographic isolation, ISO/IEC 27001 standard security, and full tamper-proof audit trails.',
+    icon: 'ShieldCheck',
+    badge: 'Encrypted',
+    color: 'emerald'
+  },
+  {
+    id: 'workflow-dashboard',
+    title: 'Workflow Dashboard',
+    tagline: 'Real-time practice intelligence',
+    description: 'Live KPI gauges, 82% completion rates, collected vs missing ratios, and cross-department team assignment view.',
+    icon: 'BarChart3',
+    badge: 'Analytics',
+    color: 'cyan'
+  }
+];
+
+// ==========================================
+// 10 INDUSTRY WORKFLOWS (Who Can Use ClarioLoop?)
+// ==========================================
+export const industryWorkflows = [
+  {
+    id: 'finance-accounting',
+    name: 'Finance & Accounting',
+    subtext: '(CA, Tax, Audit)',
+    category: 'Finance',
+    icon: 'Calculator',
+    color: 'bg-blue-500',
+    lightBg: 'bg-blue-50',
+    textColor: 'text-blue-700',
+    borderColor: 'border-blue-200',
+    activeRequests: 48,
+    completionRate: 86,
+    description: 'Automate monthly GST, TDS, advance tax, bank reconciliation statements, and audit working papers from clients.',
+    sampleChecklist: [
+      'Bank Current Account Statement (30 Days)',
+      'Sales Register & Outward Tax Invoices',
+      'Vendor Purchase Invoices & Expenses',
+      'GSTR-3B Previous Month Filed Challan',
+      'TDS Challan Form 26QB / 27EQ'
+    ]
+  },
+  {
+    id: 'hr-recruitment',
+    name: 'HR & Recruitment',
+    subtext: '(Onboarding, KYC)',
+    category: 'Human Resources',
+    icon: 'Users',
+    color: 'bg-purple-500',
+    lightBg: 'bg-purple-50',
+    textColor: 'text-purple-700',
+    borderColor: 'border-purple-200',
+    activeRequests: 34,
+    completionRate: 91,
+    description: 'Streamline candidate onboarding, background verification, KYC documents, and employee separation paperwork.',
+    sampleChecklist: [
+      'Government ID (Aadhaar / Passport / Voter ID)',
+      'PAN Card Copy',
+      'Highest Educational Degree & Marksheets',
+      'Relieving Letter from Previous Employer',
+      'Last 3 Months Salary Slips & Form 16'
+    ]
+  },
+  {
+    id: 'legal-compliance',
+    name: 'Legal & Compliance',
+    subtext: '(Law Firms, CS)',
+    category: 'Legal',
+    icon: 'Scale',
+    color: 'bg-emerald-500',
+    lightBg: 'bg-emerald-50',
+    textColor: 'text-emerald-700',
+    borderColor: 'border-emerald-200',
+    activeRequests: 22,
+    completionRate: 78,
+    description: 'Collect director KYC, board resolutions, trademark filings, lease agreements, and corporate MCA compliance records.',
+    sampleChecklist: [
+      'Director Identification Number (DIN) Verification',
+      'Certified Board Resolution Copy',
+      'Memorandum & Articles of Association (MOA/AOA)',
+      'Executed Non-Disclosure Agreement (NDA)',
+      'Trademark / IP Filing Authorization Document'
+    ]
+  },
+  {
+    id: 'healthcare',
+    name: 'Healthcare',
+    subtext: '(Hospitals, Clinics, Insurance)',
+    category: 'Healthcare',
+    icon: 'Cross',
+    color: 'bg-teal-500',
+    lightBg: 'bg-teal-50',
+    textColor: 'text-teal-700',
+    borderColor: 'border-teal-200',
+    activeRequests: 29,
+    completionRate: 84,
+    description: 'HIPAA-compliant document collection for patient intake, medical history, pre-authorization, and insurance TPA claims.',
+    sampleChecklist: [
+      'Patient Photo Identity & Address Proof',
+      'Doctor Consultation Prescription & Case Summary',
+      'Diagnostic Lab Reports & Radiology Scans',
+      'Insurance TPA Pre-Authorization Form',
+      'Itemized Hospital Bill & Pharmacy Receipts'
+    ]
+  },
+  {
+    id: 'education',
+    name: 'Education',
+    subtext: '(Schools, Colleges, Universities)',
+    category: 'Education',
+    icon: 'GraduationCap',
+    color: 'bg-sky-500',
+    lightBg: 'bg-sky-50',
+    textColor: 'text-sky-700',
+    borderColor: 'border-sky-200',
+    activeRequests: 18,
+    completionRate: 95,
+    description: 'Collect student admission applications, scholarship paperwork, fee receipts, transfer certificates, and verification proofs.',
+    sampleChecklist: [
+      'Birth Certificate & Nationality Proof',
+      'Previous Class / Semester Marksheet',
+      'School Leaving / Transfer Certificate (TC)',
+      'Migration Certificate (If inter-state/board)',
+      'Income Certificate (For Scholarship Application)'
+    ]
+  },
+  {
+    id: 'real-estate-construction',
+    name: 'Real Estate & Construction',
+    subtext: '(Projects, Approvals)',
+    category: 'Construction',
+    icon: 'Building',
+    color: 'bg-indigo-500',
+    lightBg: 'bg-indigo-50',
+    textColor: 'text-indigo-700',
+    borderColor: 'border-indigo-200',
+    activeRequests: 15,
+    completionRate: 72,
+    description: 'Collect site sanction approvals, architect certificates, title deeds, contractor bills, and RERA compliance filings.',
+    sampleChecklist: [
+      'Municipal Sanctioned Building Plan',
+      'RERA Project Registration Certificate',
+      'Architect Completion Stage Certificate',
+      'Contractor Measurement Sheet & RA Bill',
+      'Title Search Report & 30-Year Encumbrance Proof'
+    ]
+  },
+  {
+    id: 'insurance-banking',
+    name: 'Insurance & Banking',
+    subtext: '(KYC, Claims, Loans)',
+    category: 'Banking',
+    icon: 'Umbrella',
+    color: 'bg-violet-500',
+    lightBg: 'bg-violet-50',
+    textColor: 'text-violet-700',
+    borderColor: 'border-violet-200',
+    activeRequests: 42,
+    completionRate: 89,
+    description: 'Automate loan documentation, credit underwriting dossiers, CIBIL check records, and claim settlement proofs.',
+    sampleChecklist: [
+      'Borrower KYC (Aadhaar & PAN)',
+      'Last 3 Years ITR with Computation of Income',
+      'Last 6 Months Bank Account Statement',
+      'Property Chain Documents & Title Deed',
+      'CIBIL Credit Score Verification Consent'
+    ]
+  },
+  {
+    id: 'manufacturing-industrial',
+    name: 'Manufacturing & Industrial',
+    subtext: '(Suppliers, QA, Compliance)',
+    category: 'Industrial',
+    icon: 'Factory',
+    color: 'bg-amber-500',
+    lightBg: 'bg-amber-50',
+    textColor: 'text-amber-700',
+    borderColor: 'border-amber-200',
+    activeRequests: 19,
+    completionRate: 81,
+    description: 'Collect vendor quality audit certificates, ISO compliance, Raw Material Test Certificates (MTC), and pollution board NOCs.',
+    sampleChecklist: [
+      'Factory License & Pollution Control Board NOC',
+      'ISO 9001 / 14001 Quality Certification',
+      'Raw Material Mill Test Certificate (MTC)',
+      'Vendor Safety Audit & EHS Declaration',
+      'Calibration Certificate for Testing Equipment'
+    ]
+  },
+  {
+    id: 'logistics-supply-chain',
+    name: 'Logistics & Supply Chain',
+    subtext: '(Vendors, Shipments)',
+    category: 'Logistics',
+    icon: 'Truck',
+    color: 'bg-blue-600',
+    lightBg: 'bg-blue-50',
+    textColor: 'text-blue-700',
+    borderColor: 'border-blue-200',
+    activeRequests: 27,
+    completionRate: 87,
+    description: 'Automate transport documents, customs clearances, Bill of Lading, Proof of Delivery (POD), and fleet fitness papers.',
+    sampleChecklist: [
+      'Consignment Note / Lorry Receipt (LR)',
+      'E-Way Bill Generation Copy',
+      'Signed Customer Proof of Delivery (POD)',
+      'Commercial Shipping Invoice & Packing List',
+      'Vehicle Fitness & Commercial Insurance Policy'
+    ]
+  },
+  {
+    id: 'professional-services',
+    name: 'Professional Services',
+    subtext: '(IPR, Consulting, Agencies)',
+    category: 'Consulting',
+    icon: 'Handshake',
+    color: 'bg-fuchsia-500',
+    lightBg: 'bg-fuchsia-50',
+    textColor: 'text-fuchsia-700',
+    borderColor: 'border-fuchsia-200',
+    activeRequests: 21,
+    completionRate: 90,
+    description: 'Collect client project briefs, signed scope of work (SOW), milestone delivery sign-offs, and agency vendor invoices.',
+    sampleChecklist: [
+      'Executed Master Services Agreement (MSA)',
+      'Signed Statement of Work (SOW) Scope',
+      'Client Brand Assets & Content Brief',
+      'Milestone Deliverable Acceptance Sign-Off',
+      'Sub-consultant Tax Invoice & Timesheet'
+    ]
+  }
+];
+
+// ==========================================
+// REPOSITORY: ALL COLLECTED DOCUMENTS
+// ==========================================
+export const mockAllDocuments = [
+  {
+    id: 'doc-1',
+    name: 'HDFC_Statement_01Nov_30Nov_2026.pdf',
+    clientName: 'NexGen Digital Solutions Pvt Ltd',
+    industry: 'Finance & Accounting',
+    category: 'Banking & Finance',
+    status: 'VERIFIED',
+    uploadedAt: '2026-11-20 14:32',
+    size: '482 KB',
+    aiConfidence: 98,
+    extractedSummary: 'Current Account Statement • Closing Balance: ₹4,82,900'
+  },
+  {
+    id: 'doc-2',
+    name: 'Tax_Invoice_AIC_0849.pdf',
+    clientName: 'NexGen Digital Solutions Pvt Ltd',
+    industry: 'Finance & Accounting',
+    category: 'Accounting & Bookkeeping',
+    status: 'VERIFIED',
+    uploadedAt: '2026-11-21 10:15',
+    size: '340 KB',
+    aiConfidence: 99,
+    extractedSummary: 'B2B Tax Invoice • Acme Components • ₹88,500.00 • GST: 27AABCA1234M1Z5'
+  },
+  {
+    id: 'doc-3',
+    name: 'Audited_FS_FY26_Sabarmati.pdf',
+    clientName: 'Sabarmati Cotton Mills Ltd',
+    industry: 'Finance & Accounting',
+    category: 'Audit & Assurance',
+    status: 'VERIFIED',
+    uploadedAt: '2026-11-22 16:45',
+    size: '1.4 MB',
+    aiConfidence: 99,
+    extractedSummary: 'Financial Statement FY26 • Turnover: ₹14.8 Cr • Clean Audit Opinion'
+  },
+  {
+    id: 'doc-4',
+    name: 'Employee_Aadhaar_PAN_Dossier.pdf',
+    clientName: 'Rahul Verma (Senior Dev)',
+    industry: 'HR & Recruitment',
+    category: 'Onboarding & KYC',
+    status: 'VERIFIED',
+    uploadedAt: '2026-11-23 09:20',
+    size: '890 KB',
+    aiConfidence: 97,
+    extractedSummary: 'Govt KYC ID Verified • Aadhaar match with PAN database'
+  },
+  {
+    id: 'doc-5',
+    name: 'Signed_Board_Resolution_MCA.pdf',
+    clientName: 'Apex Capital Advisors',
+    industry: 'Legal & Compliance',
+    category: 'Corporate Secretarial',
+    status: 'COLLECTED',
+    uploadedAt: '2026-11-23 11:05',
+    size: '620 KB',
+    aiConfidence: 94,
+    extractedSummary: 'Board Resolution for Bank Signatory Change • Stamped & Executed'
+  },
+  {
+    id: 'doc-6',
+    name: 'TPA_PreAuth_ApolloHospital.pdf',
+    clientName: 'Smt. Sharda Patel',
+    industry: 'Healthcare',
+    category: 'Medical & Insurance',
+    status: 'COLLECTED',
+    uploadedAt: '2026-11-23 15:40',
+    size: '1.1 MB',
+    aiConfidence: 95,
+    extractedSummary: 'Cashless Pre-Auth Request • Surgery Estimate: ₹1,45,000'
+  },
+  {
+    id: 'doc-7',
+    name: 'Consignment_LR_EWay_Vanguard.pdf',
+    clientName: 'Vanguard Logistics & Freight LLP',
+    industry: 'Logistics & Supply Chain',
+    category: 'Transport & E-Way',
+    status: 'VERIFIED',
+    uploadedAt: '2026-11-24 08:50',
+    size: '512 KB',
+    aiConfidence: 98,
+    extractedSummary: 'E-Way Bill 241098234892 • Transporter LR Signed • Valid till 26-Nov'
+  },
+  {
+    id: 'doc-8',
+    name: 'Pending: GSTR-3B October Challan',
+    clientName: 'NexGen Digital Solutions Pvt Ltd',
+    industry: 'Finance & Accounting',
+    category: 'GST & Indirect Tax',
+    status: 'MISSING',
+    uploadedAt: 'Not uploaded',
+    size: '0 KB',
+    aiConfidence: 0,
+    extractedSummary: 'Missing Document • Automated reminder scheduled for today 5:00 PM'
+  },
+  {
+    id: 'doc-9',
+    name: 'Pending: Relieving Letter Previous Employer',
+    clientName: 'Priya Sharma (Tech Lead)',
+    industry: 'HR & Recruitment',
+    category: 'Onboarding & KYC',
+    status: 'MISSING',
+    uploadedAt: 'Not uploaded',
+    size: '0 KB',
+    aiConfidence: 0,
+    extractedSummary: 'Missing Document • WhatsApp prompt sent to candidate'
+  },
+  {
+    id: 'doc-10',
+    name: 'Pending: Vendor ISO 9001 Certificate',
+    clientName: 'Shree Krishna Chemical Industries',
+    industry: 'Manufacturing & Industrial',
+    category: 'Industrial & QA',
+    status: 'DUE_SOON',
+    uploadedAt: 'Awaiting',
+    size: '0 KB',
+    aiConfidence: 0,
+    extractedSummary: 'Due in 3 days • QA compliance requirement before PO release'
+  }
+];

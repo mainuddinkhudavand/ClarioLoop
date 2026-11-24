@@ -9,6 +9,8 @@ import ClientUploadPortal from './components/ClientUploadPortal';
 import ReminderSettings from './components/ReminderSettings';
 import SubscriptionPlans from './components/SubscriptionPlans';
 import ReportsView from './components/ReportsView';
+import WorkflowsView from './components/WorkflowsView';
+import DocumentsView from './components/DocumentsView';
 import AIAssistantModal from './components/AIAssistantModal';
 import FirmSwitcherModal from './components/FirmSwitcherModal';
 import MobileBottomNav from './components/MobileBottomNav';
@@ -133,6 +135,20 @@ export default function App() {
               <RequestBuilder 
                 activeFirm={activeFirm}
                 onCreated={() => setActiveTab('dashboard')} 
+              />
+            )}
+
+            {activeTab === 'documents' && (
+              <DocumentsView 
+                activeFirm={activeFirm}
+                onOpenAI={() => setIsAIModalOpen(true)}
+              />
+            )}
+
+            {activeTab === 'workflows' && (
+              <WorkflowsView 
+                activeFirm={activeFirm}
+                onLaunchWorkflow={() => setActiveTab('requests')}
               />
             )}
 
