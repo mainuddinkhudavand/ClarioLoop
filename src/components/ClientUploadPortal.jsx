@@ -9,10 +9,11 @@ import {
   CheckCircle2, 
   FileText, 
   Sparkles, 
-  Lock,
-  ArrowLeft,
+  Lock, 
+  ArrowLeft, 
   RefreshCw,
-  Building2
+  Building2,
+  ShieldCheck
 } from 'lucide-react';
 import { mockFirms } from '../data/mockData';
 
@@ -106,7 +107,7 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
       setRecentAIAnalysis(aiData);
       setUploading(false);
       setActiveItemId(null);
-      setUploadSuccess(`Successfully uploaded and verified "${file.name}"!`);
+      setUploadSuccess(`Successfully uploaded & verified "${file.name}"!`);
     }, 1500);
   };
 
@@ -115,77 +116,83 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
   const isAllComplete = submittedCount === totalCount;
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-between">
-      {/* Top Header / Portal Branding */}
-      <header className="bg-slate-900/95 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Logo size="small" showTagline={false} />
-          <span className="text-slate-400 text-xs hidden sm:inline">• Client Upload Vault</span>
+    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col w-full max-w-full overflow-x-hidden">
+      
+      {/* 1. Header (Ultra-Responsive on mobile) */}
+      <header className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <Logo size="small" inverted={true} showTagline={false} />
+          <span className="text-slate-400 text-[11px] hidden md:inline truncate">
+            • Secure Client Upload Portal
+          </span>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-xs text-indigo-400 bg-indigo-950/80 px-2.5 py-1 rounded-full border border-indigo-800">
-            <Lock className="w-3 h-3 text-indigo-400" />
-            <span className="font-semibold">Encrypted Client Vault</span>
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1 text-[11px] text-indigo-400 bg-indigo-950/80 px-2 py-1 rounded-lg border border-indigo-800/80">
+            <Lock className="w-3 h-3 text-indigo-400 shrink-0" />
+            <span className="font-semibold hidden sm:inline">Encrypted Vault</span>
+            <span className="font-semibold sm:hidden">SSL</span>
           </div>
 
           {onBackToFirm && (
             <button
               onClick={onBackToFirm}
-              className="flex items-center gap-1 text-xs text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-lg transition-colors border border-slate-700"
+              className="flex items-center gap-1 text-[11px] font-bold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg transition-colors border border-slate-700 shrink-0"
+              title="Return to CA Practice Workspace"
             >
               <ArrowLeft className="w-3 h-3" />
-              <span>Back to Practice</span>
+              <span>Back</span>
             </button>
           )}
         </div>
       </header>
 
-      {/* Main Container */}
-      <main className="max-w-2xl w-full mx-auto p-4 sm:p-6 my-auto">
-        {/* CA Firm Request Banner */}
-        <div className="bg-slate-800/90 rounded-2xl border border-slate-700 p-5 sm:p-6 shadow-xl mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-700/80">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
+      {/* 2. Main Content (Scrolls naturally, zero clipping) */}
+      <main className="flex-1 w-full max-w-2xl mx-auto px-3 sm:px-6 py-4 sm:py-8 space-y-4 sm:space-y-6">
+        
+        {/* Request Overview Card */}
+        <div className="bg-slate-800/90 rounded-2xl border border-slate-700 p-4 sm:p-6 shadow-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-700/80">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 mb-1 min-w-0">
                 <div 
-                  className="w-5 h-5 rounded text-[10px] font-black text-white flex items-center justify-center"
+                  className="w-5 h-5 rounded text-[10px] font-black text-white flex items-center justify-center shrink-0 shadow-xs"
                   style={{ backgroundColor: foundFirm.brandingColor || '#4f46e5' }}
                 >
                   {foundFirm.logoInitials || 'CA'}
                 </div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-300">
-                  Document Request from {foundFirm.name}
+                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-300 truncate">
+                  {foundFirm.name}
                 </span>
               </div>
-              <h1 className="text-lg sm:text-xl font-extrabold text-white mt-1">
+              <h1 className="text-base sm:text-xl font-extrabold text-white break-words mt-0.5 leading-snug">
                 {request.title}
               </h1>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Client: <strong className="text-slate-200">{request.clientName}</strong> • Lead CA: {foundFirm.partnerName}
+              <p className="text-xs text-slate-400 mt-1 break-words">
+                Client: <strong className="text-slate-200">{request.clientName}</strong> • Partner: {foundFirm.partnerName}
               </p>
             </div>
 
-            <div className="text-left sm:text-right shrink-0">
-              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Due Date</span>
-              <span className="text-xs sm:text-sm font-bold text-amber-300 flex items-center sm:justify-end gap-1 mt-0.5">
-                <Clock className="w-3.5 h-3.5" />
-                {new Date(request.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+            <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-1 shrink-0 pt-2 sm:pt-0 border-t border-slate-700/60 sm:border-0">
+              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Due Date</span>
+              <span className="text-xs sm:text-sm font-bold text-amber-300 flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 shrink-0" />
+                <span>{new Date(request.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
               </span>
             </div>
           </div>
 
           {/* Progress Indicator */}
-          <div className="mt-4">
+          <div className="mt-3 sm:mt-4">
             <div className="flex items-center justify-between text-xs mb-1.5">
               <span className="text-slate-300 font-medium">
-                {submittedCount} of {totalCount} documents uploaded
+                {submittedCount} of {totalCount} uploaded
               </span>
               <span className={`font-bold ${isAllComplete ? 'text-emerald-400' : 'text-indigo-400'}`}>
-                {isAllComplete ? '✓ All Complete' : `${Math.round((submittedCount / totalCount) * 100)}% Complete`}
+                {isAllComplete ? '✓ 100% Complete' : `${Math.round((submittedCount / totalCount) * 100)}% Complete`}
               </span>
             </div>
-            <div className="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden p-0.5">
+            <div className="w-full h-2 sm:h-2.5 bg-slate-900 rounded-full overflow-hidden p-0.5">
               <div 
                 className={`h-full rounded-full transition-all duration-500 ${
                   isAllComplete ? 'bg-emerald-500' : 'bg-gradient-to-r from-indigo-500 to-blue-500'
@@ -196,10 +203,10 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
           </div>
 
           {isAllComplete && (
-            <div className="mt-4 p-3 bg-emerald-950/60 border border-emerald-800 rounded-xl flex items-center gap-3 text-xs text-emerald-300">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-              <span>
-                <strong>All documents submitted!</strong> Automated reminders have halted. {foundFirm.name} has been notified.
+            <div className="mt-3 sm:mt-4 p-3 bg-emerald-950/70 border border-emerald-800 rounded-xl flex items-start gap-2.5 text-xs text-emerald-300">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <span className="leading-relaxed">
+                <strong>All documents submitted!</strong> Automated follow-ups have stopped. Your CA team has been notified.
               </span>
             </div>
           )}
@@ -207,12 +214,12 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
 
         {/* Upload Success Alert */}
         {uploadSuccess && (
-          <div className="mb-6 p-4 bg-indigo-950/80 border border-indigo-700 rounded-xl flex items-start gap-3 text-xs text-indigo-200 animate-fadeIn">
+          <div className="p-3.5 sm:p-4 bg-indigo-950/90 border border-indigo-700 rounded-xl flex items-start gap-2.5 text-xs text-indigo-200 animate-fadeIn">
             <Sparkles className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-bold">{uploadSuccess}</span>
+            <div className="min-w-0 flex-1">
+              <span className="font-bold block break-words">{uploadSuccess}</span>
               {recentAIAnalysis && (
-                <div className="mt-1.5 p-2 bg-slate-900/60 rounded border border-indigo-900/60 font-mono text-[11px] text-indigo-300">
+                <div className="mt-1.5 p-2 bg-slate-900/80 rounded-lg border border-indigo-900/60 font-mono text-[11px] text-indigo-300 break-words">
                   ⚡ AI Classified: <strong>{recentAIAnalysis.documentType}</strong> ({recentAIAnalysis.totalAmount})
                 </div>
               )}
@@ -220,37 +227,43 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
           </div>
         )}
 
-        {/* Interactive Checklist Items */}
+        {/* Required Documents Checklist */}
         <div className="space-y-3">
-          <h2 className="text-xs uppercase font-bold tracking-wider text-slate-400 px-1">
-            Required Documents Checklist
-          </h2>
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-xs uppercase font-extrabold tracking-wider text-slate-400">
+              Required Documents Checklist ({request.items.length})
+            </h2>
+            <span className="text-[10px] text-slate-500 font-semibold sm:hidden">
+              Tap camera or upload
+            </span>
+          </div>
 
-          {request.items.map(item => {
+          {request.items.map((item, idx) => {
             const isDone = item.status === 'SUBMITTED' || item.status === 'VERIFIED';
             const isCurrentUploading = uploading && activeItemId === item.id;
 
             return (
               <div 
                 key={item.id}
-                className={`p-4 rounded-xl border transition-all ${
+                className={`p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border transition-all ${
                   isDone 
-                    ? 'bg-slate-800/50 border-emerald-900/60' 
+                    ? 'bg-slate-800/60 border-emerald-900/70' 
                     : 'bg-slate-800 border-slate-700 hover:border-slate-600'
                 }`}
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-start gap-3">
+                {/* Desktop View (md+) */}
+                <div className="hidden sm:flex sm:items-center justify-between gap-3">
+                  <div className="flex items-start gap-3 min-w-0">
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
                       isDone ? 'bg-emerald-900/60 text-emerald-400' : 'bg-slate-700 text-slate-300'
                     }`}>
                       {isDone ? <CheckCircle2 className="w-4 h-4" /> : <FileText className="w-4 h-4" />}
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-bold text-white">{item.title}</h3>
+                        <h3 className="text-sm font-bold text-white truncate">{item.title}</h3>
                         {item.isRequired && (
-                          <span className="text-[10px] font-semibold text-rose-400 bg-rose-950/60 px-1.5 py-0.2 rounded border border-rose-900">
+                          <span className="text-[10px] font-semibold text-rose-400 bg-rose-950/60 px-1.5 py-0.2 rounded border border-rose-900 shrink-0">
                             Required
                           </span>
                         )}
@@ -259,10 +272,10 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
                       
                       {isDone && item.uploadedFile && (
                         <div className="mt-2 flex items-center gap-2 text-[11px] text-emerald-300 bg-emerald-950/40 px-2.5 py-1 rounded-md border border-emerald-900/50">
-                          <FileCheck className="w-3.5 h-3.5" />
+                          <FileCheck className="w-3.5 h-3.5 shrink-0" />
                           <span className="font-medium truncate max-w-[200px]">{item.uploadedFile.name}</span>
-                          <span className="text-emerald-500 font-mono">({item.uploadedFile.size})</span>
-                          <span className="text-[10px] bg-emerald-900/80 text-emerald-200 px-1.5 py-0.5 rounded ml-auto">
+                          <span className="text-emerald-500 font-mono shrink-0">({item.uploadedFile.size})</span>
+                          <span className="text-[10px] bg-emerald-900/80 text-emerald-200 px-1.5 py-0.5 rounded ml-auto shrink-0">
                             AI Verified
                           </span>
                         </div>
@@ -270,17 +283,17 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
                     </div>
                   </div>
 
-                  {/* Upload Actions */}
-                  <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                    <label className={`cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  {/* Actions */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <label className={`cursor-pointer flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                       isDone 
                         ? 'bg-slate-700 hover:bg-slate-600 text-slate-200' 
-                        : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md'
+                        : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20'
                     } ${isCurrentUploading ? 'opacity-70 pointer-events-none' : ''}`}>
                       {isCurrentUploading ? (
                         <>
                           <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                          <span>Scanning with AI...</span>
+                          <span>Scanning...</span>
                         </>
                       ) : (
                         <>
@@ -296,10 +309,79 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
                         disabled={uploading}
                       />
                     </label>
+                  </div>
+                </div>
 
-                    {/* Mobile Camera Fast-Snap Button */}
-                    <label className="cursor-pointer sm:hidden p-2 bg-slate-700 hover:bg-slate-600 text-indigo-300 rounded-lg" title="Take photo with camera">
+                {/* Mobile View (<sm) - Built specifically for touch screens */}
+                <div className="sm:hidden space-y-2.5">
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                      isDone ? 'bg-emerald-900/60 text-emerald-400' : 'bg-slate-700 text-slate-300'
+                    }`}>
+                      {isDone ? <CheckCircle2 className="w-3.5 h-3.5" /> : <FileText className="w-3.5 h-3.5" />}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <h3 className="text-xs font-bold text-white break-words leading-tight">{item.title}</h3>
+                        {item.isRequired && (
+                          <span className="text-[9px] font-semibold text-rose-400 bg-rose-950/60 px-1.5 py-0.2 rounded border border-rose-900 shrink-0">
+                            Required
+                          </span>
+                        )}
+                      </div>
+                      {item.description && (
+                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed break-words">{item.description}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Attached file status banner if done */}
+                  {isDone && item.uploadedFile && (
+                    <div className="p-2 rounded-lg bg-emerald-950/40 border border-emerald-900/50 text-[11px] text-emerald-300 flex items-center justify-between gap-1.5">
+                      <div className="flex items-center gap-1.5 min-w-0 truncate">
+                        <FileCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span className="truncate font-medium">{item.uploadedFile.name}</span>
+                      </div>
+                      <span className="text-[9px] bg-emerald-900/80 text-emerald-200 px-1.5 py-0.5 rounded shrink-0">
+                        Verified
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Touch Action Bar on Mobile: Big Finger-Friendly Targets */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <label className={`flex-1 cursor-pointer flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-center ${
+                      isDone 
+                        ? 'bg-slate-700 hover:bg-slate-600 text-slate-200' 
+                        : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm'
+                    } ${isCurrentUploading ? 'opacity-70 pointer-events-none' : ''}`}>
+                      {isCurrentUploading ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>AI Scanning...</span>
+                        </>
+                      ) : (
+                        <>
+                          <UploadCloud className="w-3.5 h-3.5" />
+                          <span>{isDone ? 'Replace File' : 'Choose File'}</span>
+                        </>
+                      )}
+                      <input 
+                        type="file" 
+                        className="hidden" 
+                        accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.docx"
+                        onChange={(e) => handleFileUpload(e, item)}
+                        disabled={uploading}
+                      />
+                    </label>
+
+                    {/* Smartphone Camera Direct Snap Button */}
+                    <label 
+                      className="cursor-pointer flex items-center justify-center gap-1 p-2.5 px-3.5 bg-slate-700 hover:bg-slate-600 text-indigo-300 rounded-xl font-bold text-xs shrink-0" 
+                      title="Snap photo with phone camera"
+                    >
                       <Camera className="w-4 h-4" />
+                      <span className="text-[11px]">Camera</span>
                       <input 
                         type="file" 
                         accept="image/*" 
@@ -311,26 +393,28 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
                     </label>
                   </div>
                 </div>
+
               </div>
             );
           })}
         </div>
 
         {/* Client Help Note */}
-        <div className="mt-8 text-center text-xs text-slate-500">
-          <p>
-            Files uploaded here are encrypted and sent directly to <strong>{foundFirm.name}</strong>.
+        <div className="mt-8 text-center text-xs text-slate-500 px-2 space-y-1">
+          <p className="leading-relaxed">
+            Files uploaded here are encrypted and delivered directly to <strong>{foundFirm.name}</strong>.
           </p>
-          <p className="mt-1">
-            Queries? Contact your accounting team at <span className="text-indigo-400">{foundFirm.email}</span>
+          <p className="text-[11px]">
+            Queries? Contact your CA team at <span className="text-indigo-400 font-medium break-all">{foundFirm.email}</span>
           </p>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="p-4 text-center text-slate-400 text-[11px] border-t border-slate-800">
-        Powered by Cloop • Multi-Tenant Document Automation for Indian CA Practices
+      {/* 3. Footer */}
+      <footer className="p-4 text-center text-slate-500 text-[10px] sm:text-[11px] border-t border-slate-800">
+        Powered by Cloop™ • Multi-Tenant Client Document Collection for CA Firms
       </footer>
+
     </div>
   );
 }

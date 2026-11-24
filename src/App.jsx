@@ -68,14 +68,16 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
-      {/* Global Sticky Navbar */}
-      <Navbar 
-        currentView={currentView}
-        setCurrentView={setCurrentView}
-        onOpenAI={() => setIsAIModalOpen(true)}
-        activeFirm={activeFirm}
-        onOpenFirmSwitcher={() => setIsFirmSwitcherOpen(true)}
-      />
+      {/* Global Sticky Navbar (Hidden in client upload portal view) */}
+      {currentView !== 'portal' && (
+        <Navbar 
+          currentView={currentView}
+          setCurrentView={setCurrentView}
+          onOpenAI={() => setIsAIModalOpen(true)}
+          activeFirm={activeFirm}
+          onOpenFirmSwitcher={() => setIsFirmSwitcherOpen(true)}
+        />
+      )}
 
       {/* VIEW 1: HOME PAGE (DEFAULT) */}
       {currentView === 'home' && (
@@ -186,14 +188,16 @@ export default function App() {
         onRegisterNewFirm={handleRegisterNewFirm}
       />
 
-      {/* Native-Style Mobile Bottom Navigation Bar */}
-      <MobileBottomNav 
-        currentView={currentView}
-        setCurrentView={setCurrentView}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onOpenAI={() => setIsAIModalOpen(true)}
-      />
+      {/* Native-Style Mobile Bottom Navigation Bar (Hidden in client upload portal view) */}
+      {currentView !== 'portal' && (
+        <MobileBottomNav 
+          currentView={currentView}
+          setCurrentView={setCurrentView}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onOpenAI={() => setIsAIModalOpen(true)}
+        />
+      )}
     </div>
   );
 }
