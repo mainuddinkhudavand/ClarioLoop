@@ -11,7 +11,8 @@ import {
   Clock,
   Layers,
   Repeat,
-  ArrowLeft
+  ArrowLeft,
+  Check
 } from 'lucide-react';
 import { mockClients } from '../data/mockData';
 
@@ -22,7 +23,6 @@ export default function RequestBuilder({ onCreated, activeFirm, onBack }) {
   const [period, setPeriod] = useState('December 2026');
   const [dueDate, setDueDate] = useState('2026-12-10');
   const [isRecurring, setIsRecurring] = useState(true);
-  const [recurrence, setRecurrence] = useState('MONTHLY');
   const [createdSuccess, setCreatedSuccess] = useState(false);
 
   const [items, setItems] = useState([
@@ -85,8 +85,10 @@ export default function RequestBuilder({ onCreated, activeFirm, onBack }) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center gap-3">
+    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 w-full overflow-hidden">
+      
+      {/* Header with Back button */}
+      <div className="flex items-center gap-2.5 sm:gap-3">
         {onBack && (
           <button
             onClick={onBack}
@@ -97,35 +99,40 @@ export default function RequestBuilder({ onCreated, activeFirm, onBack }) {
             <span>Back</span>
           </button>
         )}
-        <div>
-          <h1 className="text-xl font-extrabold text-slate-900">Request Builder & Recurring Checklists</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+        <div className="min-w-0">
+          <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 truncate">
+            Request Builder & Recurring Checklists
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5 truncate hidden sm:block">
             Create structured document checklists, set due dates, and schedule automatic reminders
           </p>
         </div>
       </div>
 
       {/* Reusable Template Quick-Pills */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
-          Load Pre-built CA Checklist Template:
+      <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+        <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
+          Load Pre-built Checklist Template:
         </span>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
           <button
+            type="button"
             onClick={() => applyTemplate('bookkeeping')}
-            className="text-xs font-semibold px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-800 rounded-lg border border-teal-200 transition-colors"
+            className="text-xs font-semibold px-2.5 sm:px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 rounded-lg border border-indigo-200 transition-colors"
           >
             📋 Monthly Bookkeeping
           </button>
           <button
+            type="button"
             onClick={() => applyTemplate('gst')}
-            className="text-xs font-semibold px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-lg border border-blue-200 transition-colors"
+            className="text-xs font-semibold px-2.5 sm:px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-lg border border-blue-200 transition-colors"
           >
             ⚡ GST Returns (GSTR-3B/1)
           </button>
           <button
+            type="button"
             onClick={() => applyTemplate('tax')}
-            className="text-xs font-semibold px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg border border-amber-200 transition-colors"
+            className="text-xs font-semibold px-2.5 sm:px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg border border-amber-200 transition-colors"
           >
             📑 ITR Tax Season
           </button>
@@ -133,14 +140,16 @@ export default function RequestBuilder({ onCreated, activeFirm, onBack }) {
       </div>
 
       {/* Main Request Form */}
-      <form onSubmit={handleDispatch} className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-5 text-xs">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
+      <form onSubmit={handleDispatch} className="bg-white p-3.5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4 sm:space-y-5 text-xs w-full overflow-hidden">
+        
+        {/* Client & Title Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="min-w-0">
             <label className="font-bold text-slate-700 block mb-1">Select Client *</label>
             <select
               value={selectedClient}
               onChange={(e) => setSelectedClient(e.target.value)}
-              className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-teal-500 font-semibold"
+              className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 font-semibold text-xs truncate"
             >
               {firmClients.map(c => (
                 <option key={c.id} value={c.id}>{c.businessName} ({c.contactPerson})</option>
@@ -148,113 +157,197 @@ export default function RequestBuilder({ onCreated, activeFirm, onBack }) {
             </select>
           </div>
 
-          <div>
+          <div className="min-w-0">
             <label className="font-bold text-slate-700 block mb-1">Request Title *</label>
             <input
               type="text"
               value={requestTitle}
               onChange={(e) => setRequestTitle(e.target.value)}
-              className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-teal-500 font-semibold"
+              className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 font-semibold text-xs"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div>
+        {/* Period, Due Date & Recurrence Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <div className="min-w-0">
             <label className="font-bold text-slate-700 block mb-1">Filing / Accounting Period</label>
             <input
               type="text"
               value={period}
               onChange={(e) => setPeriod(e.target.value)}
               placeholder="e.g. November 2026"
-              className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-teal-500"
+              className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 text-xs"
             />
           </div>
 
-          <div>
+          <div className="min-w-0">
             <label className="font-bold text-slate-700 block mb-1">Submission Due Date *</label>
             <input
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-teal-500 font-semibold"
+              className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 font-semibold text-xs"
             />
           </div>
 
-          <div>
+          <div className="min-w-0 flex flex-col justify-center">
             <label className="font-bold text-slate-700 block mb-1">Recurrence Schedule</label>
-            <div className="flex items-center gap-2 pt-1">
-              <label className="flex items-center gap-2 cursor-pointer font-semibold text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={isRecurring}
-                  onChange={(e) => setIsRecurring(e.target.checked)}
-                  className="rounded text-teal-600 focus:ring-teal-500 w-4 h-4"
-                />
-                <span>Auto-recur every month</span>
-              </label>
-            </div>
+            <label className="flex items-center gap-2 cursor-pointer font-semibold text-slate-700 py-1">
+              <input
+                type="checkbox"
+                checked={isRecurring}
+                onChange={(e) => setIsRecurring(e.target.checked)}
+                className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+              />
+              <span className="text-xs">Auto-recur every month</span>
+            </label>
           </div>
         </div>
 
-        {/* Checklist Item List Builder */}
-        <div className="pt-4 border-t border-slate-100">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-bold text-slate-900 text-sm">Requested Items ({items.length})</h3>
+        {/* ================= REQUESTED ITEMS (100% Mobile Responsive) ================= */}
+        <div className="pt-4 border-t border-slate-100 space-y-3">
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <h3 className="font-bold text-slate-900 text-xs sm:text-sm">
+                Requested Items ({items.length})
+              </h3>
+              <span className="text-[10px] text-slate-400 block sm:hidden">
+                Checklist items sent to client
+              </span>
+            </div>
+
             <button
               type="button"
               onClick={addItem}
-              className="flex items-center gap-1.5 text-xs text-teal-700 hover:text-teal-900 font-bold bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg border border-teal-200/60"
+              className="flex items-center gap-1.5 text-xs text-indigo-700 hover:text-indigo-900 font-bold bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl border border-indigo-200/80 shrink-0 shadow-xs"
             >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Add Document Item</span>
+              <Plus className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Add Item</span>
             </button>
           </div>
 
-          <div className="space-y-2.5">
+          {/* Responsive Item Cards List */}
+          <div className="space-y-3">
             {items.map((item, idx) => (
-              <div key={item.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center gap-3">
-                <span className="font-mono text-slate-400 font-bold text-xs w-5">{idx + 1}.</span>
-                <input
-                  type="text"
-                  value={item.title}
-                  onChange={(e) => updateItem(item.id, 'title', e.target.value)}
-                  className="flex-1 bg-white p-2 rounded-lg border border-slate-200 text-xs font-semibold focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                />
-                <select
-                  value={item.category}
-                  onChange={(e) => updateItem(item.id, 'category', e.target.value)}
-                  className="bg-white p-2 rounded-lg border border-slate-200 text-xs text-slate-700"
-                >
-                  <option>Accounting & Bookkeeping</option>
-                  <option>GST & Indirect Tax</option>
-                  <option>Income Tax</option>
-                  <option>Banking & Finance</option>
-                  <option>Audit & Assurance</option>
-                  <option>Payroll & Employee Records</option>
-                </select>
-                <button
-                  type="button"
-                  onClick={() => removeItem(item.id)}
-                  className="p-2 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50"
-                  title="Remove item"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+              <div 
+                key={item.id} 
+                className="p-3 sm:p-3.5 bg-slate-50/90 rounded-xl sm:rounded-2xl border border-slate-200/80 space-y-2.5 transition-all hover:border-slate-300"
+              >
+                {/* Desktop View (md+): Single Inline Row with perfect flexing */}
+                <div className="hidden md:flex items-center gap-3">
+                  <span className="font-mono text-slate-400 font-bold text-xs w-6 shrink-0">
+                    {idx + 1}.
+                  </span>
+
+                  <input
+                    type="text"
+                    value={item.title}
+                    onChange={(e) => updateItem(item.id, 'title', e.target.value)}
+                    placeholder="Document title / description"
+                    className="flex-1 min-w-0 bg-white p-2.5 rounded-xl border border-slate-200 text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  />
+
+                  <select
+                    value={item.category}
+                    onChange={(e) => updateItem(item.id, 'category', e.target.value)}
+                    className="w-56 shrink-0 bg-white p-2.5 rounded-xl border border-slate-200 text-xs text-slate-700 font-medium"
+                  >
+                    <option>Accounting & Bookkeeping</option>
+                    <option>GST & Indirect Tax</option>
+                    <option>Income Tax</option>
+                    <option>Banking & Finance</option>
+                    <option>Audit & Assurance</option>
+                    <option>Payroll & Employee Records</option>
+                  </select>
+
+                  <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-slate-600 shrink-0 px-2">
+                    <input
+                      type="checkbox"
+                      checked={item.isRequired}
+                      onChange={(e) => updateItem(item.id, 'isRequired', e.target.checked)}
+                      className="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5"
+                    />
+                    <span>Required</span>
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={() => removeItem(item.id)}
+                    className="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 transition-colors shrink-0"
+                    title="Remove item"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Mobile View (< md): Clean, Stacked Card that NEVER overflows */}
+                <div className="md:hidden space-y-2">
+                  {/* Top Row: Index + Document Title Input + Delete Button */}
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-700 font-bold font-mono text-[11px] flex items-center justify-center shrink-0">
+                      {idx + 1}
+                    </span>
+
+                    <input
+                      type="text"
+                      value={item.title}
+                      onChange={(e) => updateItem(item.id, 'title', e.target.value)}
+                      placeholder="e.g. Bank Statement (PDF)"
+                      className="flex-1 min-w-0 bg-white p-2 rounded-lg border border-slate-200 text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => removeItem(item.id)}
+                      className="p-2 text-rose-500 hover:text-rose-700 bg-rose-50 rounded-lg shrink-0"
+                      title="Remove document item"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Bottom Row: Category Dropdown + Required Checkbox */}
+                  <div className="flex items-center gap-2 pt-0.5">
+                    <select
+                      value={item.category}
+                      onChange={(e) => updateItem(item.id, 'category', e.target.value)}
+                      className="flex-1 min-w-0 bg-white p-2 rounded-lg border border-slate-200 text-[11px] text-slate-700 font-medium truncate"
+                    >
+                      <option>Accounting & Bookkeeping</option>
+                      <option>GST & Indirect Tax</option>
+                      <option>Income Tax</option>
+                      <option>Banking & Finance</option>
+                      <option>Audit & Assurance</option>
+                      <option>Payroll & Employee Records</option>
+                    </select>
+
+                    <label className="flex items-center gap-1.5 cursor-pointer text-[11px] font-bold text-slate-700 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 shrink-0">
+                      <input
+                        type="checkbox"
+                        checked={item.isRequired}
+                        onChange={(e) => updateItem(item.id, 'isRequired', e.target.checked)}
+                        className="rounded text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5"
+                      />
+                      <span>Required</span>
+                    </label>
+                  </div>
+                </div>
+
               </div>
             ))}
           </div>
         </div>
 
-        {/* Submit Bar */}
-        <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-          <div className="text-[11px] text-slate-500">
-            Client will receive a passwordless, mobile-friendly upload link via WhatsApp & Email.
+        {/* Submit Bar (Mobile Friendly: Stacks vertically on phone) */}
+        <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="text-[11px] text-slate-500 leading-relaxed">
+            Client receives a passwordless, mobile-friendly upload link via WhatsApp & Email.
           </div>
 
           <button
             type="submit"
-            className="flex items-center gap-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-md shadow-teal-900/20 text-xs transition-all"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl shadow-md shadow-indigo-600/25 text-xs transition-all shrink-0"
           >
             <Send className="w-4 h-4" />
             <span>Generate & Send Request Link</span>
@@ -263,11 +356,12 @@ export default function RequestBuilder({ onCreated, activeFirm, onBack }) {
 
         {createdSuccess && (
           <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-bold flex items-center gap-2 animate-fadeIn">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>Request successfully created! Secure client portal link generated and dispatched.</span>
           </div>
         )}
       </form>
+
     </div>
   );
 }

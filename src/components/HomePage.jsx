@@ -532,10 +532,14 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
         <RazorpayModal
           isOpen={true}
           onClose={() => setCheckoutTier(null)}
-          planTier={checkoutTier}
-          firmName="Your Practice / Company"
-          firmEmail="contact@firm.in"
-          onSuccess={() => {
+          plan={checkoutTier}
+          firm={{
+            name: 'Your Practice / Company',
+            partnerName: 'Managing Partner',
+            email: 'contact@firm.in',
+            phone: '+91 98765 43210'
+          }}
+          onPaymentSuccess={() => {
             setCheckoutTier(null);
             onLaunchApp();
           }}
