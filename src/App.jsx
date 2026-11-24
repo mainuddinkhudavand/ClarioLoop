@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import HomePage from './components/HomePage';
@@ -111,6 +112,45 @@ export default function App() {
           />
 
           <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-24 md:pb-8">
+            {/* Universal Top Navigation / Back Bar */}
+            <div className="mb-4 sm:mb-6 flex items-center justify-between gap-3 bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200/80 shadow-xs">
+              <div className="flex items-center gap-2 min-w-0">
+                {activeTab !== 'dashboard' ? (
+                  <button
+                    onClick={() => setActiveTab('dashboard')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all border border-slate-200 shadow-xs"
+                    title="Return to Dashboard Overview"
+                  >
+                    <ArrowLeft className="w-4 h-4 text-indigo-600" />
+                    <span>Back to Overview</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setCurrentView('home')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all border border-slate-200 shadow-xs"
+                    title="Return to Home Landing"
+                  >
+                    <ArrowLeft className="w-4 h-4 text-indigo-600" />
+                    <span>Back to Home</span>
+                  </button>
+                )}
+
+                <span className="text-xs font-extrabold text-slate-300 hidden sm:inline">•</span>
+                <span className="text-xs font-bold text-slate-600 truncate hidden sm:inline">
+                  {activeFirm?.name}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={() => setCurrentView('home')}
+                  className="text-xs font-bold text-indigo-600 hover:text-indigo-800 px-2 py-1 rounded-lg hover:bg-indigo-50 transition-colors"
+                >
+                  Exit to Home
+                </button>
+              </div>
+            </div>
+
             {activeTab === 'dashboard' && (
               <Dashboard 
                 activeFirm={activeFirm}
@@ -128,13 +168,15 @@ export default function App() {
               <ClientList 
                 activeFirm={activeFirm}
                 onAddClientToFirm={handleAddClientToFirm}
+                onBack={() => setActiveTab('dashboard')}
               />
             )}
 
             {activeTab === 'requests' && (
               <RequestBuilder 
                 activeFirm={activeFirm}
-                onCreated={() => setActiveTab('dashboard')} 
+                onCreated={() => setActiveTab('dashboard')}
+                onBack={() => setActiveTab('dashboard')} 
               />
             )}
 
@@ -142,6 +184,7 @@ export default function App() {
               <DocumentsView 
                 activeFirm={activeFirm}
                 onOpenAI={() => setIsAIModalOpen(true)}
+                onBack={() => setActiveTab('dashboard')}
               />
             )}
 
@@ -149,6 +192,7 @@ export default function App() {
               <WorkflowsView 
                 activeFirm={activeFirm}
                 onLaunchWorkflow={() => setActiveTab('requests')}
+                onBack={() => setActiveTab('dashboard')}
               />
             )}
 
@@ -174,14 +218,25 @@ export default function App() {
               </div>
             )}
 
-            {activeTab === 'reminders' && <ReminderSettings activeFirm={activeFirm} />}
+            {activeTab === 'reminders' && (
+              <ReminderSettings 
+                activeFirm={activeFirm} 
+                onBack={() => setActiveTab('dashboard')}
+              />
+            )}
 
-            {activeTab === 'reports' && <ReportsView activeFirm={activeFirm} />}
+            {activeTab === 'reports' && (
+              <ReportsView 
+                activeFirm={activeFirm} 
+                onBack={() => setActiveTab('dashboard')}
+              />
+            )}
 
             {activeTab === 'subscriptions' && (
               <SubscriptionPlans 
                 activeFirm={activeFirm} 
                 onSubscriptionUpdated={handleSubscriptionUpdated}
+                onBack={() => setActiveTab('dashboard')}
               />
             )}
           </main>

@@ -13,11 +13,12 @@ import {
   Send,
   Building2,
   FileCheck2,
-  AlertCircle
+  AlertCircle,
+  ArrowLeft
 } from 'lucide-react';
 import { mockAllDocuments } from '../data/mockData';
 
-export default function DocumentsView({ activeFirm, onOpenAI }) {
+export default function DocumentsView({ activeFirm, onOpenAI, onBack }) {
   const [filterStatus, setFilterStatus] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -48,9 +49,21 @@ export default function DocumentsView({ activeFirm, onOpenAI }) {
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-5 sm:p-7 rounded-2xl sm:rounded-3xl shadow-xl border border-indigo-900/40">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-400/30 mb-2">
-              <FileCheck2 className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Document Repository & Audit Vault</span>
+            <div className="flex items-center gap-2 mb-2">
+              {onBack && (
+                <button
+                  onClick={onBack}
+                  className="flex items-center gap-1 text-xs font-bold text-indigo-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg border border-slate-700 transition-colors shrink-0"
+                  title="Back to Overview"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back</span>
+                </button>
+              )}
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-400/30">
+                <FileCheck2 className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Document Repository & Audit Vault</span>
+              </div>
             </div>
             <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-white">
               Documents & Compliance Records

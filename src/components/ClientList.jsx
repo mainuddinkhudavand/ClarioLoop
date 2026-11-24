@@ -7,10 +7,11 @@ import {
   Phone, 
   UserPlus, 
   X, 
-  Sparkles 
+  Sparkles,
+  ArrowLeft
 } from 'lucide-react';
 
-export default function ClientList({ activeFirm, onAddClientToFirm }) {
+export default function ClientList({ activeFirm, onAddClientToFirm, onBack }) {
   const [clients, setClients] = useState(activeFirm?.clients || []);
   const [search, setSearch] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -63,16 +64,28 @@ export default function ClientList({ activeFirm, onAddClientToFirm }) {
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-extrabold text-slate-900">Clients Directory</h1>
-            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
-              {activeFirm?.name}
-            </span>
+        <div className="flex items-center gap-3 min-w-0">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200 shadow-xs transition-colors shrink-0"
+              title="Back to Dashboard"
+            >
+              <ArrowLeft className="w-4 h-4 text-indigo-600" />
+              <span>Back</span>
+            </button>
+          )}
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-xl font-extrabold text-slate-900 truncate">Clients Directory</h1>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 shrink-0">
+                {activeFirm?.name}
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5 truncate">
+              Manage corporate clients, tax IDs, and document collection workflows for this CA practice
+            </p>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Manage corporate clients, tax IDs, and document collection workflows for this CA practice
-          </p>
         </div>
 
         <button

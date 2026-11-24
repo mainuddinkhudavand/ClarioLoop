@@ -137,11 +137,11 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
           {onBackToFirm && (
             <button
               onClick={onBackToFirm}
-              className="flex items-center gap-1 text-[11px] font-bold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg transition-colors border border-slate-700 shrink-0"
-              title="Return to CA Practice Workspace"
+              className="flex items-center gap-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-xl transition-all border border-slate-700 shadow-sm shrink-0"
+              title="Return to Workspace"
             >
-              <ArrowLeft className="w-3 h-3" />
-              <span>Back</span>
+              <ArrowLeft className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Back to App</span>
             </button>
           )}
         </div>

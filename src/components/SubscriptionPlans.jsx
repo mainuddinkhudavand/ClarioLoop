@@ -7,12 +7,13 @@ import {
   Zap, 
   Clock,
   Lock,
-  Building2
+  Building2,
+  ArrowLeft
 } from 'lucide-react';
 import { subscriptionTiers } from '../data/mockData';
 import RazorpayModal from './RazorpayModal';
 
-export default function SubscriptionPlans({ activeFirm, onSubscriptionUpdated }) {
+export default function SubscriptionPlans({ activeFirm, onSubscriptionUpdated, onBack }) {
   const currentPlan = activeFirm?.subscription?.plan || 'PROFESSIONAL';
   const isTrial = activeFirm?.subscription?.status === 'TRIAL';
   const trialDays = activeFirm?.subscription?.trialDaysRemaining || 11;
@@ -42,6 +43,19 @@ export default function SubscriptionPlans({ activeFirm, onSubscriptionUpdated })
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
+      {onBack && (
+        <div className="flex items-center justify-start">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200 shadow-xs transition-colors"
+            title="Back to Dashboard"
+          >
+            <ArrowLeft className="w-4 h-4 text-indigo-600" />
+            <span>← Back to Overview</span>
+          </button>
+        </div>
+      )}
+
       {/* Title Header */}
       <div className="text-center space-y-2">
         <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">

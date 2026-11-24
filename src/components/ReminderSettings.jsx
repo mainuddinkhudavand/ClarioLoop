@@ -9,11 +9,12 @@ import {
   ShieldAlert, 
   Sparkles,
   Smartphone,
-  Check
+  Check,
+  ArrowLeft
 } from 'lucide-react';
 import { mockRequests } from '../data/mockData';
 
-export default function ReminderSettings({ activeFirm }) {
+export default function ReminderSettings({ activeFirm, onBack }) {
   const requests = activeFirm?.requests && activeFirm.requests.length > 0 ? activeFirm.requests : mockRequests;
   const [selectedRequest, setSelectedRequest] = useState(requests[0] || mockRequests[0]);
   const [channel, setChannel] = useState('WHATSAPP');
@@ -68,11 +69,23 @@ Apex & Partners Chartered Accountants`;
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      <div>
-        <h1 className="text-xl font-extrabold text-slate-900">Smart Reminder Engine</h1>
-        <p className="text-xs text-slate-500 mt-0.5">
-          Automated, multi-channel client follow-ups that automatically halt when documents are uploaded
-        </p>
+      <div className="flex items-center gap-3">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200 shadow-xs transition-colors shrink-0"
+            title="Back to Dashboard"
+          >
+            <ArrowLeft className="w-4 h-4 text-indigo-600" />
+            <span>Back</span>
+          </button>
+        )}
+        <div>
+          <h1 className="text-xl font-extrabold text-slate-900">Smart Reminder Engine</h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Automated, multi-channel client follow-ups that automatically halt when documents are uploaded
+          </p>
+        </div>
       </div>
 
       {/* Auto-Stop Guarantee Banner */}

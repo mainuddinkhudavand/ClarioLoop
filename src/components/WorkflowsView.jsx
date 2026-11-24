@@ -42,7 +42,7 @@ const iconMap = {
   Handshake
 };
 
-export default function WorkflowsView({ onLaunchWorkflow, activeFirm }) {
+export default function WorkflowsView({ onLaunchWorkflow, activeFirm, onBack }) {
   const [selectedIndustry, setSelectedIndustry] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeWorkflowModal, setActiveWorkflowModal] = useState(null);
@@ -69,9 +69,21 @@ export default function WorkflowsView({ onLaunchWorkflow, activeFirm }) {
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-5 sm:p-7 rounded-2xl sm:rounded-3xl shadow-xl border border-indigo-900/40">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5 min-w-0">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-400/30">
-              <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Universal Workflow Automation</span>
+            <div className="flex items-center gap-2">
+              {onBack && (
+                <button
+                  onClick={onBack}
+                  className="flex items-center gap-1 text-xs font-bold text-indigo-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg border border-slate-700 transition-colors shrink-0"
+                  title="Back to Overview"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back</span>
+                </button>
+              )}
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-400/30">
+                <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Universal Workflow Automation</span>
+              </div>
             </div>
             <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight">
               All Industries • All Document Workflows

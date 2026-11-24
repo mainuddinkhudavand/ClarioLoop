@@ -5,6 +5,7 @@ import {
   Smartphone, 
   LayoutDashboard, 
   ArrowRight,
+  ArrowLeft,
   Home,
   Building2,
   ChevronDown,
@@ -25,7 +26,18 @@ export default function Navbar({
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
         
         {/* Brand Logo & Switcher */}
-        <div className="flex items-center gap-2 sm:gap-6 min-w-0">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+          {!isHome && (
+            <button 
+              onClick={() => setCurrentView('home')} 
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors shrink-0 border border-slate-200 shadow-xs"
+              title="Back to Landing Page"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Back</span>
+            </button>
+          )}
+
           <button 
             onClick={() => setCurrentView('home')} 
             className="focus:outline-none text-left shrink-0"

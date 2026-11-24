@@ -10,11 +10,12 @@ import {
   Send, 
   Clock,
   Layers,
-  Repeat
+  Repeat,
+  ArrowLeft
 } from 'lucide-react';
 import { mockClients } from '../data/mockData';
 
-export default function RequestBuilder({ onCreated, activeFirm }) {
+export default function RequestBuilder({ onCreated, activeFirm, onBack }) {
   const firmClients = activeFirm?.clients && activeFirm.clients.length > 0 ? activeFirm.clients : mockClients;
   const [selectedClient, setSelectedClient] = useState(firmClients[0]?.id || 'c1');
   const [requestTitle, setRequestTitle] = useState('December 2026 Monthly Accounting & GST Verification');
@@ -85,11 +86,23 @@ export default function RequestBuilder({ onCreated, activeFirm }) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-xl font-extrabold text-slate-900">Request Builder & Recurring Checklists</h1>
-        <p className="text-xs text-slate-500 mt-0.5">
-          Create structured document checklists, set due dates, and schedule automatic reminders
-        </p>
+      <div className="flex items-center gap-3">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200 shadow-xs transition-colors shrink-0"
+            title="Back to Dashboard"
+          >
+            <ArrowLeft className="w-4 h-4 text-indigo-600" />
+            <span>Back</span>
+          </button>
+        )}
+        <div>
+          <h1 className="text-xl font-extrabold text-slate-900">Request Builder & Recurring Checklists</h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Create structured document checklists, set due dates, and schedule automatic reminders
+          </p>
+        </div>
       </div>
 
       {/* Reusable Template Quick-Pills */}
