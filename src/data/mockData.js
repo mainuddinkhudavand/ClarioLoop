@@ -529,7 +529,7 @@ export const industryWorkflows = [
     name: 'Healthcare',
     subtext: '(Hospitals, Clinics, Insurance)',
     category: 'Healthcare',
-    icon: 'Cross',
+    icon: 'HeartPulse',
     color: 'bg-teal-500',
     lightBg: 'bg-teal-50',
     textColor: 'text-teal-700',

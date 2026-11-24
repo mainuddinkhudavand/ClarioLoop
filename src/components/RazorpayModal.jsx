@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   ShieldCheck, 
@@ -15,7 +15,9 @@ import {
   Check,
   Download,
   Clock,
-  Award
+  Award,
+  Camera,
+  ScanLine
 } from 'lucide-react';
 
 export default function RazorpayModal({ 
@@ -43,6 +45,8 @@ export default function RazorpayModal({
   const [paymentMethod, setPaymentMethod] = useState('upi'); // 'upi' | 'card' | 'netbanking'
   const [upiId, setUpiId] = useState(activeFirm?.email ? activeFirm.email.split('@')[0] + '@okhdfcbank' : 'partner@okhdfcbank');
   const [showQR, setShowQR] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [scannedUPI, setScannedUPI] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [paymentReceipt, setPaymentReceipt] = useState(null);
@@ -239,24 +243,91 @@ export default function RazorpayModal({
             {/* TAB 1: UPI Details */}
             {paymentMethod === 'upi' && (
               <div className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-200/80 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-slate-800 text-xs">Enter UPI ID / VPA</span>
-                  <button
-                    type="button"
-                    onClick={() => setShowQR(!showQR)}
-                    className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 bg-white px-2 py-1 rounded-lg border border-indigo-200 flex items-center gap-1 shadow-2xs"
-                  >
-                    <QrCode className="w-3.5 h-3.5 text-indigo-600" />
-                    <span>{showQR ? 'Hide QR' : 'Show Dynamic QR'}</span>
-                  </button>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="font-extrabold text-slate-800 text-xs">UPI & QR Checkout</span>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowScanner(!showScanner);
+                        if (showQR) setShowQR(false);
+                      }}
+                      className={`text-[11px] font-bold px-2 py-1 rounded-lg border flex items-center gap-1 shadow-2xs transition-all ${
+                        showScanner
+                          ? 'bg-indigo-600 text-white border-indigo-600'
+                          : 'text-indigo-700 hover:text-indigo-900 bg-white border-indigo-200'
+                      }`}
+                    >
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>{showScanner ? 'Close Scanner' : 'QR Scanner'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowQR(!showQR);
+                        if (showScanner) setShowScanner(false);
+                      }}
+                      className={`text-[11px] font-bold px-2 py-1 rounded-lg border flex items-center gap-1 shadow-2xs transition-all ${
+                        showQR
+                          ? 'bg-indigo-600 text-white border-indigo-600'
+                          : 'text-indigo-700 hover:text-indigo-900 bg-white border-indigo-200'
+                      }`}
+                    >
+                      <QrCode className="w-3.5 h-3.5" />
+                      <span>{showQR ? 'Hide QR' : 'Show QR'}</span>
+                    </button>
+                  </div>
                 </div>
 
-                {showQR ? (
-                  <div className="p-4 bg-white rounded-xl border border-indigo-200 flex flex-col items-center justify-center text-center space-y-2">
-                    <div className="w-32 h-32 bg-slate-100 p-2 rounded-xl border border-slate-300 flex items-center justify-center shadow-inner">
-                      <QrCode className="w-24 h-24 text-slate-800" />
+                {/* QR CAMERA SCANNER MODE */}
+                {showScanner ? (
+                  <div className="p-4 bg-slate-900 text-white rounded-2xl border border-indigo-500/50 flex flex-col items-center justify-center text-center space-y-3 relative overflow-hidden">
+                    <div className="relative w-48 h-48 rounded-2xl border-2 border-indigo-400 bg-slate-950/80 flex items-center justify-center overflow-hidden">
+                      {/* Viewfinder crosshairs */}
+                      <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-cyan-400" />
+                      <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-cyan-400" />
+                      <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-cyan-400" />
+                      <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
+
+                      {/* Laser scanning animation */}
+                      <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 animate-pulse top-1/2 -translate-y-1/2 shadow-lg shadow-cyan-400/80" />
+
+                      <div className="flex flex-col items-center gap-2 p-3 text-slate-300">
+                        <ScanLine className="w-10 h-10 text-cyan-400 animate-bounce" />
+                        <span className="text-[10px] text-slate-400">Aim camera at any UPI QR code</span>
+                      </div>
                     </div>
-                    <span className="text-[11px] font-bold text-slate-700">
+
+                    <div className="space-y-1 text-center">
+                      <span className="text-xs font-bold text-cyan-300 flex items-center justify-center gap-1">
+                        <Camera className="w-3.5 h-3.5" /> Razorpay Live QR Scanner
+                      </span>
+                      <p className="text-[10px] text-slate-400 max-w-xs">
+                        Point your mobile camera or simulate scanning an official merchant QR to pay ₹{totalPayable.toLocaleString('en-IN')}.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUpiId('clarioloop.razorpay@icici');
+                        setShowScanner(false);
+                      }}
+                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold shadow-md hover:from-cyan-600 hover:to-blue-700 transition-all flex items-center gap-1.5"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Simulate Auto-Detect QR</span>
+                    </button>
+                  </div>
+                ) : showQR ? (
+                  <div className="p-4 bg-white rounded-xl border border-indigo-200 flex flex-col items-center justify-center text-center space-y-2">
+                    <div className="w-36 h-36 bg-slate-50 p-2 rounded-2xl border-2 border-dashed border-indigo-300 flex items-center justify-center shadow-inner relative group">
+                      <QrCode className="w-28 h-28 text-slate-900" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-indigo-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="text-[10px] bg-slate-900 text-white px-2 py-1 rounded font-bold">UPI QR</span>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-bold text-slate-800">
                       Scan with any UPI App to Pay ₹{totalPayable.toLocaleString('en-IN')}
                     </span>
                     <span className="text-[10px] text-slate-400">GPay • PhonePe • Paytm • BHIM • CRED</span>
@@ -337,25 +408,37 @@ export default function RazorpayModal({
               </div>
             )}
 
-            {/* Pay Button (Vibrant & Animated) */}
-            <button
-              onClick={handlePay}
-              disabled={processing}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-sm shadow-xl shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 transform hover:-translate-y-0.5 active:translate-y-0"
-            >
-              {processing ? (
-                <>
-                  <RefreshCw className="w-4 h-4 animate-spin text-amber-300" />
-                  <span>Processing Razorpay Gateway...</span>
-                </>
-              ) : (
-                <>
-                  <Lock className="w-4 h-4 text-emerald-300" />
-                  <span>Pay ₹{totalPayable.toLocaleString('en-IN')} via Razorpay</span>
-                  <ArrowRight className="w-4 h-4 text-white/80" />
-                </>
-              )}
-            </button>
+            {/* Action Buttons: Pay & Cancel */}
+            <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={processing}
+                className="order-last sm:order-first px-5 py-3.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition-all flex items-center justify-center gap-1.5 shrink-0"
+              >
+                <X className="w-4 h-4 text-slate-400" />
+                <span>Cancel</span>
+              </button>
+
+              <button
+                onClick={handlePay}
+                disabled={processing}
+                className="flex-1 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-sm shadow-xl shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 transform hover:-translate-y-0.5 active:translate-y-0"
+              >
+                {processing ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin text-amber-300" />
+                    <span>Processing Razorpay Gateway...</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4 text-emerald-300" />
+                    <span>Pay ₹{totalPayable.toLocaleString('en-IN')} via Razorpay</span>
+                    <ArrowRight className="w-4 h-4 text-white/80" />
+                  </>
+                )}
+              </button>
+            </div>
 
             {/* Trust Footer */}
             <div className="flex items-center justify-center gap-3 text-[10px] text-slate-400 pt-1">
