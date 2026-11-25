@@ -109,7 +109,7 @@ export default function RazorpayModal({
                   </span>
                 </div>
                 <h3 className="text-base sm:text-lg font-black text-white mt-0.5">
-                  Secure Checkout • Cloop
+                  Secure Checkout • ClarioLoop
                 </h3>
               </div>
             </div>

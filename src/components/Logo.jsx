@@ -6,13 +6,13 @@ export default function Logo({ size = 'default', showTagline = false, className 
 
   return (
     <div className={`flex items-center gap-2 sm:gap-2.5 min-w-0 ${className}`}>
-      {/* Official 3D Cloop Ribbon Infinity Trademark Logo */}
+      {/* Official 3D ClarioLoop Ribbon Infinity Trademark Logo */}
       <div className={`relative flex items-center justify-center shrink-0 rounded-xl overflow-hidden drop-shadow-sm transition-transform hover:scale-105 duration-300 ${
         isLarge ? 'w-12 h-12' : isSmall ? 'w-7 h-7 sm:w-8 sm:h-8' : 'w-9 h-9'
       }`}>
         <img 
           src="/logo.png" 
-          alt="Cloop Logo" 
+          alt="ClarioLoop Logo" 
           className="w-full h-full object-contain filter drop-shadow-xs"
           onError={(e) => {
             // Graceful SVG fallback if image is loading
@@ -49,7 +49,7 @@ export default function Logo({ size = 'default', showTagline = false, className 
       <div className="flex flex-col text-left min-w-0">
         <div className="flex items-center">
           <span className={`font-black tracking-tight ${inverted ? 'text-white' : 'text-slate-900'} ${isLarge ? 'text-2xl' : isSmall ? 'text-base' : 'text-lg sm:text-xl'}`}>
-            C<span className="text-indigo-500">loop</span>
+            Clario<span className="text-indigo-600">Loop</span>
           </span>
         </div>
         {showTagline && (

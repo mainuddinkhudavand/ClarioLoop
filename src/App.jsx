@@ -17,10 +17,11 @@ import AIAssistantModal from './components/AIAssistantModal';
 import FirmSwitcherModal from './components/FirmSwitcherModal';
 import MobileBottomNav from './components/MobileBottomNav';
 import MobileSidebarDrawer from './components/MobileSidebarDrawer';
+import AdminPortal from './components/AdminPortal';
 import { mockFirms } from './data/mockData';
 
 export default function App() {
-  // Main view state: 'home' | 'app' | 'portal'
+  // Main view state: 'home' | 'app' (CA Portal) | 'portal' (Client Portal) | 'admin' (Admin Portal)
   const [currentView, setCurrentView] = useState('home');
 
   // Multi-Tenant CA Practices State
@@ -74,8 +75,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
-      {/* Global Sticky Navbar (Hidden in client upload portal view) */}
-      {currentView !== 'portal' && (
+      {/* Global Sticky Navbar (Hidden in client upload portal and admin portal views) */}
+      {currentView !== 'portal' && currentView !== 'admin' && (
         <Navbar 
           currentView={currentView}
           setCurrentView={setCurrentView}
@@ -91,6 +92,7 @@ export default function App() {
         <HomePage 
           onLaunchApp={() => setCurrentView('app')}
           onLaunchPortal={() => setCurrentView('portal')}
+          onLaunchAdmin={() => setCurrentView('admin')}
           onLaunchAI={() => setIsAIModalOpen(true)}
         />
       )}
@@ -104,7 +106,20 @@ export default function App() {
         />
       )}
 
-      {/* VIEW 3: SIMPLIFIED CA APP WORKSPACE */}
+      {/* VIEW 3: DEDICATED SUPERADMIN PORTAL */}
+      {currentView === 'admin' && (
+        <AdminPortal
+          firms={firms}
+          onSwitchToFirm={(firmId) => {
+            setActiveFirmId(firmId);
+            setCurrentView('app');
+          }}
+          onRegisterNewFirm={() => setIsFirmSwitcherOpen(true)}
+          onBackToHome={() => setCurrentView('home')}
+        />
+      )}
+
+      {/* VIEW 4: SIMPLIFIED CA APP WORKSPACE (CA PORTAL) */}
       {currentView === 'app' && (
         <div className="flex-1 flex overflow-hidden bg-slate-50">
           <Sidebar 
@@ -245,10 +260,12 @@ export default function App() {
         activeFirm={activeFirm}
         onOpenFirmSwitcher={() => setIsFirmSwitcherOpen(true)}
         onBackHome={() => setCurrentView('home')}
+        onOpenAdmin={() => setCurrentView('admin')}
+        onOpenClientPortal={() => setCurrentView('portal')}
       />
 
-      {/* Native-Style Mobile Bottom Navigation Bar (Hidden in client upload portal view) */}
-      {currentView !== 'portal' && (
+      {/* Native-Style Mobile Bottom Navigation Bar (Hidden in client portal and admin views) */}
+      {currentView !== 'portal' && currentView !== 'admin' && (
         <MobileBottomNav 
           currentView={currentView}
           setCurrentView={setCurrentView}

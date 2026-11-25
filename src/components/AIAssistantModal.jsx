@@ -163,7 +163,7 @@ Bank Reference No (BRN): HDFC88391209384`);
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm sm:text-base font-extrabold text-white truncate">Cloop AI Copilot</h3>
+                  <h3 className="text-sm sm:text-base font-extrabold text-white truncate">ClarioLoop AI Copilot</h3>
                   <span className="text-[9px] bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 px-1.5 py-0.2 rounded-full font-bold shrink-0">
                     Groq LLM
                   </span>

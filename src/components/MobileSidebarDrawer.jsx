@@ -14,7 +14,8 @@ import {
   FileText,
   UserPlus,
   X,
-  Home
+  Home,
+  ShieldCheck
 } from 'lucide-react';
 
 export default function MobileSidebarDrawer({
@@ -24,7 +25,9 @@ export default function MobileSidebarDrawer({
   setActiveTab,
   activeFirm,
   onOpenFirmSwitcher,
-  onBackHome
+  onBackHome,
+  onOpenAdmin,
+  onOpenClientPortal
 }) {
   if (!isOpen) return null;
 
@@ -96,6 +99,36 @@ export default function MobileSidebarDrawer({
             </div>
             <ChevronDown className="w-4 h-4 text-slate-400 shrink-0 ml-1" />
           </button>
+        </div>
+
+        {/* 3 Explicit Portals Switcher Strip */}
+        <div className="p-2.5 bg-slate-100 border-b border-slate-200">
+          <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block px-1 mb-1.5">
+            Switch Portal:
+          </span>
+          <div className="grid grid-cols-2 gap-1.5 text-[11px] font-bold">
+            <button
+              onClick={() => {
+                onClose();
+                if (onOpenAdmin) onOpenAdmin();
+              }}
+              className="p-2 rounded-xl bg-slate-900 text-white flex items-center justify-center gap-1.5 shadow-xs"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
+              <span>Admin Portal</span>
+            </button>
+
+            <button
+              onClick={() => {
+                onClose();
+                if (onOpenClientPortal) onOpenClientPortal();
+              }}
+              className="p-2 rounded-xl bg-emerald-600 text-white flex items-center justify-center gap-1.5 shadow-xs"
+            >
+              <Smartphone className="w-3.5 h-3.5 text-white" />
+              <span>Client Portal</span>
+            </button>
+          </div>
         </div>
 
         {/* Menu Items */}

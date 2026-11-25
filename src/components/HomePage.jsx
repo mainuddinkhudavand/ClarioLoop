@@ -62,7 +62,7 @@ const industryIconMap = {
   Handshake
 };
 
-export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
+export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAdmin, onLaunchAI }) {
   const [heroUploaded, setHeroUploaded] = useState(false);
   const [checkoutTier, setCheckoutTier] = useState(null);
   const [selectedIndustryModal, setSelectedIndustryModal] = useState(null);
@@ -98,30 +98,33 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
               The smart and secure way to collect, verify and manage documents from <strong>clients, employees, students, patients, vendors and more</strong> — across every sector.
             </p>
 
-            {/* Action CTAs */}
+            {/* Action CTAs: 3 Dedicated Portals */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
+              {/* 1. CA Practice Portal */}
               <button
                 onClick={onLaunchApp}
                 className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm shadow-lg shadow-indigo-600/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
               >
-                <span>Launch Workflow Platform</span>
+                <span>Launch CA Portal</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
+              {/* 2. Client Mobile Upload Portal */}
               <button
                 onClick={onLaunchPortal}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-800 font-bold text-sm border border-slate-200 transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-extrabold text-sm border border-emerald-200 transition-all flex items-center justify-center gap-2"
               >
-                <Smartphone className="w-4 h-4 text-indigo-600" />
-                <span>Test Mobile Client Link</span>
+                <Smartphone className="w-4 h-4 text-emerald-600" />
+                <span>Client Mobile Portal</span>
               </button>
 
+              {/* 3. SuperAdmin Portal */}
               <button
-                onClick={onLaunchAI}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-teal-50 to-emerald-50 hover:from-teal-100 text-teal-800 font-bold text-sm border border-teal-200 transition-all flex items-center justify-center gap-2"
+                onClick={onLaunchAdmin}
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-100 font-extrabold text-sm border border-slate-700 transition-all flex items-center justify-center gap-2"
               >
-                <Sparkles className="w-4 h-4 text-teal-600" />
-                <span>Try Groq AI Reader</span>
+                <ShieldCheck className="w-4 h-4 text-rose-400" />
+                <span>SuperAdmin Portal</span>
               </button>
             </div>
 
@@ -150,7 +153,7 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
                     <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block" />
                   </div>
                   <span className="text-[10px] sm:text-[11px] font-mono text-slate-400 pl-2 truncate">
-                    cloop.com • Document Collection Overview
+                    clarioloop.com • Document Collection Overview
                   </span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
@@ -344,7 +347,7 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
               Universal Sector Coverage
             </span>
             <h2 className="text-2xl sm:text-4xl font-black text-slate-900 mt-2 tracking-tight">
-              Who Can Use <span className="text-indigo-600">Cloop</span>?
+              Who Can Use <span className="text-indigo-600">ClarioLoop</span>?
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
               Select any industry below to inspect pre-configured checklists and automated workflows:
@@ -465,14 +468,14 @@ export default function HomePage({ onLaunchApp, onLaunchPortal, onLaunchAI }) {
               onClick={onLaunchApp}
               className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md transition-all"
             >
-              <span>Go Digital with Cloop</span>
+              <span>Go Digital with ClarioLoop</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 pt-4 border-t border-slate-900 text-center text-[10px] text-slate-500">
-          © 2026 Cloop Technologies Inc. All Rights Reserved. • ISO 27001 Certified • Bank Grade 256-Bit SSL
+          © 2026 ClarioLoop Technologies Inc. All Rights Reserved. • ISO 27001 Certified • Bank Grade 256-Bit SSL
         </div>
       </footer>
 

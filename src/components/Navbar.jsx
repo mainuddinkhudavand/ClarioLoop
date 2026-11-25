@@ -10,7 +10,9 @@ import {
   Building2,
   ChevronDown,
   Plus,
-  Menu
+  Menu,
+  ShieldCheck,
+  UserCheck
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -64,34 +66,51 @@ export default function Navbar({
             <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
           </button>
 
-          {/* Home Nav Anchor Links */}
-          {isHome && (
-            <nav className="hidden lg:flex items-center gap-6 text-xs font-semibold text-slate-600">
-              <button 
-                onClick={() => setCurrentView('portal')}
-                className="hover:text-indigo-600 transition-colors"
-              >
-                Client Mobile Portal
-              </button>
-              <button 
-                onClick={onOpenAI}
-                className="hover:text-indigo-600 transition-colors flex items-center gap-1.5"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                <span>AI Scanner</span>
-              </button>
-              <button 
-                onClick={() => setCurrentView('app')}
-                className="hover:text-indigo-600 transition-colors"
-              >
-                CA Practice Dashboard
-              </button>
-            </nav>
-          )}
+          {/* 3 Explicit Portal Links (Visible on desktop) */}
+          <nav className="hidden lg:flex items-center gap-2 text-xs font-bold text-slate-600 bg-slate-100/80 p-1 rounded-2xl border border-slate-200/80">
+            {/* 1. SuperAdmin Portal */}
+            <button 
+              onClick={() => setCurrentView('admin')}
+              className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+                currentView === 'admin' 
+                  ? 'bg-slate-900 text-white shadow-xs' 
+                  : 'hover:text-slate-900 text-slate-600'
+              }`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-rose-500" />
+              <span>Admin Portal</span>
+            </button>
+
+            {/* 2. CA Workspace Portal */}
+            <button 
+              onClick={() => setCurrentView('app')}
+              className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+                currentView === 'app' 
+                  ? 'bg-indigo-600 text-white shadow-xs' 
+                  : 'hover:text-indigo-600 text-slate-600'
+              }`}
+            >
+              <Building2 className="w-3.5 h-3.5 text-indigo-500" />
+              <span>CA Portal</span>
+            </button>
+
+            {/* 3. Client Upload Portal */}
+            <button 
+              onClick={() => setCurrentView('portal')}
+              className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+                currentView === 'portal' 
+                  ? 'bg-emerald-600 text-white shadow-xs' 
+                  : 'hover:text-emerald-700 text-slate-600'
+              }`}
+            >
+              <Smartphone className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Client Portal</span>
+            </button>
+          </nav>
         </div>
 
         {/* Right CTA Actions */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {/* Practice Switcher Mobile Button */}
           <button
             onClick={onOpenFirmSwitcher}
@@ -110,30 +129,21 @@ export default function Navbar({
             <span>AI Copilot</span>
           </button>
 
-          {/* Test Client Portal Trigger */}
-          <button
-            onClick={() => setCurrentView('portal')}
-            className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3.5 py-2 rounded-xl border border-slate-200 transition-all"
-            title="Preview the client's mobile upload page"
-          >
-            <Smartphone className="w-3.5 h-3.5 text-slate-600" />
-            <span className="hidden sm:inline">Client Portal</span>
-          </button>
-
           {/* Primary View Switcher Button */}
           {isHome ? (
-            <button
-              onClick={() => setCurrentView('app')}
-              className="flex items-center gap-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl shadow-md shadow-indigo-600/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-            >
-              <LayoutDashboard className="w-3.5 h-3.5" />
-              <span>CA Workspace</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setCurrentView('app')}
+                className="flex items-center gap-1.5 text-xs font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 sm:px-4 py-2 rounded-xl shadow-md shadow-indigo-600/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" />
+                <span>Open CA Portal</span>
+              </button>
+            </div>
           ) : (
             <button
               onClick={() => setCurrentView('home')}
-              className="flex items-center gap-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl shadow-sm transition-all"
+              className="flex items-center gap-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white px-3.5 sm:px-4 py-2 rounded-xl shadow-sm transition-all"
             >
               <Home className="w-3.5 h-3.5" />
               <span>Back to Home</span>
