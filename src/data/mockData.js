@@ -458,6 +458,172 @@ export const coreFeatures = [
 ];
 
 // ==========================================
+// FINANCE & ACCOUNTING MASTER CHECKLIST (Industry-Wise Template)
+// Users: CA firms, tax consultants, accountants, auditors and bookkeeping firms
+// ==========================================
+export const financeMasterChecklist = [
+  {
+    code: 'A',
+    title: 'Client Onboarding and KYC',
+    description: 'Mandatory and statutory identification documents for new corporate & individual client onboarding.',
+    items: [
+      { name: 'PAN card / PAN details', defaultTag: 'Mandatory', category: 'Identity Proof', acceptedTypes: 'PDF, JPG, PNG' },
+      { name: 'Aadhaar details or applicable identity proof', defaultTag: 'Mandatory', category: 'Identity Proof', acceptedTypes: 'PDF, JPG, PNG' },
+      { name: 'Address proof', defaultTag: 'Mandatory', category: 'Address Verification', acceptedTypes: 'PDF, JPG' },
+      { name: 'Photograph, if required', defaultTag: 'Conditional', category: 'Identity Proof', acceptedTypes: 'JPG, PNG' },
+      { name: 'GST registration certificate', defaultTag: 'Conditional', category: 'Tax Registration', acceptedTypes: 'PDF' },
+      { name: 'Business registration certificate', defaultTag: 'Conditional', category: 'Business Proof', acceptedTypes: 'PDF' },
+      { name: 'Certificate of Incorporation, if company', defaultTag: 'Conditional', category: 'Corporate Entity', acceptedTypes: 'PDF' },
+      { name: 'Partnership deed, if partnership', defaultTag: 'Conditional', category: 'Partnership Entity', acceptedTypes: 'PDF' },
+      { name: 'LLP agreement, if LLP', defaultTag: 'Conditional', category: 'LLP Entity', acceptedTypes: 'PDF' },
+      { name: 'MOA and AOA, if company', defaultTag: 'Conditional', category: 'Corporate Entity', acceptedTypes: 'PDF' },
+      { name: 'Bank account details (Cancelled Cheque / Passbook)', defaultTag: 'Mandatory', category: 'Banking', acceptedTypes: 'PDF, JPG' },
+      { name: 'Previous CA details & NOC', defaultTag: 'Conditional', category: 'Professional Records', acceptedTypes: 'PDF' },
+      { name: 'Authorisation / engagement letter', defaultTag: 'Mandatory', category: 'Legal Mandate', acceptedTypes: 'PDF' },
+      { name: 'Contact and authorised signatory details', defaultTag: 'Mandatory', category: 'Communication', acceptedTypes: 'PDF, DOCX' }
+    ]
+  },
+  {
+    code: 'B',
+    title: 'Income Tax Return (ITR) Filing',
+    description: 'Salary, business, capital gains, foreign assets, and statutory income tax compliance records.',
+    items: [
+      { name: "Previous year's ITR acknowledgement", defaultTag: 'Mandatory', category: 'Tax Records', acceptedTypes: 'PDF' },
+      { name: "Previous year's computation of income", defaultTag: 'Mandatory', category: 'Tax Records', acceptedTypes: 'PDF, XLS' },
+      { name: 'Form 16 (Part A & B for Salaried)', defaultTag: 'Conditional', category: 'Salary Income', acceptedTypes: 'PDF' },
+      { name: 'Form 16A, where applicable', defaultTag: 'Conditional', category: 'TDS Certificates', acceptedTypes: 'PDF' },
+      { name: 'Form 26AS', defaultTag: 'Mandatory', category: 'Tax Credit Statement', acceptedTypes: 'PDF' },
+      { name: 'AIS (Annual Information Statement) and TIS', defaultTag: 'Mandatory', category: 'Statutory Reports', acceptedTypes: 'PDF' },
+      { name: 'Salary statements / Payslips', defaultTag: 'Conditional', category: 'Salary Income', acceptedTypes: 'PDF' },
+      { name: 'House property income details', defaultTag: 'Conditional', category: 'House Property', acceptedTypes: 'PDF, XLS' },
+      { name: 'Rental agreements and rent receipts', defaultTag: 'Conditional', category: 'House Property', acceptedTypes: 'PDF' },
+      { name: 'Bank interest certificates (SB & FD/RD)', defaultTag: 'Mandatory', category: 'Other Sources', acceptedTypes: 'PDF' },
+      { name: 'Dividend statements', defaultTag: 'Conditional', category: 'Other Sources', acceptedTypes: 'PDF, XLS' },
+      { name: 'Capital gains statements (Brokers / CAMS / KFin)', defaultTag: 'Conditional', category: 'Capital Gains', acceptedTypes: 'PDF, XLS' },
+      { name: 'Mutual fund statements (CAS)', defaultTag: 'Conditional', category: 'Capital Gains', acceptedTypes: 'PDF' },
+      { name: 'Share trading statements & contract notes', defaultTag: 'Conditional', category: 'Capital Gains', acceptedTypes: 'PDF, XLS' },
+      { name: 'Investment proofs (80C, 80D, 80CCD, LIC, PPF, Tuition)', defaultTag: 'Mandatory', category: 'Deductions Chapter VI-A', acceptedTypes: 'PDF, JPG' },
+      { name: 'Deduction-related documents (Donations 80G, Housing Loan 24b)', defaultTag: 'Conditional', category: 'Deductions', acceptedTypes: 'PDF' },
+      { name: 'Foreign income details, where applicable', defaultTag: 'Conditional', category: 'Foreign Income', acceptedTypes: 'PDF, XLS' },
+      { name: 'Foreign asset details (Schedule FA), where applicable', defaultTag: 'Conditional', category: 'Foreign Assets', acceptedTypes: 'PDF' },
+      { name: 'Tax payment challans (Self-Assessment)', defaultTag: 'Conditional', category: 'Tax Payments', acceptedTypes: 'PDF' },
+      { name: 'Advance tax payment challans', defaultTag: 'Conditional', category: 'Tax Payments', acceptedTypes: 'PDF' }
+    ]
+  },
+  {
+    code: 'C',
+    title: 'GST Filing (Monthly, Quarterly & Annual)',
+    description: 'Outward sales, inward tax credits, e-way bills, ledgers, and reconciliation files.',
+    items: [
+      { name: 'GST registration certificate', defaultTag: 'Mandatory', category: 'Registration', acceptedTypes: 'PDF' },
+      { name: 'GSTR-1 Filed Return / Outward Data', defaultTag: 'Mandatory', category: 'GST Outward', acceptedTypes: 'PDF, JSON' },
+      { name: 'GSTR-3B Monthly Return Copies', defaultTag: 'Mandatory', category: 'GST Returns', acceptedTypes: 'PDF' },
+      { name: 'GSTR-9 Annual Return, where applicable', defaultTag: 'Conditional', category: 'Annual Compliance', acceptedTypes: 'PDF' },
+      { name: 'GSTR-9C Reconciliation Statement, where applicable', defaultTag: 'Conditional', category: 'Annual Compliance', acceptedTypes: 'PDF' },
+      { name: 'Sales register (B2B, B2C, Exports, Nil Rated)', defaultTag: 'Mandatory', category: 'Books of Accounts', acceptedTypes: 'XLSX, CSV' },
+      { name: 'Purchase register with GSTIN & HSN breakdown', defaultTag: 'Mandatory', category: 'Books of Accounts', acceptedTypes: 'XLSX, CSV' },
+      { name: 'Output tax summary', defaultTag: 'Mandatory', category: 'Tax Working', acceptedTypes: 'XLSX' },
+      { name: 'Input Tax Credit (ITC) register & 2B Reconciliation', defaultTag: 'Mandatory', category: 'ITC Workings', acceptedTypes: 'XLSX' },
+      { name: 'ITC reversal workings (Rule 42/43 / Blocked 17(5))', defaultTag: 'Conditional', category: 'ITC Workings', acceptedTypes: 'XLSX' },
+      { name: 'Electronic credit ledger', defaultTag: 'Mandatory', category: 'GST Portal Statements', acceptedTypes: 'PDF' },
+      { name: 'Electronic cash ledger', defaultTag: 'Mandatory', category: 'GST Portal Statements', acceptedTypes: 'PDF' },
+      { name: 'Electronic liability register', defaultTag: 'Mandatory', category: 'GST Portal Statements', acceptedTypes: 'PDF' },
+      { name: 'GST payment challans (PMT-06)', defaultTag: 'Conditional', category: 'Tax Challans', acceptedTypes: 'PDF' },
+      { name: 'E-invoice data & IRN JSON, where applicable', defaultTag: 'Conditional', category: 'E-Invoicing', acceptedTypes: 'XLSX, JSON' },
+      { name: 'E-way bill details & consolidated statements', defaultTag: 'Conditional', category: 'Logistics / E-way', acceptedTypes: 'XLSX, PDF' },
+      { name: 'GST reconciliation statement (Books vs Portal)', defaultTag: 'Mandatory', category: 'Reconciliation', acceptedTypes: 'XLSX' },
+      { name: 'GST notices, audit queries, and replies, where applicable', defaultTag: 'Conditional', category: 'Litigation & Notices', acceptedTypes: 'PDF' }
+    ]
+  },
+  {
+    code: 'D',
+    title: 'Tax Audit – Section 44AB',
+    description: 'Comprehensive financial statements, ledgers, vouchers, 3CD annexures, and auditor working papers.',
+    items: [
+      { name: 'Trial balance (Detailed with sub-ledgers)', defaultTag: 'Mandatory', category: 'Financial Statements', acceptedTypes: 'XLSX, PDF' },
+      { name: 'Previous financial statements & Balance Sheet', defaultTag: 'Mandatory', category: 'Financial Statements', acceptedTypes: 'PDF' },
+      { name: 'Cash book with physical verification certificate', defaultTag: 'Mandatory', category: 'Books of Accounts', acceptedTypes: 'XLSX, PDF' },
+      { name: 'General ledger (Detailed all accounts)', defaultTag: 'Mandatory', category: 'Books of Accounts', acceptedTypes: 'XLSX, TXT' },
+      { name: 'Bank statements for all accounts (Full FY)', defaultTag: 'Mandatory', category: 'Banking', acceptedTypes: 'PDF' },
+      { name: 'Bank book & Bank reconciliation statements (BRS)', defaultTag: 'Mandatory', category: 'Banking', acceptedTypes: 'XLSX, PDF' },
+      { name: 'Sales register & Sales invoices sample testing', defaultTag: 'Mandatory', category: 'Revenue', acceptedTypes: 'XLSX, PDF' },
+      { name: 'Purchase register & Purchase invoices', defaultTag: 'Mandatory', category: 'Purchases', acceptedTypes: 'XLSX, PDF' },
+      { name: 'Expense ledgers with Expense vouchers & bills', defaultTag: 'Mandatory', category: 'Expenses', acceptedTypes: 'XLSX, PDF' },
+      { name: 'Debtors list with ageing analysis', defaultTag: 'Mandatory', category: 'Receivables', acceptedTypes: 'XLSX' },
+      { name: 'Creditors list with ageing analysis', defaultTag: 'Mandatory', category: 'Payables', acceptedTypes: 'XLSX' },
+      { name: 'Debtor / creditor balance confirmations', defaultTag: 'Conditional', category: 'Confirmations', acceptedTypes: 'PDF' },
+      { name: 'Stock register & valuation workings', defaultTag: 'Mandatory', category: 'Inventory', acceptedTypes: 'XLSX' },
+      { name: 'Opening stock statement', defaultTag: 'Mandatory', category: 'Inventory', acceptedTypes: 'XLSX' },
+      { name: 'Closing stock statement (Certified)', defaultTag: 'Mandatory', category: 'Inventory', acceptedTypes: 'PDF, XLSX' },
+      { name: 'Fixed asset register & additions/deletions bills', defaultTag: 'Mandatory', category: 'Fixed Assets', acceptedTypes: 'XLSX, PDF' },
+      { name: 'Depreciation working (Income Tax Act vs Companies Act)', defaultTag: 'Mandatory', category: 'Fixed Assets', acceptedTypes: 'XLSX' },
+      { name: 'Loan statements (Secured & Unsecured)', defaultTag: 'Mandatory', category: 'Borrowings', acceptedTypes: 'PDF' },
+      { name: 'Loan confirmations & 269SS/269T compliance details', defaultTag: 'Conditional', category: 'Borrowings', acceptedTypes: 'PDF' },
+      { name: 'Interest certificates for loans and deposits', defaultTag: 'Mandatory', category: 'Borrowings', acceptedTypes: 'PDF' },
+      { name: 'Capital account details (Partners / Proprietor)', defaultTag: 'Mandatory', category: 'Capital', acceptedTypes: 'XLSX' },
+      { name: 'Partner / proprietor drawings supporting', defaultTag: 'Conditional', category: 'Capital', acceptedTypes: 'XLSX, PDF' },
+      { name: 'Related-party transaction details (Sec 40A(2)(b))', defaultTag: 'Conditional', category: 'Related Parties', acceptedTypes: 'XLSX' },
+      { name: 'TDS returns (24Q, 26Q, 27Q) & TDS challans', defaultTag: 'Mandatory', category: 'TDS / TCS', acceptedTypes: 'PDF' },
+      { name: 'TCS returns (27EQ) & TCS challans', defaultTag: 'Conditional', category: 'TDS / TCS', acceptedTypes: 'PDF' },
+      { name: 'PF and ESI records & deposit challans', defaultTag: 'Conditional', category: 'Statutory Dues', acceptedTypes: 'PDF' },
+      { name: 'Form 3CD information and supporting workings', defaultTag: 'Mandatory', category: 'Audit Working Papers', acceptedTypes: 'XLSX, DOCX' },
+      { name: 'Previous tax audit report', defaultTag: 'Mandatory', category: 'Audit History', acceptedTypes: 'PDF' }
+    ]
+  },
+  {
+    code: 'E',
+    title: 'Payroll and TDS Compliance',
+    description: 'Salary structures, monthly registers, EPF, ESIC, Form 16/24Q/26Q, and bonus disbursements.',
+    items: [
+      { name: 'Employee master list with PAN and Aadhaar', defaultTag: 'Mandatory', category: 'Employee Records', acceptedTypes: 'XLSX' },
+      { name: 'Employee PAN details verification', defaultTag: 'Mandatory', category: 'TDS Verification', acceptedTypes: 'XLSX' },
+      { name: 'Employee address details & declarations', defaultTag: 'Mandatory', category: 'Employee Records', acceptedTypes: 'PDF, XLSX' },
+      { name: 'Salary structure & CTC breakups', defaultTag: 'Mandatory', category: 'Payroll', acceptedTypes: 'XLSX, PDF' },
+      { name: 'Salary register (Month-wise gross & net)', defaultTag: 'Mandatory', category: 'Payroll', acceptedTypes: 'XLSX' },
+      { name: 'Attendance records & biometric logs', defaultTag: 'Mandatory', category: 'Attendance', acceptedTypes: 'XLSX, CSV' },
+      { name: 'Leave records & encashment workings', defaultTag: 'Conditional', category: 'Attendance', acceptedTypes: 'XLSX' },
+      { name: 'Form 16 (Part A and Part B for employees)', defaultTag: 'Mandatory', category: 'TDS Certificates', acceptedTypes: 'PDF' },
+      { name: 'Form 24Q (Quarterly e-TDS for Salaries)', defaultTag: 'Mandatory', category: 'TDS Filings', acceptedTypes: 'PDF, FVU' },
+      { name: 'Form 26Q (Quarterly TDS for Non-Salary)', defaultTag: 'Mandatory', category: 'TDS Filings', acceptedTypes: 'PDF, FVU' },
+      { name: 'Form 27Q (TDS on Non-Resident payments), where applicable', defaultTag: 'Conditional', category: 'TDS Filings', acceptedTypes: 'PDF' },
+      { name: 'Form 27EQ (Quarterly TCS statement), where applicable', defaultTag: 'Conditional', category: 'TCS Filings', acceptedTypes: 'PDF' },
+      { name: 'TDS challans (ITNS 281)', defaultTag: 'Mandatory', category: 'Challans', acceptedTypes: 'PDF' },
+      { name: 'PF challans (ECR & payment receipts)', defaultTag: 'Mandatory', category: 'Statutory Challans', acceptedTypes: 'PDF' },
+      { name: 'ESI challans & monthly contribution sheets', defaultTag: 'Conditional', category: 'Statutory Challans', acceptedTypes: 'PDF' },
+      { name: 'Bonus payment records (Payment of Bonus Act)', defaultTag: 'Conditional', category: 'Payroll Compliances', acceptedTypes: 'XLSX, PDF' },
+      { name: 'Gratuity workings and valuation report, where applicable', defaultTag: 'Conditional', category: 'Actuarial Valuations', acceptedTypes: 'PDF, XLSX' }
+    ]
+  },
+  {
+    code: 'F',
+    title: 'Company and Statutory Audit (Companies Act 2013)',
+    description: 'Secretarial records, board minutes, director disclosures, CARO workings, and MCA filings.',
+    items: [
+      { name: 'Certificate of Incorporation (COI)', defaultTag: 'Mandatory', category: 'Corporate Constitutional', acceptedTypes: 'PDF' },
+      { name: 'MOA (Memorandum of Association)', defaultTag: 'Mandatory', category: 'Corporate Constitutional', acceptedTypes: 'PDF' },
+      { name: 'AOA (Articles of Association)', defaultTag: 'Mandatory', category: 'Corporate Constitutional', acceptedTypes: 'PDF' },
+      { name: 'DIN details & Director KYC records (DIR-3 KYC)', defaultTag: 'Mandatory', category: 'Director Compliances', acceptedTypes: 'PDF' },
+      { name: 'Director disclosures (DIR-8, MBP-1 disclosure of interest)', defaultTag: 'Mandatory', category: 'Director Compliances', acceptedTypes: 'PDF' },
+      { name: 'Register of members (MGT-1)', defaultTag: 'Mandatory', category: 'Statutory Registers', acceptedTypes: 'PDF, XLSX' },
+      { name: 'Shareholding pattern & beneficial ownership (BEN-2)', defaultTag: 'Mandatory', category: 'Shareholding', acceptedTypes: 'PDF, XLSX' },
+      { name: 'Shareholder meeting minutes (AGM / EGM)', defaultTag: 'Mandatory', category: 'Secretarial Records', acceptedTypes: 'PDF' },
+      { name: 'Board meeting minutes & committee minutes', defaultTag: 'Mandatory', category: 'Secretarial Records', acceptedTypes: 'PDF' },
+      { name: 'Board resolutions & extracts', defaultTag: 'Mandatory', category: 'Secretarial Records', acceptedTypes: 'PDF' },
+      { name: 'Bank statements for all operational accounts', defaultTag: 'Mandatory', category: 'Banking', acceptedTypes: 'PDF' },
+      { name: 'Trial balance (Audited draft)', defaultTag: 'Mandatory', category: 'Financials', acceptedTypes: 'XLSX' },
+      { name: 'General Ledgers and Sub-ledgers', defaultTag: 'Mandatory', category: 'Financials', acceptedTypes: 'XLSX' },
+      { name: 'Financial statements with notes to accounts', defaultTag: 'Mandatory', category: 'Financials', acceptedTypes: 'PDF, XLSX' },
+      { name: 'Related-party transaction details (Section 188)', defaultTag: 'Mandatory', category: 'Disclosures', acceptedTypes: 'XLSX' },
+      { name: 'Loan agreements, sanction letters & charge records (CHG-1)', defaultTag: 'Mandatory', category: 'Charges & Borrowings', acceptedTypes: 'PDF' },
+      { name: 'Investment records & share certificates', defaultTag: 'Conditional', category: 'Investments', acceptedTypes: 'PDF' },
+      { name: 'Statutory audit report with CARO annexures', defaultTag: 'Mandatory', category: 'Audit Output', acceptedTypes: 'PDF' },
+      { name: "Previous year's annual filing documents (AOC-4, MGT-7)", defaultTag: 'Mandatory', category: 'MCA History', acceptedTypes: 'PDF' },
+      { name: 'Applicable MCA filings and approvals (DIR-12, PAS-3, etc.)', defaultTag: 'Conditional', category: 'MCA Compliances', acceptedTypes: 'PDF' }
+    ]
+  }
+];
+
+// ==========================================
 // 10 INDUSTRY WORKFLOWS (Who Can Use ClarioLoop?)
 // ==========================================
 export const industryWorkflows = [
@@ -473,14 +639,16 @@ export const industryWorkflows = [
     borderColor: 'border-blue-200',
     activeRequests: 48,
     completionRate: 86,
-    description: 'Automate monthly GST, TDS, advance tax, bank reconciliation statements, and audit working papers from clients.',
+    description: 'Automate client onboarding, ITR filing, GST returns, Tax Audit 44AB, Payroll TDS, and Company Statutory Audits.',
     sampleChecklist: [
-      'Bank Current Account Statement (30 Days)',
-      'Sales Register & Outward Tax Invoices',
-      'Vendor Purchase Invoices & Expenses',
-      'GSTR-3B Previous Month Filed Challan',
-      'TDS Challan Form 26QB / 27EQ'
-    ]
+      'PAN card / Aadhaar details & Engagement Letter (KYC)',
+      'Previous year ITR acknowledgement, AIS & 26AS',
+      'Sales Register, Purchase Register & GSTR-3B copies',
+      'Trial balance, General Ledger & 3CD information (Tax Audit)',
+      'Salary register, Form 24Q/26Q & EPF/ESI challans',
+      'COI, MOA/AOA, Board minutes & Statutory Financials'
+    ],
+    modules: financeMasterChecklist
   },
   {
     id: 'hr-recruitment',

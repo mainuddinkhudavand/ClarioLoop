@@ -68,12 +68,9 @@ export default function Dashboard({
             <h1 className="text-base sm:text-xl md:text-2xl font-black text-white break-words leading-tight">
               {activeFirm?.name || 'Chartered Accountants'}
             </h1>
-            <button
-              onClick={onOpenFirmSwitcher}
-              className="w-fit inline-flex items-center gap-1.5 text-xs font-bold bg-indigo-600/50 hover:bg-indigo-600/80 border border-indigo-400/40 text-indigo-100 px-3 py-1.5 rounded-xl transition-all shadow-xs shrink-0"
-            >
-              <span>{activeFirm?.city || 'India'} • Switch ▼</span>
-            </button>
+            <span className="w-fit inline-flex items-center text-xs font-bold bg-indigo-600/30 border border-indigo-400/30 text-indigo-200 px-3 py-1.5 rounded-xl">
+              {activeFirm?.city || 'India'}
+            </span>
           </div>
           <p className="text-xs md:text-sm text-slate-300 mt-1 truncate">
             Lead Partner: <strong>{activeFirm?.partnerName}</strong> • {activeFirm?.city}
@@ -88,21 +85,12 @@ export default function Dashboard({
             <Plus className="w-4 h-4" />
             <span>+ New Request</span>
           </button>
-          {onOpenCRM && (
-            <button
-              onClick={onOpenCRM}
-              className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border border-indigo-400/40 px-3 py-2 rounded-xl text-xs font-bold transition-all shadow-md truncate"
-            >
-              <Users className="w-3.5 h-3.5 text-cyan-300 shrink-0" />
-              <span className="truncate">CRM (248)</span>
-            </button>
-          )}
           <button
             onClick={onOpenReminders}
             className="flex items-center justify-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-2 rounded-xl text-xs font-bold transition-all truncate"
           >
             <Send className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-            <span className="truncate">Reminders</span>
+            <span>Reminders</span>
           </button>
         </div>
       </div>

@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { mockFirms } from '../data/mockData';
 
-export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) {
+export default function ClientUploadPortal({ token, onBackToFirm, activeFirm, currentUser, onLogout }) {
   // Find which request and firm this token belongs to
   let foundFirm = activeFirm || mockFirms[0];
   let foundRequest = foundFirm.requests?.[0];
@@ -128,11 +128,38 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm }) 
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          {/* Client Identity & KYC Verified Badge */}
+          {currentUser && (
+            <div className="hidden sm:flex items-center gap-2 bg-slate-800/80 border border-slate-700 px-2 py-1 rounded-lg text-left">
+              <div className="w-5 h-5 rounded-md bg-emerald-600 text-white font-extrabold text-[9px] flex items-center justify-center">
+                {currentUser.avatarInitials || 'CL'}
+              </div>
+              <span className="text-[10px] font-bold text-slate-200 truncate max-w-[110px]">
+                {currentUser.companyName || currentUser.name}
+              </span>
+            </div>
+          )}
+
+          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-300 bg-emerald-950/80 px-2.5 py-1 rounded-lg border border-emerald-800">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span>KYC VERIFIED</span>
+          </div>
+
           <div className="flex items-center gap-1 text-[11px] text-indigo-400 bg-indigo-950/80 px-2 py-1 rounded-lg border border-indigo-800/80">
             <Lock className="w-3 h-3 text-indigo-400 shrink-0" />
             <span className="font-semibold hidden sm:inline">Encrypted Vault</span>
             <span className="font-semibold sm:hidden">SSL</span>
           </div>
+
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="text-xs font-bold text-rose-300 hover:text-white bg-rose-950/50 hover:bg-rose-900/80 px-2.5 py-1.5 rounded-xl border border-rose-800/80 transition-all"
+              title="Sign Out"
+            >
+              <span>Sign Out</span>
+            </button>
+          )}
 
           {onBackToFirm && (
             <button

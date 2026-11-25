@@ -36,7 +36,6 @@ export default function MobileSidebarDrawer({
     { id: 'requests', label: 'Requests', icon: FileCheck2, count: activeFirm?.requests?.length || 2 },
     { id: 'documents', label: 'Documents', icon: FileText, count: 10 },
     { id: 'clients', label: 'Clients', icon: Users, count: activeFirm?.clients?.length || 3 },
-    { id: 'workflows', label: 'Workflows', icon: GitBranch, count: 10 },
     { id: 'reports', label: 'Reports', icon: BarChart3 },
     { id: 'reminders', label: 'Smart Reminders', icon: BellRing },
     { id: 'ai-analyzer', label: 'AI Copilot Reader', icon: Sparkles },
@@ -74,31 +73,42 @@ export default function MobileSidebarDrawer({
             </button>
           </div>
 
-          <button
-            onClick={() => {
-              onClose();
-              onOpenFirmSwitcher();
-            }}
-            className="w-full flex items-center justify-between p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 transition-all text-left"
-          >
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div 
-                className="w-9 h-9 rounded-xl text-white font-black flex items-center justify-center text-xs shrink-0 shadow-xs"
-                style={{ backgroundColor: activeFirm?.brandingColor || '#4f46e5' }}
-              >
-                {activeFirm?.logoInitials || 'CA'}
-              </div>
-              <div className="min-w-0">
-                <h4 className="text-xs font-black text-white truncate leading-tight">
-                  {activeFirm?.name || 'Chartered Accountants'}
-                </h4>
-                <span className="text-[11px] text-indigo-300 font-bold block leading-tight mt-0.5">
-                  {activeFirm?.city || 'India'} • Switch ▼
-                </span>
+          {currentUser ? (
+            <div className="w-full flex items-center justify-between p-2.5 rounded-xl bg-slate-800/90 border border-slate-700 text-left">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div 
+                  className="w-9 h-9 rounded-xl text-white font-black flex items-center justify-center text-xs shrink-0 shadow-xs"
+                  style={{ backgroundColor: activeFirm?.brandingColor || '#4f46e5' }}
+                >
+                  {currentUser.avatarInitials || 'CA'}
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-black text-white truncate leading-tight">
+                    {currentUser.firmName || activeFirm?.name || 'Chartered Accountants'}
+                  </h4>
+                  <span className="text-[11px] text-emerald-400 font-bold block leading-tight mt-0.5 flex items-center gap-1">
+                    <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                    <span>KYC VERIFIED</span>
+                  </span>
+                </div>
               </div>
             </div>
-            <ChevronDown className="w-4 h-4 text-slate-400 shrink-0 ml-1" />
-          </button>
+          ) : (
+            <div className="w-full p-2.5 rounded-xl bg-slate-800/90 border border-slate-700 text-left space-y-2">
+              <div className="text-[11px] text-slate-300 font-bold">
+                Guest Visitor (Private Workspace Locked)
+              </div>
+              <button
+                onClick={() => {
+                  onClose();
+                  if (onOpenAuth) onOpenAuth('ca');
+                }}
+                className="w-full py-1.5 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs text-center"
+              >
+                Sign In / KYC Register
+              </button>
+            </div>
+          )}
         </div>
 
         {/* 3 Explicit Portals Switcher Strip */}

@@ -21,7 +21,10 @@ export default function Navbar({
   onOpenAI, 
   activeFirm, 
   onOpenFirmSwitcher,
-  onOpenMobileMenu
+  onOpenMobileMenu,
+  currentUser,
+  onOpenAuth,
+  onOpenProfile
 }) {
   const isHome = currentView === 'home';
 
@@ -50,27 +53,17 @@ export default function Navbar({
             <Logo size="default" showTagline={false} className="hidden sm:flex" />
           </button>
 
-          {/* Active CA Firm Selector Pill (Visible everywhere) */}
-          <button
-            onClick={onOpenFirmSwitcher}
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200 text-xs font-bold text-slate-800 transition-all shadow-xs"
-            title="Switch CA Practice Workspace or Register a New One"
-          >
-            <div 
-              className="w-5 h-5 rounded-md text-white font-extrabold text-[10px] flex items-center justify-center shrink-0"
-              style={{ backgroundColor: activeFirm?.brandingColor || '#4f46e5' }}
-            >
-              {activeFirm?.logoInitials || 'CA'}
-            </div>
-            <span className="truncate max-w-[180px]">{activeFirm?.name || 'Select CA Firm'}</span>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-          </button>
-
           {/* 3 Explicit Portal Links (Visible on desktop) */}
           <nav className="hidden lg:flex items-center gap-2 text-xs font-bold text-slate-600 bg-slate-100/80 p-1 rounded-2xl border border-slate-200/80">
             {/* 1. SuperAdmin Portal */}
             <button 
-              onClick={() => setCurrentView('admin')}
+              onClick={() => {
+                if (currentUser && currentUser.role === 'admin') {
+                  setCurrentView('admin');
+                } else {
+                  setCurrentView('auth_admin');
+                }
+              }}
               className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
                 currentView === 'admin' 
                   ? 'bg-slate-900 text-white shadow-xs' 
@@ -83,7 +76,13 @@ export default function Navbar({
 
             {/* 2. CA Workspace Portal */}
             <button 
-              onClick={() => setCurrentView('app')}
+              onClick={() => {
+                if (currentUser && currentUser.role === 'ca') {
+                  setCurrentView('app');
+                } else {
+                  setCurrentView('auth_ca');
+                }
+              }}
               className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
                 currentView === 'app' 
                   ? 'bg-indigo-600 text-white shadow-xs' 
@@ -96,7 +95,13 @@ export default function Navbar({
 
             {/* 3. Client Upload Portal */}
             <button 
-              onClick={() => setCurrentView('portal')}
+              onClick={() => {
+                if (currentUser && currentUser.role === 'client') {
+                  setCurrentView('portal');
+                } else {
+                  setCurrentView('auth_client');
+                }
+              }}
               className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
                 currentView === 'portal' 
                   ? 'bg-emerald-600 text-white shadow-xs' 
@@ -111,29 +116,60 @@ export default function Navbar({
 
         {/* Right CTA Actions */}
         <div className="flex items-center gap-2">
-          {/* Practice Switcher Mobile Button */}
-          <button
-            onClick={onOpenFirmSwitcher}
-            className="sm:hidden p-2 rounded-xl bg-slate-100 text-slate-700"
-            title="Switch CA Firm"
-          >
-            <Building2 className="w-4 h-4" />
-          </button>
-
-          {/* AI Copilot Quick Trigger */}
-          <button
-            onClick={onOpenAI}
-            className="hidden md:flex items-center gap-2 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3.5 py-2 rounded-xl border border-indigo-200/80 transition-all shadow-xs"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-            <span>AI Copilot</span>
-          </button>
+          {/* User Profile / KYC Verification Pill */}
+          {currentUser ? (
+            <button
+              onClick={onOpenProfile}
+              className="flex items-center gap-1.5 p-1.5 pr-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all text-left shadow-2xs"
+              title="Click to View Verified Profile & KYC Details"
+            >
+              <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white font-extrabold text-[10px] flex items-center justify-center">
+                {currentUser.avatarInitials || 'RS'}
+              </div>
+              <div className="hidden sm:block text-left">
+                <span className="text-[11px] font-bold text-slate-800 block truncate max-w-[100px] leading-tight">
+                  {currentUser.name}
+                </span>
+                {currentUser.isKycVerified ? (
+                  <span className="text-[9px] font-black text-emerald-600 flex items-center gap-0.5 leading-tight">
+                    <ShieldCheck className="w-2.5 h-2.5" /> KYC VERIFIED
+                  </span>
+                ) : (
+                  <span className="text-[9px] font-bold text-amber-600 leading-tight">
+                    KYC PENDING
+                  </span>
+                )}
+              </div>
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => onOpenAuth && onOpenAuth('ca')}
+                className="text-xs font-bold text-indigo-600 hover:text-indigo-800 px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200/80 transition-all"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => onOpenAuth && onOpenAuth('ca')}
+                className="hidden sm:inline-flex text-xs font-bold text-emerald-700 hover:text-emerald-900 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200/80 transition-all items-center gap-1"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Register + KYC</span>
+              </button>
+            </div>
+          )}
 
           {/* Primary View Switcher Button */}
           {isHome ? (
             <div className="flex items-center gap-1.5">
               <button
-                onClick={() => setCurrentView('app')}
+                onClick={() => {
+                  if (currentUser && currentUser.role === 'ca') {
+                    setCurrentView('app');
+                  } else {
+                    setCurrentView('auth_ca');
+                  }
+                }}
                 className="flex items-center gap-1.5 text-xs font-extrabold bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 sm:px-4 py-2 rounded-xl shadow-md shadow-indigo-600/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 <LayoutDashboard className="w-3.5 h-3.5" />

@@ -21,15 +21,15 @@ export default function Sidebar({
   setActiveTab, 
   onBackHome, 
   activeFirm, 
-  onOpenFirmSwitcher 
+  onOpenFirmSwitcher,
+  currentUser,
+  onLogout
 }) {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'crm', label: 'Client Acquisition CRM', icon: UserPlus, count: 248, highlight: true },
     { id: 'requests', label: 'Requests', icon: FileCheck2, count: activeFirm?.requests?.length || 0 },
     { id: 'documents', label: 'Documents', icon: FileText, count: 10 },
     { id: 'clients', label: 'Clients', icon: Users, count: activeFirm?.clients?.length || 0 },
-    { id: 'workflows', label: 'Workflows', icon: GitBranch, count: 10 },
     { id: 'reports', label: 'Reports', icon: BarChart3 },
     { id: 'reminders', label: 'Smart Reminders', icon: BellRing },
     { id: 'ai-analyzer', label: 'AI Copilot Reader', icon: Sparkles },
@@ -38,13 +38,9 @@ export default function Sidebar({
 
   return (
     <aside className="hidden md:flex w-64 bg-white border-r border-slate-200/80 flex-col shrink-0 min-h-[calc(100vh-65px)]">
-      {/* Top Active Firm Card & Practice Switcher */}
+      {/* Top Active Firm Card */}
       <div className="p-4 border-b border-slate-100">
-        <button
-          onClick={onOpenFirmSwitcher}
-          className="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 transition-all text-left"
-          title="Click to Switch Practice / Company"
-        >
+        <div className="w-full flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/80 text-left">
           <div className="flex items-center gap-2.5 overflow-hidden">
             <div 
               className="w-8 h-8 rounded-lg text-white font-black flex items-center justify-center text-xs shrink-0 shadow-xs"
@@ -56,12 +52,12 @@ export default function Sidebar({
               <h4 className="text-xs font-extrabold text-slate-900 truncate leading-tight">
                 {activeFirm?.name || 'Chartered Accountants'}
               </h4>
-              <span className="text-[10px] text-indigo-600 font-bold block leading-tight mt-0.5">
-                {activeFirm?.city || 'India'} • Switch ▼
+              <span className="text-[10px] text-slate-500 font-bold block leading-tight mt-0.5">
+                {activeFirm?.city || 'India'}
               </span>
             </div>
           </div>
-        </button>
+        </div>
       </div>
 
       {/* Nav List */}
@@ -99,8 +95,35 @@ export default function Sidebar({
         })}
       </nav>
 
-      {/* Bottom Switch to Home button */}
-      <div className="p-3 border-t border-slate-100 space-y-2">
+      {/* Bottom User & Home strip */}
+      <div className="p-3 border-t border-slate-100 space-y-2 bg-slate-50/50">
+        {currentUser && (
+          <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white font-extrabold text-[10px] flex items-center justify-center shrink-0">
+                {currentUser.avatarInitials || 'CA'}
+              </div>
+              <div className="min-w-0">
+                <span className="text-[11px] font-bold text-slate-900 block truncate leading-tight">
+                  {currentUser.name}
+                </span>
+                <span className="text-[9px] font-black text-emerald-600 block leading-tight">
+                  ✓ KYC VERIFIED
+                </span>
+              </div>
+            </div>
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="text-[10px] font-bold text-rose-600 hover:text-rose-800 px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 transition-colors"
+                title="Log out of CA practice"
+              >
+                Exit
+              </button>
+            )}
+          </div>
+        )}
+
         <button
           onClick={onBackHome}
           className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-bold transition-colors"
