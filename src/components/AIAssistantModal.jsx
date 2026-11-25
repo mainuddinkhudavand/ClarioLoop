@@ -10,7 +10,8 @@ import {
   FileText, 
   Cpu, 
   Zap,
-  ArrowRight
+  ArrowRight,
+  Download
 } from 'lucide-react';
 
 export default function AIAssistantModal({ isOpen, onClose }) {
@@ -125,6 +126,88 @@ Bank Reference No (BRN): HDFC88391209384`);
       });
       setAnalyzing(false);
     }, 1200);
+  };
+
+  // Download Classified Document Info (JSON, CSV, or Text Audit Slip)
+  const handleDownload = (format = 'json') => {
+    if (!analysisResult) return;
+    let content = '';
+    let mimeType = 'application/json';
+    let ext = 'json';
+
+    const data = analysisResult;
+    const extracted = data.extractedData || {};
+
+    if (format === 'json') {
+      content = JSON.stringify({
+        aiClassification: {
+          engine: 'Groq LLaMA-3.3-70B OCR',
+          category: data.category,
+          documentType: data.documentType,
+          confidenceScore: `${Math.round(data.confidence * 100)}%`,
+          supplierName: extracted.supplierName,
+          invoiceNumber: extracted.invoiceNumber,
+          invoiceDate: extracted.invoiceDate,
+          gstin: extracted.gstin,
+          totalAmount: extracted.totalAmount,
+          period: extracted.period,
+          complianceFlags: data.flags,
+          aiSummary: data.aiSummary,
+          timestamp: new Date().toISOString()
+        }
+      }, null, 2);
+      mimeType = 'application/json';
+      ext = 'json';
+    } else if (format === 'csv') {
+      const rows = [
+        ['Field', 'Value'],
+        ['Document Type', data.documentType || ''],
+        ['Category', data.category || ''],
+        ['Supplier Name', extracted.supplierName || ''],
+        ['Invoice / Ref No', extracted.invoiceNumber || ''],
+        ['GSTIN', extracted.gstin || ''],
+        ['Total Amount', extracted.totalAmount || ''],
+        ['Date', extracted.invoiceDate || ''],
+        ['Period', extracted.period || ''],
+        ['Confidence', `${Math.round(data.confidence * 100)}%`],
+        ['Summary', data.aiSummary || '']
+      ];
+      content = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+      mimeType = 'text/csv;charset=utf-8;';
+      ext = 'csv';
+    } else {
+      content = `==========================================================
+CLARIOLOOP COMPLIANCE PLATFORM - AI CLASSIFICATION SLIP
+==========================================================
+Category      : ${data.category || 'Statutory / Compliance'}
+Document Type : ${data.documentType || 'Tax Document'}
+Confidence    : ${Math.round(data.confidence * 100)}% Match
+Supplier      : ${extracted.supplierName || 'N/A'}
+GSTIN         : ${extracted.gstin || 'N/A'}
+Invoice / Ref : ${extracted.invoiceNumber || 'N/A'}
+Date          : ${extracted.invoiceDate || 'N/A'}
+Total Amount  : ${extracted.totalAmount || 'N/A'}
+Period        : ${extracted.period || 'FY 2026-27'}
+Summary       : ${data.aiSummary || ''}
+----------------------------------------------------------
+Compliance & Verification Checks:
+${(data.flags || []).map(f => `  ✓ ${f}`).join('\n')}
+----------------------------------------------------------
+AI Engine: Groq LLaMA-3.3-70B • Generated: ${new Date().toLocaleString('en-IN')}
+==========================================================`;
+      mimeType = 'text/plain;charset=utf-8;';
+      ext = 'txt';
+    }
+
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `classified_${(data.documentType || 'document').replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const handleSendMessage = () => {
@@ -313,6 +396,48 @@ Bank Reference No (BRN): HDFC88391209384`);
                           <span className="break-words">{flag}</span>
                         </div>
                       ))}
+                    </div>
+                  </div>
+
+                  {/* Download Classified Info Options */}
+                  <div className="bg-white rounded-xl border border-indigo-100 p-2.5 sm:p-3 space-y-2 shadow-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                        <Download className="w-3.5 h-3.5 text-indigo-600" />
+                        Download Classified Info:
+                      </span>
+                      <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                        Export Ready
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleDownload('json')}
+                        className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 border border-slate-200 hover:border-indigo-200 rounded-lg text-[11px] font-bold transition shadow-xs active:scale-95"
+                        title="Download raw AI classification JSON data"
+                      >
+                        <FileText className="w-3 h-3 text-indigo-600 shrink-0" />
+                        <span>JSON Data</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDownload('csv')}
+                        className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 border border-slate-200 hover:border-emerald-200 rounded-lg text-[11px] font-bold transition shadow-xs active:scale-95"
+                        title="Download structured spreadsheet CSV"
+                      >
+                        <Download className="w-3 h-3 text-emerald-600 shrink-0" />
+                        <span>CSV Sheet</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDownload('txt')}
+                        className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-slate-50 hover:bg-amber-50 hover:text-amber-700 text-slate-700 border border-slate-200 hover:border-amber-200 rounded-lg text-[11px] font-bold transition shadow-xs active:scale-95"
+                        title="Download formatted CA audit slip"
+                      >
+                        <FileText className="w-3 h-3 text-amber-600 shrink-0" />
+                        <span>Audit Slip (.TXT)</span>
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -533,7 +533,7 @@ export default function AdminPortal({
       </div>
 
       {/* Main Admin Content Area */}
-      <main className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 sm:p-8 pb-24 md:pb-8 max-w-7xl mx-auto w-full space-y-6">
 
         {/* Global Platform KPIs */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
@@ -923,9 +923,91 @@ export default function AdminPortal({
               </div>
             </div>
 
-            {/* Users Directory Table */}
+            {/* Users Directory: Mobile Cards (visible on mobile) + Desktop Table (visible on md+) */}
             <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
-              <div className="overflow-x-auto">
+              {/* Mobile Card List (md:hidden) */}
+              <div className="md:hidden divide-y divide-slate-800/80">
+                {filteredLiveUsers.map(user => (
+                  <div key={user.id} className="p-3.5 space-y-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className={`w-8 h-8 rounded-xl font-black text-xs flex items-center justify-center text-white shrink-0 ${
+                          user.role === 'ADMIN' ? 'bg-rose-600' : user.role === 'CA' ? 'bg-indigo-600' : 'bg-emerald-600'
+                        }`}>
+                          {user.name.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1 flex-wrap">
+                            <span className="font-extrabold text-white text-xs truncate max-w-[150px]">
+                              {user.name}
+                            </span>
+                            {user.isKycVerified && (
+                              <span className="text-[8px] font-black text-emerald-400 bg-emerald-950/80 border border-emerald-800 px-1 py-0.2 rounded-full inline-flex items-center gap-0.5">
+                                <ShieldCheck className="w-2.5 h-2.5" /> KYC
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[10px] text-slate-400 block truncate">
+                            {user.email}
+                          </span>
+                        </div>
+                      </div>
+
+                      <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider shrink-0 ${
+                        user.role === 'ADMIN'
+                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                          : user.role === 'CA'
+                            ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                      }`}>
+                        {user.role}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-[10px] bg-slate-950/70 p-2.5 rounded-xl border border-slate-800/80">
+                      <div>
+                        <span className="text-slate-500 block text-[9px]">Organization</span>
+                        <strong className="text-slate-200 truncate block">{user.organization}</strong>
+                        <span className="text-slate-400 text-[9px] font-mono truncate block">{user.orgDetail}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block text-[9px]">Device & IP</span>
+                        <div className="text-slate-300 flex items-center gap-1 truncate">
+                          {user.deviceType === 'mobile' ? (
+                            <Smartphone className="w-3 h-3 text-emerald-400 shrink-0" />
+                          ) : (
+                            <Monitor className="w-3 h-3 text-indigo-400 shrink-0" />
+                          )}
+                          <span className="truncate">{user.city}</span>
+                        </div>
+                        <span className="text-slate-500 font-mono text-[9px] block">{user.ip}</span>
+                      </div>
+                      <div className="col-span-2 pt-1 border-t border-slate-800/60">
+                        <span className="text-slate-500 block text-[9px]">Active Workflow Task</span>
+                        <span className="text-emerald-400 font-bold truncate block">⚡ {user.currentModule}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-0.5">
+                      <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span>Online: {user.sessionDuration} ({user.lastActive})</span>
+                      </span>
+                      <button
+                        onClick={() => handleTerminateSession(user.id, user.name)}
+                        className="px-2 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-900/80 text-rose-300 border border-rose-800/60 font-bold text-[10px] transition-all inline-flex items-center gap-1"
+                        title="Force logout"
+                      >
+                        <LogOut className="w-3 h-3 text-rose-400" />
+                        <span>Terminate</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table (hidden md:block) */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-slate-950 text-slate-400 font-extrabold uppercase tracking-wider text-[10px] border-b border-slate-800">
                     <tr>

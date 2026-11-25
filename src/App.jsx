@@ -477,33 +477,36 @@ export default function App() {
       )}
 
       {/* Universal Floating Quick Role Switcher (Provides instant 1-click developer, client & CA navigation) */}
-      <aside aria-label="Portal Switcher" className="fixed bottom-3 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 text-white backdrop-blur-md px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl shadow-2xl border border-slate-700/90 flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-bold max-w-[95vw] overflow-x-auto">
-        <span className="text-[10px] font-black uppercase tracking-wider text-indigo-400 flex items-center gap-1 shrink-0">
-          <span>⚡ Fast Switch:</span>
+      <aside 
+        aria-label="Portal Switcher" 
+        className={`fixed ${currentView !== 'portal' && currentView !== 'admin' ? 'bottom-16 md:bottom-3' : 'bottom-3'} left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 text-white backdrop-blur-md px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl shadow-2xl border border-slate-700/90 flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold max-w-[96vw] overflow-x-auto no-scrollbar`}
+      >
+        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-indigo-400 flex items-center gap-1 shrink-0">
+          <span>⚡ Switch:</span>
         </span>
         <button
           onClick={() => handleQuickSwitch('home')}
-          className={`px-2.5 py-1 rounded-xl transition-all shrink-0 ${currentView === 'home' ? 'bg-slate-700 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
+          className={`px-2 sm:px-2.5 py-1 rounded-xl transition-all shrink-0 ${currentView === 'home' ? 'bg-slate-700 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
         >
           Home
         </button>
         <button
           onClick={() => handleQuickSwitch('app')}
-          className={`px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 shrink-0 ${currentView === 'app' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
+          className={`px-2 sm:px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 shrink-0 ${currentView === 'app' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
         >
-          <span>💼 CA Practice</span>
+          <span>💼 CA</span>
         </button>
         <button
           onClick={() => handleQuickSwitch('portal')}
-          className={`px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 shrink-0 ${currentView === 'portal' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
+          className={`px-2 sm:px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 shrink-0 ${currentView === 'portal' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
         >
-          <span>📱 Client Mobile</span>
+          <span>📱 Client</span>
         </button>
         <button
           onClick={() => handleQuickSwitch('admin')}
-          className={`px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 shrink-0 ${currentView === 'admin' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
+          className={`px-2 sm:px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 shrink-0 ${currentView === 'admin' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
         >
-          <span>🛡️ SuperAdmin</span>
+          <span>🛡️ Admin</span>
         </button>
       </aside>
     </div>
