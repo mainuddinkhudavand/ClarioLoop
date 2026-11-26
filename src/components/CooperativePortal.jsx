@@ -41,7 +41,8 @@ export default function CooperativePortal({
   onOpenSubscribe, 
   initialRole = 'admin',
   currentUser,
-  onOpenAuth
+  onOpenAuth,
+  onOpenProfile
 }) {
   const [societies, setSocieties] = useState(mockCooperativeSocieties);
   const [selectedSocietyId, setSelectedSocietyId] = useState('coop-1');
@@ -314,9 +315,14 @@ This is an automated operational checklist slip for statutory inspection under C
               </button>
             )}
 
-            {/* Co-op Sign In / Verified Profile Pill */}
-            {currentUser && currentUser.role === 'cooperative' ? (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-left">
+            {/* Co-op Sign In / Clickable Verified Profile Pill */}
+            {currentUser ? (
+              <button
+                type="button"
+                onClick={() => onOpenProfile && onOpenProfile()}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-left transition-colors"
+                title="View & Edit Your Profile"
+              >
                 <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white font-extrabold text-[9px] flex items-center justify-center">
                   {currentUser.avatarInitials || 'CP'}
                 </div>
@@ -325,10 +331,10 @@ This is an automated operational checklist slip for statutory inspection under C
                     {currentUser.name}
                   </span>
                   <span className="text-[8px] font-black text-emerald-700 block leading-tight">
-                    ✓ RCS VERIFIED
+                    ✓ {currentUser.kycBadge || 'PROFILE VERIFIED'}
                   </span>
                 </div>
-              </div>
+              </button>
             ) : onOpenAuth ? (
               <button
                 onClick={() => onOpenAuth('cooperative')}

@@ -311,6 +311,7 @@ export default function AdminPortal({
   onRegisterNewFirm, 
   onBackToHome,
   currentUser,
+  onOpenProfile,
   onLogout
 }) {
   const [activeTab, setActiveTab] = useState('firms'); // 'firms' | 'crm' | 'users' | 'overview' | 'subscriptions' | 'system'
@@ -399,57 +400,64 @@ export default function AdminPortal({
   return (
     <div className="min-h-screen bg-slate-50/70 text-slate-900 flex flex-col font-sans">
       {/* Top Admin Header Bar */}
-      <header className="bg-white border-b border-slate-200/90 px-4 sm:px-8 py-3.5 sticky top-0 z-30 flex items-center justify-between gap-4 shadow-xs">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 via-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/20">
-            <ShieldCheck className="w-6 h-6" />
+      <header className="bg-white border-b border-slate-200/90 px-3.5 sm:px-8 py-3 sticky top-0 z-30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-rose-500 via-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/20 shrink-0">
+            <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
-                ClarioLoop SuperAdmin Portal
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-sm sm:text-lg font-black text-slate-900 tracking-tight truncate">
+                ClarioLoop SuperAdmin
               </h1>
-              <span className="text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-full">
+              <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-full shrink-0">
                 Root Access
               </span>
             </div>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[10px] sm:text-[11px] text-slate-500 truncate">
               Multi-Tenant Architecture • Platform Health & Tenant CRM
             </p>
           </div>
         </div>
 
         {/* Global Action Controls */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
           {currentUser && (
-            <div className="flex items-center gap-2 bg-slate-100 border border-slate-200 px-2.5 py-1.5 rounded-xl text-left">
-              <div className="w-6 h-6 rounded-lg bg-rose-600 text-white font-extrabold text-[10px] flex items-center justify-center">
+            <button
+              type="button"
+              onClick={() => onOpenProfile && onOpenProfile()}
+              className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-2.5 py-1.5 rounded-xl text-left min-w-0 transition-colors"
+              title="View & Edit Admin Profile"
+            >
+              <div className="w-6 h-6 rounded-lg bg-rose-600 text-white font-extrabold text-[10px] flex items-center justify-center shrink-0">
                 {currentUser.avatarInitials || 'AD'}
               </div>
-              <div className="hidden sm:block">
-                <span className="text-[11px] font-bold text-slate-900 block leading-tight">{currentUser.name}</span>
+              <div className="min-w-0">
+                <span className="text-[11px] font-bold text-slate-900 block leading-tight truncate max-w-[110px] sm:max-w-[160px]">{currentUser.name}</span>
                 <span className="text-[9px] font-black text-rose-600 block leading-tight">SUPERADMIN</span>
               </div>
-            </div>
+            </button>
           )}
-          <button
-            onClick={onLogout || onBackToHome}
-            className="text-xs font-bold text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-2 rounded-xl border border-rose-200 transition-all flex items-center gap-1.5"
-            title="Sign out of Admin Session"
-          >
-            <span>Sign Out</span>
-          </button>
-          <button
-            onClick={onBackToHome}
-            className="text-xs font-bold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100 px-3.5 py-2 rounded-xl border border-slate-200 shadow-2xs transition-all flex items-center gap-1.5"
-          >
-            <span>Exit Portal</span>
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={onLogout || onBackToHome}
+              className="text-xs font-bold text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-2 rounded-xl border border-rose-200 transition-all flex items-center gap-1.5"
+              title="Sign out of Admin Session"
+            >
+              <span>Sign Out</span>
+            </button>
+            <button
+              onClick={onBackToHome}
+              className="text-xs font-bold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100 px-3 py-2 rounded-xl border border-slate-200 shadow-2xs transition-all flex items-center gap-1.5"
+            >
+              <span>Exit</span>
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Subnav Navigation */}
-      <div className="bg-white border-b border-slate-200 px-4 sm:px-8 flex items-center gap-2 sm:gap-6 overflow-x-auto no-scrollbar text-xs font-bold shadow-2xs">
+      <div className="bg-white border-b border-slate-200 px-3.5 sm:px-8 flex items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar text-xs font-bold shadow-2xs">
         <button
           onClick={() => setActiveTab('firms')}
           className={`py-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
@@ -634,11 +642,11 @@ export default function AdminPortal({
                 />
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 <select
                   value={filterPlan}
                   onChange={(e) => setFilterPlan(e.target.value)}
-                  className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1 sm:flex-none"
                 >
                   <option value="ALL">All Subscription Plans</option>
                   <option value="STARTER">Starter Tier</option>
@@ -648,7 +656,7 @@ export default function AdminPortal({
 
                 <button
                   onClick={() => onRegisterNewFirm()}
-                  className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold flex items-center gap-1.5 transition-all shadow-sm shrink-0"
+                  className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold flex items-center justify-center gap-1.5 transition-all shadow-sm shrink-0"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add CA Practice</span>
@@ -708,21 +716,21 @@ export default function AdminPortal({
                       </div>
 
                       {/* Admin Options & Actions */}
-                      <div className="flex items-center gap-2 shrink-0 pt-2 md:pt-0">
+                      <div className="flex items-center gap-2 w-full md:w-auto justify-end flex-wrap pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 shrink-0">
                         {/* Edit Button */}
                         <button
                           onClick={() => setEditingFirm(firm)}
-                          className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition-all border border-slate-200"
+                          className="flex-1 sm:flex-none px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-all border border-slate-200"
                           title="Edit Practice Details & Subscription"
                         >
                           <Edit3 className="w-3.5 h-3.5 text-indigo-600" />
-                          <span className="hidden sm:inline">Edit Firm</span>
+                          <span>Edit Firm</span>
                         </button>
 
                         {/* Open CA Workspace */}
                         <button
                           onClick={() => onSwitchToFirm(firm.id)}
-                          className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
+                          className="flex-1 sm:flex-none px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm"
                           title="Impersonate and enter this CA Firm workspace"
                         >
                           <UserCheck className="w-3.5 h-3.5" />
@@ -738,7 +746,7 @@ export default function AdminPortal({
                                 onDeleteFirm(firm.id);
                               }
                             }}
-                            className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition-colors"
+                            className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition-colors shrink-0"
                             title="Remove Tenant Firm"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -756,17 +764,17 @@ export default function AdminPortal({
         {/* TAB 2: CLIENT ACQUISITION CRM (ADMIN EXCLUSIVE) */}
         {activeTab === 'crm' && (
           <div className="space-y-4">
-            <div className="p-4 bg-indigo-50/70 border border-indigo-200/90 rounded-2xl flex items-center justify-between shadow-xs">
+            <div className="p-4 bg-indigo-50/70 border border-indigo-200/90 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-xs">
               <div>
                 <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                  <UserPlus className="w-4 h-4 text-indigo-600" />
+                  <UserPlus className="w-4 h-4 text-indigo-600 shrink-0" />
                   <span>Centralized Admin Client Acquisition CRM</span>
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
                   Full lead pipeline, conversion stages, and automated client onboarding to CA practice databases.
                 </p>
               </div>
-              <span className="text-xs font-bold bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full border border-indigo-200">
+              <span className="text-xs font-bold bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full border border-indigo-200 self-start sm:self-auto shrink-0">
                 248 Total Inquiries
               </span>
             </div>
@@ -1292,7 +1300,7 @@ export default function AdminPortal({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="font-bold text-slate-700 block mb-1">Lead Partner Name *</label>
                   <input
@@ -1316,7 +1324,7 @@ export default function AdminPortal({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="font-bold text-slate-700 block mb-1">ICAI Reg / FRN</label>
                   <input

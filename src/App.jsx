@@ -291,6 +291,7 @@ export default function App() {
         <CooperativePortal 
           initialRole={coopRole}
           currentUser={currentUser}
+          onOpenProfile={() => setIsProfileModalOpen(true)}
           onOpenAuth={(vert) => {
             setAuthDefaultRole(vert || 'cooperative');
             setIsAuthModalOpen(true);
@@ -308,6 +309,7 @@ export default function App() {
         <EducationPortal 
           initialRole={eduRole}
           currentUser={currentUser}
+          onOpenProfile={() => setIsProfileModalOpen(true)}
           onOpenAuth={(vert) => {
             setAuthDefaultRole(vert || 'education');
             setIsAuthModalOpen(true);
@@ -325,6 +327,7 @@ export default function App() {
         <InsurancePortal 
           initialRole={insuranceRole}
           currentUser={currentUser}
+          onOpenProfile={() => setIsProfileModalOpen(true)}
           onOpenAuth={(vert) => {
             setAuthDefaultRole(vert || 'insurance');
             setIsAuthModalOpen(true);
@@ -416,6 +419,7 @@ export default function App() {
           <AdminPortal
             firms={firms}
             currentUser={currentUser}
+            onOpenProfile={() => setIsProfileModalOpen(true)}
             onQuickSwitch={handleQuickSwitch}
             onUpdateFirm={(updatedFirm) => {
               setFirms(prev => prev.map(f => f.id === updatedFirm.id ? updatedFirm : f));
@@ -614,6 +618,8 @@ export default function App() {
         onBackHome={() => setCurrentView('home')}
         onOpenAdmin={() => setCurrentView('admin')}
         onOpenClientPortal={() => setCurrentView('portal')}
+        onEnterVertical={handleEnterVertical}
+        onOpenSubscriptions={() => setCurrentView('subscriptions')}
         currentUser={currentUser}
         onOpenProfile={() => setIsProfileModalOpen(true)}
         onOpenAuth={(role) => {

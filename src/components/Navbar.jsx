@@ -49,10 +49,10 @@ export default function Navbar({
         {/* Brand Logo & Vertical Portals */}
         <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           {/* Mobile Menu Hamburger */}
-          {!isHome && onOpenMobileMenu && (
+          {onOpenMobileMenu && (
             <button
               onClick={onOpenMobileMenu}
-              className="md:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shrink-0"
+              className="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shrink-0"
               title="Open Navigation Menu"
             >
               <Menu className="w-4 h-4" />

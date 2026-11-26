@@ -13,6 +13,9 @@ import { Client } from './models/Client.js';
 import { Request } from './models/Request.js';
 import { Document, ReminderLog } from './models/Document.js';
 import { analyzeDocumentAI, generateSmartReminderAI } from './services/aiService.js';
+import cooperativeRouter from './cooperative/routes.js';
+import insuranceRouter from './insurance/routes.js';
+import eduRouter from './edu/routes.js';
 
 dotenv.config();
 
@@ -25,6 +28,9 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/api/coop', cooperativeRouter);
+app.use('/api/insurance', insuranceRouter);
+app.use('/api/edu', eduRouter);
 
 // Ensure uploads folder exists
 const uploadsDir = path.join(__dirname, '..', 'uploads');

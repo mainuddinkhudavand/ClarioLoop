@@ -1,11 +1,10 @@
 {
   "appId": "in.cloop.app",
-  "appName": "Cloop",
+  "appName": "ClarioLoop",
   "webDir": "dist",
   "bundledWebRuntime": false,
-  "server": {
-    "url": "https://clarioloop.onrender.com",
-    "cleartext": false
+  "ios": {
+    "contentInset": "automatic"
   },
   "android": {
     "allowMixedContent": false,

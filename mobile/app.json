@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "ClarioLoop Cooperative",
+    "slug": "clarioloop-cooperative",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "android": {
+      "package": "in.cloop.cooperative"
+    },
+    "ios": {
+      "bundleIdentifier": "in.cloop.cooperative"
+    }
+  }
+}

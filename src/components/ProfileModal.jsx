@@ -36,26 +36,102 @@ export default function ProfileModal({
   const coverInputRef = React.useRef(null);
   const avatarInputRef = React.useRef(null);
 
+  const getRoleDefaults = (u) => {
+    const r = u?.role || 'ca';
+    const map = {
+      ca: {
+        bio: 'Senior Partner specializing in Corporate Statutory Audits, Transfer Pricing, and Section 44AB Tax Filings.',
+        designation: 'Senior Managing Partner (FCA)',
+        website: 'https://apexcafirm.in',
+        regLabel: 'ICAI FRN',
+        regValue: u?.icaiNumber || u?.licenseNumber || 'FRN 129482W',
+        entityName: u?.firmName || u?.entityName || 'Apex & Partners Chartered Accountants',
+      },
+      cooperative: {
+        bio: 'Cooperative Society & PACS Officer managing member KYC, loan checklists, and statutory governance.',
+        designation: 'Chief Executive Officer / Society Admin',
+        website: 'https://sahyadricoop.org.in',
+        regLabel: 'RCS Registration',
+        regValue: u?.licenseNumber || 'RCS/KA/CR-4012/1998',
+        entityName: u?.entityName || u?.firmName || 'Sahyadri Urban Co-operative Credit Society Ltd',
+      },
+      education: {
+        bio: 'Academic Admissions & Student Lifecycle Administrator overseeing student verification, scholarships, and exit clearances.',
+        designation: 'Dean of Admissions / Registrar',
+        website: 'https://rvce.edu.in',
+        regLabel: 'AISHE / UGC Code',
+        regValue: u?.licenseNumber || 'AISHE C-12849',
+        entityName: u?.entityName || u?.firmName || 'RV Institute of Engineering & Technology',
+      },
+      insurance: {
+        bio: 'Authorised Insurance Distribution & Claims Documentation Officer across Life, Health, Motor, and General lines.',
+        designation: 'Principal Officer / Agency Admin',
+        website: 'https://trivitainsurance.com',
+        regLabel: 'IRDAI Licence',
+        regValue: u?.licenseNumber || 'IRDAI/IMF/2021/0842',
+        entityName: u?.entityName || u?.firmName || 'Trivita Insurance Distribution & Advisory Pvt Ltd',
+      },
+      client: {
+        bio: 'Authorised Entity Representative submitting verified KYC, compliance, and supporting documents.',
+        designation: 'Director / Authorised Signatory',
+        website: 'https://nexgendigital.io',
+        regLabel: 'GSTIN / PAN',
+        regValue: u?.gstin || u?.pan || u?.licenseNumber || '27AABCN1234F1Z5',
+        entityName: u?.companyName || u?.entityName || 'NexGen Digital Solutions Pvt Ltd',
+      },
+      admin: {
+        bio: 'Root Platform Security & Multi-Tenant Governance Officer at ClarioLoop.',
+        designation: 'Platform SuperAdmin',
+        website: 'https://clarioloop.in',
+        regLabel: 'Security Clearance',
+        regValue: u?.licenseNumber || 'ISO 27001 • Root Admin',
+        entityName: u?.entityName || 'ClarioLoop Platform Operations',
+      },
+    };
+    return map[r] || map.ca;
+  };
+
+  const defaults = getRoleDefaults(userProfile);
+
   const [formData, setFormData] = useState({
     name: userProfile.name || '',
     email: userProfile.email || '',
     phone: userProfile.phone || '',
-    bio: userProfile.bio || (userProfile.role === 'ca' 
-      ? 'Senior Partner specializing in Corporate Statutory Audits, Transfer Pricing, and Section 44AB Tax Filings.' 
-      : userProfile.role === 'client' 
-        ? 'High-growth technology company focused on cross-border SaaS workflows and digital services.'
-        : 'Principal System Operations & Security Architect at ClarioLoop.'),
-    designation: userProfile.designation || (userProfile.role === 'ca' ? 'Senior Managing Partner (FCA)' : userProfile.role === 'client' ? 'Director of Finance' : 'Lead Security Auditor'),
-    location: userProfile.location || (userProfile.city || 'Mumbai, Maharashtra'),
-    website: userProfile.website || (userProfile.role === 'ca' ? 'https://apexcafirm.in' : 'https://nexgendigital.io'),
-    firmName: userProfile.firmName || '',
-    icaiNumber: userProfile.icaiNumber || '',
-    companyName: userProfile.companyName || '',
-    gstin: userProfile.gstin || '',
+    bio: userProfile.bio || defaults.bio,
+    designation: userProfile.designation || defaults.designation,
+    location: userProfile.location || userProfile.city || 'India',
+    website: userProfile.website || defaults.website,
+    firmName: userProfile.firmName || defaults.entityName,
+    icaiNumber: userProfile.icaiNumber || defaults.regValue,
+    companyName: userProfile.companyName || defaults.entityName,
+    gstin: userProfile.gstin || defaults.regValue,
     pan: userProfile.pan || '',
+    licenseNumber: userProfile.licenseNumber || defaults.regValue,
     avatarUrl: userProfile.avatarUrl || null,
     coverUrl: userProfile.coverUrl || null
   });
+
+  React.useEffect(() => {
+    const d = getRoleDefaults(userProfile);
+    setFormData({
+      name: userProfile.name || '',
+      email: userProfile.email || '',
+      phone: userProfile.phone || '',
+      bio: userProfile.bio || d.bio,
+      designation: userProfile.designation || d.designation,
+      location: userProfile.location || userProfile.city || 'India',
+      website: userProfile.website || d.website,
+      firmName: userProfile.firmName || d.entityName,
+      icaiNumber: userProfile.icaiNumber || d.regValue,
+      companyName: userProfile.companyName || d.entityName,
+      gstin: userProfile.gstin || d.regValue,
+      pan: userProfile.pan || '',
+      licenseNumber: userProfile.licenseNumber || d.regValue,
+      avatarUrl: userProfile.avatarUrl || null,
+      coverUrl: userProfile.coverUrl || null
+    });
+    setIsEditing(false);
+  }, [userProfile?.id, userProfile?.role]);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0];
@@ -451,10 +527,10 @@ export default function ProfileModal({
                   <FileText className="w-4 h-4 text-indigo-600 shrink-0" />
                   <div className="min-w-0">
                     <span className="text-[10px] text-slate-400 block font-semibold">
-                      {userProfile.role === 'ca' ? 'ICAI FRN' : 'GSTIN'}
+                      {defaults.regLabel}
                     </span>
                     <strong className="text-slate-900 font-mono truncate block">
-                      {userProfile.role === 'ca' ? formData.icaiNumber : formData.gstin}
+                      {formData.licenseNumber || (userProfile.role === 'ca' ? formData.icaiNumber : formData.gstin) || defaults.regValue}
                     </strong>
                   </div>
                 </div>
