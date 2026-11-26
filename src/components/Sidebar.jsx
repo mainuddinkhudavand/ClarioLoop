@@ -23,7 +23,8 @@ export default function Sidebar({
   activeFirm, 
   onOpenFirmSwitcher,
   currentUser,
-  onLogout
+  onLogout,
+  onOpenClientPortal
 }) {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -93,6 +94,25 @@ export default function Sidebar({
             </button>
           );
         })}
+
+        {/* Client Mobile Portal Quick Switcher (Kept inside CA Portal) */}
+        {onOpenClientPortal && (
+          <div className="pt-2 mt-2 border-t border-slate-100">
+            <button
+              onClick={onOpenClientPortal}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-all text-xs group"
+              title="Open the client mobile upload portal"
+            >
+              <div className="flex items-center gap-2">
+                <Smartphone className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+                <span>Client Mobile Portal</span>
+              </div>
+              <span className="text-[10px] bg-emerald-200/60 text-emerald-900 font-black px-1.5 py-0.5 rounded">
+                VAULT
+              </span>
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* Bottom User & Home strip */}

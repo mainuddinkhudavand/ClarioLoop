@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Logo from './Logo';
 import { 
   UploadCloud, 
@@ -14,11 +14,40 @@ import {
   RefreshCw,
   Building2,
   ShieldCheck,
-  Download
+  Download,
+  Layers,
+  FolderOpen,
+  User,
+  Edit3,
+  Calendar,
+  Check,
+  Search,
+  Filter,
+  ExternalLink,
+  ChevronRight,
+  Eye,
+  Info,
+  Building,
+  Image,
+  LogOut,
+  FileCheck2,
+  Phone,
+  Mail,
+  MapPin,
+  X,
+  Save,
+  Briefcase
 } from 'lucide-react';
-import { mockFirms } from '../data/mockData';
+import { mockFirms, financeMasterChecklist } from '../data/mockData';
 
-export default function ClientUploadPortal({ token, onBackToFirm, activeFirm, currentUser, onLogout }) {
+export default function ClientUploadPortal({ 
+  token, 
+  onBackToFirm, 
+  activeFirm, 
+  currentUser, 
+  onUpdateProfile,
+  onLogout 
+}) {
   // Find which request and firm this token belongs to
   let foundFirm = activeFirm || mockFirms[0];
   let foundRequest = foundFirm.requests?.[0];
@@ -32,84 +61,242 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm, cu
     }
   }
 
-  const [request, setRequest] = useState(foundRequest || {
-    title: 'Monthly Document Collection',
-    clientName: 'Valued Client',
-    dueDate: '2026-11-30',
-    items: [
-      { id: '1', title: 'Bank Account Current Statement', category: 'Banking & Finance', isRequired: true, status: 'PENDING' },
-      { id: '2', title: 'Sales Register & Tax Invoices', category: 'Accounting & Bookkeeping', isRequired: true, status: 'PENDING' }
-    ]
+  // Active top navigation tab: 'modules' | 'requests' | 'vault' | 'profile'
+  const [activeTab, setActiveTab] = useState('modules');
+  
+  // Selected Master Module for Compliance (A through F)
+  const [activeModuleCode, setActiveModuleCode] = useState('A');
+  const [moduleFilter, setModuleFilter] = useState('all'); // 'all' | 'pending' | 'uploaded'
+  const [vaultSearch, setVaultSearch] = useState('');
+  const [vaultModuleFilter, setVaultModuleFilter] = useState('ALL');
+
+  // Client Profile State & Edit Mode Toggle
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: currentUser?.name || 'Vikram Mehta (Director)',
+    companyName: currentUser?.companyName || 'NexGen Digital Solutions Pvt Ltd',
+    email: currentUser?.email || 'accounts@nexgendigital.io',
+    phone: currentUser?.phone || '+91 98111 22233',
+    designation: currentUser?.designation || 'Director of Finance',
+    entityType: currentUser?.entityType || 'Private Limited',
+    gstin: currentUser?.gstin || '27AABCN1234F1Z5',
+    pan: currentUser?.pan || 'AABCN1234F',
+    city: currentUser?.city || 'Pune, Maharashtra',
+    address: currentUser?.address || 'Tech Park One, Viman Nagar, Pune, Maharashtra 411014',
+    bio: currentUser?.bio || 'High-growth technology company focused on cross-border SaaS workflows, enterprise IT infrastructure and digital compliance.',
+    coverUrl: currentUser?.coverUrl || null,
+    avatarUrl: currentUser?.avatarUrl || null,
+    kycDocType: currentUser?.kycDocType || 'Company PAN & Certificate of Incorporation',
+    kycDate: currentUser?.kycDate || 'Nov 2026'
   });
 
-  const [activeItemId, setActiveItemId] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [uploadSuccess, setUploadSuccess] = useState(null);
-  const [recentAIAnalysis, setRecentAIAnalysis] = useState(null);
+  const [profileSavedToast, setProfileSavedToast] = useState(false);
+  const coverInputRef = useRef(null);
+  const avatarInputRef = useRef(null);
 
-  // File upload simulation with AI extraction
-  const handleFileUpload = (e, item) => {
-    const file = e.target.files[0];
+  // CA Request State
+  const [caRequests, setCaRequests] = useState([
+    foundRequest || {
+      id: 'req-nov-2026',
+      title: 'November 2026 Monthly Bookkeeping & GST Records',
+      clientName: currentUser?.companyName || 'NexGen Digital Solutions Pvt Ltd',
+      period: 'November 2026',
+      dueDate: '2026-11-30',
+      status: 'PARTIALLY_SUBMITTED',
+      items: [
+        { id: 'ca_1', title: 'HDFC Current Account Bank Statement (PDF)', category: 'Banking & Finance', isRequired: true, status: 'SUBMITTED', uploadedFile: { name: 'HDFC_Statement_Nov2026.pdf', size: '482 KB', date: '2026-11-24' } },
+        { id: 'ca_2', title: 'Sales Register & Tax Invoices (B2B & B2C)', category: 'Accounting & Bookkeeping', isRequired: true, status: 'PENDING' },
+        { id: 'ca_3', title: 'Vendor Purchase Invoices & Expenses', category: 'Accounting & Bookkeeping', isRequired: true, status: 'PENDING' },
+        { id: 'ca_4', title: 'GST Payment Challan (Form PMT-06)', category: 'GST & Indirect Tax', isRequired: true, status: 'PENDING' }
+      ]
+    },
+    {
+      id: 'req-q3-advance',
+      title: 'FY 2026-27 Q3 Advance Tax & TDS Working Verification',
+      clientName: currentUser?.companyName || 'NexGen Digital Solutions Pvt Ltd',
+      period: 'Q3 (Oct-Dec 2026)',
+      dueDate: '2026-12-15',
+      status: 'PENDING',
+      items: [
+        { id: 'ca_q3_1', title: 'Advance Tax Calculation Sheet', category: 'Income Tax', isRequired: true, status: 'PENDING' },
+        { id: 'ca_q3_2', title: 'Form 26AS & AIS Tax Credit Reconciled', category: 'Income Tax', isRequired: true, status: 'PENDING' },
+        { id: 'ca_q3_3', title: 'Monthly TDS Payment Challans (ITNS 281)', category: 'Payroll & TDS', isRequired: true, status: 'PENDING' }
+      ]
+    }
+  ]);
+
+  // Uploaded documents storage across the 6 Master Modules
+  const [moduleUploads, setModuleUploads] = useState({
+    'A_0': {
+      name: 'NexGen_Company_PAN_Card.pdf',
+      size: '280 KB',
+      date: '2026-11-20',
+      status: 'VERIFIED',
+      aiExtracted: {
+        documentType: 'Permanent Account Number (PAN)',
+        totalAmount: 'N/A',
+        confidence: 99,
+        supplierName: 'NexGen Digital Solutions Pvt Ltd',
+        gstin: '27AABCN1234F1Z5',
+        flags: ['PAN checksum syntax 100% verified', 'Matches ROC filing']
+      }
+    },
+    'A_3': {
+      name: 'Certificate_of_Incorporation_MCA.pdf',
+      size: '890 KB',
+      date: '2026-11-20',
+      status: 'VERIFIED',
+      aiExtracted: {
+        documentType: 'Certificate of Incorporation (Form 11)',
+        totalAmount: 'CIN: U72200PN2024PTC198421',
+        confidence: 100,
+        supplierName: 'Registrar of Companies, Pune',
+        gstin: '27AABCN1234F1Z5',
+        flags: ['Valid MCA digital signature verified', 'Active Status']
+      }
+    },
+    'C_0': {
+      name: 'GST_Registration_Certificate_REG06.pdf',
+      size: '410 KB',
+      date: '2026-11-21',
+      status: 'VERIFIED',
+      aiExtracted: {
+        documentType: 'GST Registration Certificate (REG-06)',
+        totalAmount: 'GSTIN: 27AABCN1234F1Z5',
+        confidence: 98,
+        supplierName: 'NexGen Digital Solutions Pvt Ltd',
+        gstin: '27AABCN1234F1Z5',
+        flags: ['Principal place of business verified', 'Active Taxpayer']
+      }
+    }
+  });
+
+  const [uploadingItemId, setUploadingItemId] = useState(null);
+  const [recentAIAnalysis, setRecentAIAnalysis] = useState(null);
+  const [uploadSuccessAlert, setUploadSuccessAlert] = useState(null);
+
+  // File upload simulation for Master Modules
+  const handleModuleFileUpload = (e, moduleCode, itemIndex, item) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
-    setActiveItemId(item.id);
-    setUploadSuccess(null);
+    const uploadKey = `${moduleCode}_${itemIndex}`;
+    setUploadingItemId(uploadKey);
+    setUploadSuccessAlert(null);
 
     setTimeout(() => {
       const fileNameLower = file.name.toLowerCase();
-      let docType = 'Sales / Purchase Invoice';
-      let amount = '₹ 54,200.00';
+      let docType = item.name;
+      let amount = '₹ 68,450.00';
 
       if (fileNameLower.includes('bank') || fileNameLower.includes('stmt')) {
-        docType = 'Bank Current Account Statement';
-        amount = 'Closing Bal: ₹ 3,92,400';
+        docType = 'Bank Account Current Statement';
+        amount = 'Closing Bal: ₹ 4,82,900.00';
       } else if (fileNameLower.includes('gst') || fileNameLower.includes('3b')) {
-        docType = 'GSTR-3B Tax Receipt';
-        amount = 'Tax Paid: ₹ 14,800';
+        docType = 'GST Payment Challan / PMT-06';
+        amount = 'Tax Paid: ₹ 24,900.00';
+      } else if (fileNameLower.includes('pan')) {
+        docType = 'Permanent Account Number (PAN)';
+        amount = 'N/A';
       }
 
       const aiData = {
         documentType: docType,
-        supplierName: request.clientName,
-        invoiceNumber: 'INV-' + Math.floor(10000 + Math.random() * 90000),
+        supplierName: profileData.companyName,
+        invoiceNumber: 'DOC-' + Math.floor(10000 + Math.random() * 90000),
         invoiceDate: new Date().toLocaleDateString('en-IN'),
-        gstin: '27AABCN8492K1Z9',
+        gstin: profileData.gstin,
         totalAmount: amount,
-        confidence: 96,
-        flags: ['Valid digital syntax', 'Matches checklist period']
+        confidence: 97,
+        flags: ['Digital OCR structural syntax verified', 'Compliant with period requirements']
       };
 
-      const updatedItems = request.items.map(i => {
-        if (i.id === item.id) {
+      setModuleUploads(prev => ({
+        ...prev,
+        [uploadKey]: {
+          name: file.name,
+          size: `${(file.size / 1024).toFixed(1)} KB`,
+          date: new Date().toISOString().split('T')[0],
+          status: 'VERIFIED',
+          aiExtracted: aiData
+        }
+      }));
+
+      setRecentAIAnalysis(aiData);
+      setUploadingItemId(null);
+      setUploadSuccessAlert(`Successfully uploaded and AI-verified "${file.name}" for ${item.name}!`);
+      setTimeout(() => setUploadSuccessAlert(null), 6000);
+    }, 1200);
+  };
+
+  // Upload handler for CA Specific Requests
+  const handleCARequestUpload = (e, reqId, itemId, itemTitle) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingItemId(itemId);
+    setTimeout(() => {
+      setCaRequests(prev => prev.map(req => {
+        if (req.id !== reqId) return req;
+        const updatedItems = req.items.map(it => {
+          if (it.id !== itemId) return it;
           return {
-            ...i,
+            ...it,
             status: 'SUBMITTED',
             uploadedFile: {
               name: file.name,
               size: `${(file.size / 1024).toFixed(1)} KB`,
-              date: new Date().toISOString().split('T')[0],
-              aiExtracted: aiData
+              date: new Date().toISOString().split('T')[0]
             }
           };
-        }
-        return i;
-      });
+        });
+        const allDone = updatedItems.every(i => i.status === 'SUBMITTED');
+        return {
+          ...req,
+          status: allDone ? 'COMPLETE' : 'PARTIALLY_SUBMITTED',
+          items: updatedItems
+        };
+      }));
 
-      const allSubmitted = updatedItems.every(i => i.status === 'SUBMITTED');
-      const updatedStatus = allSubmitted ? 'COMPLETE' : 'PARTIALLY_SUBMITTED';
+      setUploadingItemId(null);
+      setUploadSuccessAlert(`Document "${file.name}" uploaded to CA Request!`);
+      setTimeout(() => setUploadSuccessAlert(null), 5000);
+    }, 1200);
+  };
 
-      setRequest({
-        ...request,
-        status: updatedStatus,
-        items: updatedItems
-      });
+  // Profile Picture Upload Handler
+  const handleAvatarChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setProfileData(prev => ({ ...prev, avatarUrl: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-      setRecentAIAnalysis(aiData);
-      setUploading(false);
-      setActiveItemId(null);
-      setUploadSuccess(`Successfully uploaded & verified "${file.name}"!`);
-    }, 1500);
+  // Cover Picture Upload Handler
+  const handleCoverChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setProfileData(prev => ({ ...prev, coverUrl: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Save Profile Handler
+  const handleSaveProfile = (e) => {
+    e.preventDefault();
+    if (onUpdateProfile) {
+      onUpdateProfile(profileData);
+    }
+    setIsEditingProfile(false);
+    setProfileSavedToast(true);
+    setTimeout(() => setProfileSavedToast(false), 4000);
   };
 
   // Download Classified Document Info (JSON, CSV, or Text Audit Slip)
@@ -118,11 +305,11 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm, cu
     let mimeType = 'application/json';
     let ext = 'json';
 
-    const docType = data?.documentType || 'Uploaded Tax / Financial Document';
+    const docType = data?.documentType || 'Tax / Compliance Document';
     const totalAmount = data?.totalAmount || '₹ 54,200.00';
-    const supplier = data?.supplierName || request?.clientName || 'Valued Client';
+    const supplier = data?.supplierName || profileData.companyName;
     const invNo = data?.invoiceNumber || 'INV-2026-09182';
-    const gstin = data?.gstin || '27AABCN8492K1Z9';
+    const gstin = data?.gstin || profileData.gstin;
     const flags = data?.flags || ['Valid digital syntax', 'Matches checklist period'];
 
     if (format === 'json') {
@@ -134,7 +321,7 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm, cu
           gstin: gstin,
           referenceNumber: invNo,
           totalVerifiedAmount: totalAmount,
-          aiConfidenceScore: data?.confidence ? `${data.confidence}%` : '96.8%',
+          aiConfidenceScore: data?.confidence ? `${data.confidence}%` : '97.2%',
           verificationStatus: 'VERIFIED_AUDIT_READY',
           verificationTimestamp: new Date().toISOString(),
           complianceChecks: flags
@@ -150,7 +337,7 @@ export default function ClientUploadPortal({ token, onBackToFirm, activeFirm, cu
         ['GSTIN Identifier', gstin],
         ['Invoice / Reference Number', invNo],
         ['Total Verified Amount', totalAmount],
-        ['AI Confidence Score', data?.confidence ? `${data.confidence}%` : '96.8%'],
+        ['AI Confidence Score', data?.confidence ? `${data.confidence}%` : '97.2%'],
         ['Verification Status', 'PASSED & AUDIT READY'],
         ['Timestamp', new Date().toISOString()]
       ];
@@ -190,51 +377,107 @@ Official Audit Slip generated for ${foundFirm.name}
     URL.revokeObjectURL(url);
   };
 
-  const submittedCount = request.items.filter(i => i.status === 'SUBMITTED').length;
-  const totalCount = request.items.length;
-  const isAllComplete = submittedCount === totalCount;
+  // Compile all uploaded documents across modules for the Central Vault
+  const allVaultDocuments = [];
+  
+  financeMasterChecklist.forEach(mod => {
+    mod.items.forEach((item, idx) => {
+      const uploadKey = `${mod.code}_${idx}`;
+      const upload = moduleUploads[uploadKey];
+      if (upload) {
+        allVaultDocuments.push({
+          id: uploadKey,
+          title: item.name,
+          category: item.category,
+          source: `Module ${mod.code}: ${mod.title}`,
+          moduleCode: mod.code,
+          fileName: upload.name,
+          size: upload.size,
+          date: upload.date,
+          status: upload.status,
+          aiExtracted: upload.aiExtracted
+        });
+      }
+    });
+  });
+
+  caRequests.forEach(req => {
+    req.items.forEach(it => {
+      if (it.uploadedFile) {
+        allVaultDocuments.push({
+          id: it.id,
+          title: it.title,
+          category: it.category,
+          source: `CA Request: ${req.title}`,
+          moduleCode: 'CA',
+          fileName: it.uploadedFile.name,
+          size: it.uploadedFile.size,
+          date: it.uploadedFile.date || '2026-11-25',
+          status: 'SUBMITTED',
+          aiExtracted: it.uploadedFile.aiExtracted
+        });
+      }
+    });
+  });
+
+  const filteredVaultDocuments = allVaultDocuments.filter(doc => {
+    const matchesSearch = doc.title.toLowerCase().includes(vaultSearch.toLowerCase()) || 
+                          doc.fileName.toLowerCase().includes(vaultSearch.toLowerCase());
+    const matchesModule = vaultModuleFilter === 'ALL' || doc.moduleCode === vaultModuleFilter;
+    return matchesSearch && matchesModule;
+  });
+
+  const activeModule = financeMasterChecklist.find(m => m.code === activeModuleCode) || financeMasterChecklist[0];
+  const activeModuleUploadedCount = activeModule.items.filter((_, idx) => !!moduleUploads[`${activeModule.code}_${idx}`]).length;
+  const activeModuleTotalCount = activeModule.items.length;
+  const activeModulePct = Math.round((activeModuleUploadedCount / activeModuleTotalCount) * 100);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col w-full max-w-full overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50/70 text-slate-900 flex flex-col w-full max-w-full overflow-x-hidden font-sans">
       
-      {/* 1. Header (Ultra-Responsive on mobile) */}
-      <header className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
-          <Logo size="small" inverted={true} showTagline={false} />
-          <span className="text-slate-400 text-[11px] hidden md:inline truncate">
-            • Secure Client Upload Portal
+      {/* ================= 1. CLIENT PORTAL HEADER (CLEAN WHITE) ================= */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-3 shadow-xs">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <Logo size="small" inverted={false} showTagline={false} />
+          <span className="text-slate-400 text-xs hidden md:inline truncate">
+            • Client Compliance Portal
           </span>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          {/* Client Identity & KYC Verified Badge */}
-          {currentUser && (
-            <div className="hidden sm:flex items-center gap-2 bg-slate-800/80 border border-slate-700 px-2 py-1 rounded-lg text-left">
-              <div className="w-5 h-5 rounded-md bg-emerald-600 text-white font-extrabold text-[9px] flex items-center justify-center">
-                {currentUser.avatarInitials || 'CL'}
-              </div>
-              <span className="text-[10px] font-bold text-slate-200 truncate max-w-[110px]">
-                {currentUser.companyName || currentUser.name}
+          {/* Client Identity Chip */}
+          <div className="flex items-center gap-2 bg-slate-100/90 border border-slate-200 px-2.5 py-1 rounded-xl text-left">
+            <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white font-black text-[10px] flex items-center justify-center shrink-0">
+              {profileData.companyName.slice(0, 2).toUpperCase()}
+            </div>
+            <div className="hidden sm:block min-w-0">
+              <span className="text-[11px] font-bold text-slate-800 truncate block max-w-[150px]">
+                {profileData.companyName}
+              </span>
+              <span className="text-[9px] text-slate-500 block font-mono">
+                {profileData.gstin}
               </span>
             </div>
-          )}
-
-          <div className="flex items-center gap-1 text-[11px] font-bold text-emerald-300 bg-emerald-950/80 px-2.5 py-1 rounded-lg border border-emerald-800">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span>KYC VERIFIED</span>
           </div>
 
-          <div className="flex items-center gap-1 text-[11px] text-indigo-400 bg-indigo-950/80 px-2 py-1 rounded-lg border border-indigo-800/80">
-            <Lock className="w-3 h-3 text-indigo-400 shrink-0" />
-            <span className="font-semibold hidden sm:inline">Encrypted Vault</span>
-            <span className="font-semibold sm:hidden">SSL</span>
+          {/* KYC Status Badge */}
+          <div className="flex items-center gap-1 text-[10px] font-black text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200 shrink-0">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span className="hidden sm:inline">KYC VERIFIED</span>
+            <span className="sm:hidden">KYC</span>
+          </div>
+
+          {/* Connected CA Firm Badge */}
+          <div className="hidden lg:flex items-center gap-1.5 bg-indigo-50 text-indigo-800 border border-indigo-200 px-2.5 py-1 rounded-xl text-[10px] font-bold">
+            <Building2 className="w-3 h-3 text-indigo-600 shrink-0" />
+            <span className="truncate max-w-[140px]">{foundFirm.name}</span>
           </div>
 
           {onLogout && (
             <button
               onClick={onLogout}
-              className="text-xs font-bold text-rose-300 hover:text-white bg-rose-950/50 hover:bg-rose-900/80 px-2.5 py-1.5 rounded-xl border border-rose-800/80 transition-all"
-              title="Sign Out"
+              className="text-xs font-bold text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-2.5 py-1.5 rounded-xl border border-rose-200 transition-all"
+              title="Sign Out of Client Portal"
             >
               <span>Sign Out</span>
             </button>
@@ -243,341 +486,1027 @@ Official Audit Slip generated for ${foundFirm.name}
           {onBackToFirm && (
             <button
               onClick={onBackToFirm}
-              className="flex items-center gap-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-xl transition-all border border-slate-700 shadow-sm shrink-0"
-              title="Return to Workspace"
+              className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 px-3 py-1.5 rounded-xl transition-all border border-slate-200 shadow-2xs shrink-0"
+              title="Exit Portal"
             >
-              <ArrowLeft className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Back to App</span>
+              <ArrowLeft className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="hidden sm:inline">Back to App</span>
             </button>
           )}
         </div>
       </header>
 
-      {/* 2. Main Content (Scrolls naturally, zero clipping, safe bottom clearance for mobile nav) */}
-      <main className="flex-1 w-full max-w-2xl mx-auto px-3 sm:px-6 pt-4 sm:pt-8 pb-24 sm:pb-8 space-y-4 sm:space-y-6">
+      {/* ================= 2. CLIENT SUBNAV TABS (WHITE & CRISP) ================= */}
+      <nav className="bg-white border-b border-slate-200 px-3 sm:px-6 flex items-center gap-1 sm:gap-4 overflow-x-auto no-scrollbar text-xs font-extrabold sticky top-[53px] z-30 shadow-2xs">
+        <button
+          onClick={() => setActiveTab('modules')}
+          className={`py-3 px-2 sm:px-3 border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${
+            activeTab === 'modules'
+              ? 'border-indigo-600 text-indigo-600 font-black'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Layers className="w-4 h-4 text-indigo-600" />
+          <span>Compliance Modules (A–F)</span>
+          <span className="text-[10px] bg-indigo-50 text-indigo-700 border border-indigo-200 px-1.5 py-0.2 rounded-full">
+            6 Ready
+          </span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('requests')}
+          className={`py-3 px-2 sm:px-3 border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${
+            activeTab === 'requests'
+              ? 'border-indigo-600 text-indigo-600 font-black'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <FileCheck2 className="w-4 h-4 text-amber-600" />
+          <span>CA Requests</span>
+          <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.2 rounded-full">
+            {caRequests.length} Active
+          </span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('vault')}
+          className={`py-3 px-2 sm:px-3 border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${
+            activeTab === 'vault'
+              ? 'border-indigo-600 text-indigo-600 font-black'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <FolderOpen className="w-4 h-4 text-emerald-600" />
+          <span>Document Vault</span>
+          <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-1.5 py-0.2 rounded-full">
+            {allVaultDocuments.length} Files
+          </span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('profile')}
+          className={`py-3 px-2 sm:px-3 border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${
+            activeTab === 'profile'
+              ? 'border-indigo-600 text-indigo-600 font-black'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Building className="w-4 h-4 text-cyan-600" />
+          <span>Company Profile</span>
+          {isEditingProfile && (
+            <span className="text-[10px] bg-indigo-600 text-white px-1.5 py-0.2 rounded-full animate-pulse">
+              Editing
+            </span>
+          )}
+        </button>
+      </nav>
+
+      {/* Alert toast if document uploaded */}
+      {uploadSuccessAlert && (
+        <div className="max-w-4xl mx-auto w-full px-4 pt-3">
+          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between gap-2 text-xs text-emerald-800 shadow-sm animate-fadeIn">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span className="font-semibold">{uploadSuccessAlert}</span>
+            </div>
+            <button onClick={() => setUploadSuccessAlert(null)} className="text-emerald-600 hover:text-emerald-900">✕</button>
+          </div>
+        </div>
+      )}
+
+      {/* Main Content Area */}
+      <main className="flex-1 w-full max-w-5xl mx-auto px-3 sm:px-6 pt-4 pb-24 sm:pb-8 space-y-5">
         
-        {/* Request Overview Card */}
-        <div className="bg-slate-800/90 rounded-2xl border border-slate-700 p-4 sm:p-6 shadow-xl">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-700/80">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-1 min-w-0">
-                <div 
-                  className="w-5 h-5 rounded text-[10px] font-black text-white flex items-center justify-center shrink-0 shadow-xs"
-                  style={{ backgroundColor: foundFirm.brandingColor || '#4f46e5' }}
-                >
-                  {foundFirm.logoInitials || 'CA'}
+        {/* ================= TAB 1: 1. FINANCE & ACCOUNTING MASTER MODULES (A through F) ================= */}
+        {activeTab === 'modules' && (
+          <div className="space-y-4">
+            
+            {/* Operational Guide Card (How to use this master checklist) */}
+            <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl border border-indigo-900/60 p-4 sm:p-5 shadow-lg space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-900 pb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0 shadow-xs">
+                    <Layers className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm sm:text-base font-black text-white">
+                      How to use this master checklist
+                    </h2>
+                    <span className="text-[10px] text-indigo-300 font-semibold">
+                      Client Compliance Operating Guidelines • 1. Finance & Accounting
+                    </span>
+                  </div>
                 </div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-300 truncate">
-                  {foundFirm.name}
+                <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-500/20 text-indigo-300 px-2.5 py-0.5 rounded-full border border-indigo-400/30 w-fit">
+                  Standard Template
                 </span>
               </div>
-              <h1 className="text-base sm:text-xl font-extrabold text-white break-words mt-0.5 leading-snug">
-                {request.title}
-              </h1>
-              <p className="text-xs text-slate-400 mt-1 break-words">
-                Client: <strong className="text-slate-200">{request.clientName}</strong> • Partner: {foundFirm.partnerName}
-              </p>
+
+              {/* 5 Operating Principles */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-[11px] text-slate-300">
+                <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80">
+                  <strong className="text-indigo-400 block mb-0.5">01. Select Workflow:</strong>
+                  Choose relevant workflow module (A through F) below for your entity.
+                </div>
+                <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80">
+                  <strong className="text-emerald-400 block mb-0.5">02. Requirements:</strong>
+                  Mark items Mandatory, Conditional, or Not Applicable for your case.
+                </div>
+                <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80">
+                  <strong className="text-amber-400 block mb-0.5">03. Received ≠ Verified:</strong>
+                  Human review and professional CA judgment remain necessary.
+                </div>
+                <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80">
+                  <strong className="text-cyan-400 block mb-0.5">04. Individual Tracking:</strong>
+                  Every requirement has a dedicated tracking and verification state.
+                </div>
+                <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 col-span-1 sm:col-span-2">
+                  <strong className="text-purple-400 block mb-0.5">05. Configure Properties:</strong>
+                  Upload in accepted formats (PDF, XLSX, JSON). AI verifies and logs audit slips.
+                </div>
+              </div>
+
+              <div className="p-2.5 bg-amber-950/40 border border-amber-800/60 rounded-xl flex items-start gap-2 text-[10px] text-amber-200/90 leading-relaxed">
+                <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                <span>
+                  <strong>Important:</strong> These are operational starting templates, not exhaustive statutory checklists or legal advice. Requirements vary by client, transaction, location and applicable period. Regulated workflows require review by qualified professionals.
+                </span>
+              </div>
             </div>
 
-            <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-1 shrink-0 pt-2 sm:pt-0 border-t border-slate-700/60 sm:border-0">
-              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Due Date</span>
-              <span className="text-xs sm:text-sm font-bold text-amber-300 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 shrink-0" />
-                <span>{new Date(request.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+            {/* 6 Module Selector Cards (A to F) - Light White Theme */}
+            <div className="space-y-2">
+              <span className="text-xs font-bold text-slate-700 block">
+                Choose Compliance Module:
               </span>
-            </div>
-          </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                {financeMasterChecklist.map((mod) => {
+                  const isSelected = activeModuleCode === mod.code;
+                  const modUploadsCount = mod.items.filter((_, idx) => !!moduleUploads[`${mod.code}_${idx}`]).length;
+                  const modTotal = mod.items.length;
+                  const modDone = modUploadsCount === modTotal;
 
-          {/* Progress Indicator */}
-          <div className="mt-3 sm:mt-4">
-            <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="text-slate-300 font-medium">
-                {submittedCount} of {totalCount} uploaded
-              </span>
-              <span className={`font-bold ${isAllComplete ? 'text-emerald-400' : 'text-indigo-400'}`}>
-                {isAllComplete ? '✓ 100% Complete' : `${Math.round((submittedCount / totalCount) * 100)}% Complete`}
-              </span>
-            </div>
-            <div className="w-full h-2 sm:h-2.5 bg-slate-900 rounded-full overflow-hidden p-0.5">
-              <div 
-                className={`h-full rounded-full transition-all duration-500 ${
-                  isAllComplete ? 'bg-emerald-500' : 'bg-gradient-to-r from-indigo-500 to-blue-500'
-                }`}
-                style={{ width: `${(submittedCount / totalCount) * 100}%` }}
-              />
-            </div>
-          </div>
+                  return (
+                    <button
+                      key={mod.code}
+                      type="button"
+                      onClick={() => {
+                        setActiveModuleCode(mod.code);
+                        setModuleFilter('all');
+                      }}
+                      className={`p-3 rounded-2xl border text-left transition-all flex flex-col justify-between gap-1.5 ${
+                        isSelected
+                          ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/25 ring-2 ring-indigo-400/40'
+                          : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-300 hover:shadow-xs'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className={`text-[10px] font-black uppercase tracking-wider ${isSelected ? 'text-indigo-200' : 'text-indigo-600'}`}>
+                          Module {mod.code}
+                        </span>
+                        <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full ${
+                          modDone ? 'bg-emerald-500 text-white' : isSelected ? 'bg-indigo-700 text-white' : 'bg-slate-100 text-slate-600'
+                        }`}>
+                          {modUploadsCount}/{modTotal}
+                        </span>
+                      </div>
 
-          {isAllComplete && (
-            <div className="mt-3 sm:mt-4 p-3 bg-emerald-950/70 border border-emerald-800 rounded-xl flex items-start gap-2.5 text-xs text-emerald-300">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span className="leading-relaxed">
-                <strong>All documents submitted!</strong> Automated follow-ups have stopped. Your CA team has been notified.
-              </span>
-            </div>
-          )}
-        </div>
+                      <strong className="text-xs font-bold leading-tight block">
+                        {mod.title.split(' ')[0]} {mod.title.split(' ')[1]}
+                      </strong>
 
-        {/* Upload Success Alert with AI Classification & Instant Download Options */}
-        {uploadSuccess && (
-          <div className="p-3.5 sm:p-4 bg-indigo-950/90 border border-indigo-700/80 rounded-2xl flex items-start gap-3 text-xs text-indigo-200 animate-fadeIn shadow-xl">
-            <Sparkles className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
-            <div className="min-w-0 flex-1 space-y-2">
-              <span className="font-extrabold text-sm text-white block break-words">{uploadSuccess}</span>
-              {recentAIAnalysis && (
-                <div className="p-3 bg-slate-900/90 rounded-xl border border-indigo-900/60 text-[11px] text-indigo-200 space-y-2">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-800 pb-2">
-                    <span className="font-mono text-white">
-                      ⚡ Classified As: <strong>{recentAIAnalysis.documentType}</strong>
+                      {/* Small progress bar */}
+                      <div className="w-full h-1 bg-slate-200/80 rounded-full overflow-hidden mt-1">
+                        <div 
+                          className={`h-full rounded-full ${modDone ? 'bg-emerald-400' : isSelected ? 'bg-white' : 'bg-indigo-600'}`}
+                          style={{ width: `${Math.round((modUploadsCount / modTotal) * 100)}%` }}
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Selected Module Detail & Checklist (Clean White) */}
+            <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-6 space-y-4 shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-black text-indigo-600 uppercase tracking-wider">
+                      Module {activeModule.code}
                     </span>
-                    <span className="text-[10px] text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-800 w-fit">
-                      ✓ {recentAIAnalysis.confidence}% Confident ({recentAIAnalysis.totalAmount})
+                    <span className="text-xs text-slate-300">•</span>
+                    <h3 className="text-base sm:text-lg font-black text-slate-900">
+                      {activeModule.title}
+                    </h3>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    {activeModule.description}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-slate-900 block">
+                      {activeModuleUploadedCount} of {activeModuleTotalCount} Uploaded
+                    </span>
+                    <span className="text-[10px] text-emerald-600 font-bold">
+                      {activeModulePct}% Complete
                     </span>
                   </div>
+                </div>
+              </div>
 
-                  {/* Download Classified Info Buttons */}
-                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                    <span className="text-[10px] font-bold text-slate-400 block w-full sm:w-auto">
-                      Download Classified Info:
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleDownloadClassified(recentAIAnalysis, 'json', 'classified_document_info')}
-                      className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] flex items-center gap-1 shadow-xs transition-all active:scale-95"
-                    >
-                      <Download className="w-3 h-3" />
-                      <span>JSON File</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDownloadClassified(recentAIAnalysis, 'csv', 'classified_document_info')}
-                      className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] flex items-center gap-1 shadow-xs transition-all active:scale-95"
-                    >
-                      <Download className="w-3 h-3" />
-                      <span>CSV Report</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDownloadClassified(recentAIAnalysis, 'txt', 'classified_audit_slip')}
-                      className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[10px] border border-slate-700 flex items-center gap-1 transition-all active:scale-95"
-                    >
-                      <Download className="w-3 h-3" />
-                      <span>Audit Slip (.TXT)</span>
-                    </button>
+              {/* Filter tabs for checklist: All | Pending | Uploaded */}
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-slate-400 font-bold text-[11px]">Filter:</span>
+                <button
+                  type="button"
+                  onClick={() => setModuleFilter('all')}
+                  className={`px-2.5 py-1 rounded-lg font-bold transition-all ${
+                    moduleFilter === 'all' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  All ({activeModule.items.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModuleFilter('pending')}
+                  className={`px-2.5 py-1 rounded-lg font-bold transition-all ${
+                    moduleFilter === 'pending' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  Pending ({activeModuleTotalCount - activeModuleUploadedCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModuleFilter('uploaded')}
+                  className={`px-2.5 py-1 rounded-lg font-bold transition-all ${
+                    moduleFilter === 'uploaded' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  Uploaded ({activeModuleUploadedCount})
+                </button>
+              </div>
+
+              {/* Items List (Light, Clean White Cards) */}
+              <div className="space-y-2.5">
+                {activeModule.items
+                  .map((item, idx) => ({ ...item, originalIndex: idx }))
+                  .filter(item => {
+                    const isUploaded = !!moduleUploads[`${activeModule.code}_${item.originalIndex}`];
+                    if (moduleFilter === 'pending') return !isUploaded;
+                    if (moduleFilter === 'uploaded') return isUploaded;
+                    return true;
+                  })
+                  .map((item) => {
+                    const uploadKey = `${activeModule.code}_${item.originalIndex}`;
+                    const upload = moduleUploads[uploadKey];
+                    const isUploading = uploadingItemId === uploadKey;
+
+                    return (
+                      <div
+                        key={uploadKey}
+                        className={`p-3.5 sm:p-4 rounded-xl border transition-all ${
+                          upload
+                            ? 'bg-emerald-50/40 border-emerald-200 shadow-2xs'
+                            : 'bg-slate-50/50 border-slate-200 hover:border-slate-300 hover:bg-white'
+                        }`}
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="flex items-start gap-3 min-w-0">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs ${
+                              upload 
+                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' 
+                                : 'bg-slate-100 text-slate-600 border border-slate-200'
+                            }`}>
+                              {upload ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : (item.originalIndex + 1)}
+                            </div>
+
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-1.5">
+                                <h4 className="text-xs sm:text-sm font-bold text-slate-900 break-words">
+                                  {item.name}
+                                </h4>
+                                <span className={`text-[9px] font-black uppercase px-2 py-0.2 rounded-full ${
+                                  item.defaultTag === 'Mandatory'
+                                    ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                                    : 'bg-amber-50 text-amber-700 border border-amber-200'
+                                }`}>
+                                  {item.defaultTag}
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-2 text-[10px] text-slate-500 mt-1">
+                                <span>Category: <strong className="text-slate-700">{item.category}</strong></span>
+                                <span>•</span>
+                                <span>Accepted: <strong className="font-mono text-indigo-700">{item.acceptedTypes || 'PDF'}</strong></span>
+                              </div>
+
+                              {/* Uploaded File Pill & Instant AI Classification Info */}
+                              {upload && (
+                                <div className="mt-2.5 p-2.5 bg-white rounded-xl border border-emerald-200 text-[11px] text-slate-800 space-y-1.5 shadow-2xs">
+                                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                                    <div className="flex items-center gap-1.5 truncate">
+                                      <FileCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                      <span className="font-bold text-slate-900 truncate max-w-[200px]">{upload.name}</span>
+                                      <span className="text-[10px] text-emerald-600 font-semibold">({upload.size})</span>
+                                    </div>
+                                    <span className="text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full">
+                                      ✓ AI Verified
+                                    </span>
+                                  </div>
+
+                                  {/* Download Classified Info Options */}
+                                  <div className="flex flex-wrap items-center gap-1.5 pt-1.5 border-t border-slate-100">
+                                    <span className="text-[10px] text-slate-400 font-semibold">Download:</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDownloadClassified(upload.aiExtracted, 'json', `${item.name.replace(/\s+/g, '_')}_classified`)}
+                                      className="px-2 py-0.5 rounded-md bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-[10px] border border-indigo-200 flex items-center gap-1 shadow-2xs"
+                                    >
+                                      <Download className="w-2.5 h-2.5" />
+                                      <span>JSON Data</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDownloadClassified(upload.aiExtracted, 'csv', `${item.name.replace(/\s+/g, '_')}_classified`)}
+                                      className="px-2 py-0.5 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[10px] border border-emerald-200 flex items-center gap-1 shadow-2xs"
+                                    >
+                                      <Download className="w-2.5 h-2.5" />
+                                      <span>CSV Sheet</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDownloadClassified(upload.aiExtracted, 'txt', `${item.name.replace(/\s+/g, '_')}_audit_slip`)}
+                                      className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] border border-slate-200 flex items-center gap-1"
+                                    >
+                                      <Download className="w-2.5 h-2.5 text-amber-600" />
+                                      <span>Audit Slip</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Action Button: Upload / Re-upload */}
+                          <div className="shrink-0 flex items-center gap-2 pt-2 sm:pt-0">
+                            <label className={`cursor-pointer flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                              upload
+                                ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+                                : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-600/20'
+                            } ${isUploading ? 'opacity-70 pointer-events-none' : ''}`}>
+                              {isUploading ? (
+                                <>
+                                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                  <span>Scanning...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <UploadCloud className="w-3.5 h-3.5" />
+                                  <span>{upload ? 'Replace File' : 'Upload File'}</span>
+                                </>
+                              )}
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.docx,.json"
+                                onChange={(e) => handleModuleFileUpload(e, activeModule.code, item.originalIndex, item)}
+                                disabled={isUploading}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {/* ================= TAB 2: SEPARATE CA PRACTICE REQUESTS (CLEAN WHITE) ================= */}
+        {activeTab === 'requests' && (
+          <div className="space-y-4">
+            <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+              <div>
+                <h3 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+                  <FileCheck2 className="w-5 h-5 text-amber-500" />
+                  <span>Assigned CA Practice Requests</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Direct document collection requests issued by {foundFirm.name} ({foundFirm.partnerName}).
+                </p>
+              </div>
+              <span className="text-xs font-bold text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-xl w-fit">
+                {caRequests.length} Active Batches
+              </span>
+            </div>
+
+            {/* CA Requests Cards */}
+            <div className="space-y-4">
+              {caRequests.map(req => {
+                const submitted = req.items.filter(i => i.status === 'SUBMITTED').length;
+                const total = req.items.length;
+                const isComplete = submitted === total;
+
+                return (
+                  <div key={req.id} className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-6 space-y-4 shadow-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
+                            isComplete ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                          }`}>
+                            {isComplete ? '✓ Completed' : 'In Progress'}
+                          </span>
+                          <span className="text-xs text-slate-500">Period: <strong className="text-slate-800">{req.period}</strong></span>
+                        </div>
+                        <h4 className="text-sm sm:text-base font-extrabold text-slate-900 mt-1">
+                          {req.title}
+                        </h4>
+                      </div>
+
+                      <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200 shrink-0">
+                        <Clock className="w-3.5 h-3.5" />
+                        <span>Due: {req.dueDate}</span>
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div>
+                      <div className="flex items-center justify-between text-xs mb-1.5 text-slate-600">
+                        <span>Documents: <strong className="text-slate-900">{submitted} of {total} Submitted</strong></span>
+                        <span className="font-bold text-indigo-600">{Math.round((submitted / total) * 100)}%</span>
+                      </div>
+                      <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden p-0.5">
+                        <div 
+                          className={`h-full rounded-full transition-all duration-500 ${isComplete ? 'bg-emerald-500' : 'bg-indigo-600'}`}
+                          style={{ width: `${Math.round((submitted / total) * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Items Checklist for this CA Request */}
+                    <div className="space-y-2 pt-1">
+                      {req.items.map((item, idx) => {
+                        const isDone = item.status === 'SUBMITTED';
+                        const isUp = uploadingItemId === item.id;
+
+                        return (
+                          <div 
+                            key={item.id}
+                            className={`p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ${
+                              isDone ? 'bg-emerald-50/50 border-emerald-200' : 'bg-slate-50/70 border-slate-200'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold ${
+                                isDone ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-200 text-slate-600'
+                              }`}>
+                                {isDone ? '✓' : (idx + 1)}
+                              </span>
+                              <div className="min-w-0">
+                                <span className="font-bold text-xs text-slate-900 truncate block">
+                                  {item.title}
+                                </span>
+                                <span className="text-[10px] text-slate-500 block">
+                                  {item.category}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="shrink-0">
+                              <label className={`cursor-pointer px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                                isDone 
+                                  ? 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200' 
+                                  : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs'
+                              } ${isUp ? 'opacity-70 pointer-events-none' : ''}`}>
+                                {isUp ? (
+                                  <>
+                                    <RefreshCw className="w-3 h-3 animate-spin" />
+                                    <span>Uploading...</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <UploadCloud className="w-3 h-3" />
+                                    <span>{isDone ? 'Replace File' : 'Upload'}</span>
+                                  </>
+                                )}
+                                <input
+                                  type="file"
+                                  className="hidden"
+                                  accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.docx"
+                                  onChange={(e) => handleCARequestUpload(e, req.id, item.id, item.title)}
+                                  disabled={isUp}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ================= TAB 3: CENTRALIZED DOCUMENT VAULT (CLEAN WHITE) ================= */}
+        {activeTab === 'vault' && (
+          <div className="space-y-4">
+            <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+              <div>
+                <h3 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+                  <FolderOpen className="w-5 h-5 text-emerald-600" />
+                  <span>Central Document Repository ({allVaultDocuments.length} Documents)</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  All verified documents uploaded across Compliance Modules and assigned CA requests.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl">
+                  Encrypted AES-256 Vault
+                </span>
+              </div>
+            </div>
+
+            {/* Vault Search & Filter Controls */}
+            <div className="bg-white rounded-2xl border border-slate-200/90 p-3.5 flex flex-col sm:flex-row items-center gap-3 shadow-xs">
+              <div className="relative flex-1 w-full">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={vaultSearch}
+                  onChange={(e) => setVaultSearch(e.target.value)}
+                  placeholder="Search repository by document name, file, or statutory category..."
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto text-xs no-scrollbar">
+                <button
+                  type="button"
+                  onClick={() => setVaultModuleFilter('ALL')}
+                  className={`px-2.5 py-1.5 rounded-lg font-bold shrink-0 transition-all ${
+                    vaultModuleFilter === 'ALL' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  All Sources
+                </button>
+                {['A', 'B', 'C', 'D', 'E', 'F', 'CA'].map(code => (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() => setVaultModuleFilter(code)}
+                    className={`px-2 py-1.5 rounded-lg font-bold shrink-0 transition-all ${
+                      vaultModuleFilter === code ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {code === 'CA' ? 'CA Requests' : `Mod ${code}`}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Documents Table / Grid */}
+            <div className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs">
+              {filteredVaultDocuments.length === 0 ? (
+                <div className="py-12 text-center text-slate-400">
+                  <FolderOpen className="w-10 h-10 mx-auto text-slate-300 mb-2" />
+                  <p className="font-bold text-sm text-slate-700">No documents found matching "{vaultSearch}"</p>
+                  <p className="text-xs text-slate-500 mt-1">Upload documents in the Compliance Modules tab to populate your vault.</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-100">
+                  {filteredVaultDocuments.map((doc, idx) => (
+                    <div key={doc.id || idx} className="p-3.5 sm:p-4 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-start gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center shrink-0 mt-0.5">
+                          <FileText className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                            {doc.title}
+                          </h4>
+                          <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-500 mt-0.5">
+                            <span className="text-emerald-700 font-mono font-bold">{doc.fileName}</span>
+                            <span>•</span>
+                            <span>{doc.size}</span>
+                            <span>•</span>
+                            <span className="text-indigo-600 font-semibold">{doc.source}</span>
+                            <span>•</span>
+                            <span>Uploaded: {doc.date}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
+                        <button
+                          type="button"
+                          onClick={() => handleDownloadClassified(doc.aiExtracted || { documentType: doc.title }, 'json', `${doc.title.replace(/\s+/g, '_')}_data`)}
+                          className="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-[10px] flex items-center gap-1 shadow-2xs"
+                          title="Download JSON Data"
+                        >
+                          <Download className="w-3 h-3" />
+                          <span>JSON</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDownloadClassified(doc.aiExtracted || { documentType: doc.title }, 'csv', `${doc.title.replace(/\s+/g, '_')}_sheet`)}
+                          className="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-[10px] flex items-center gap-1 shadow-2xs"
+                          title="Download CSV Sheet"
+                        >
+                          <Download className="w-3 h-3" />
+                          <span>CSV</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDownloadClassified(doc.aiExtracted || { documentType: doc.title }, 'txt', `${doc.title.replace(/\s+/g, '_')}_slip`)}
+                          className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold text-[10px] flex items-center gap-1"
+                          title="Download Audit Slip"
+                        >
+                          <Download className="w-3 h-3 text-amber-600" />
+                          <span>Slip</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
           </div>
         )}
 
-        {/* Required Documents Checklist */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between px-1">
-            <h2 className="text-xs uppercase font-extrabold tracking-wider text-slate-400">
-              Required Documents Checklist ({request.items.length})
-            </h2>
-            <span className="text-[10px] text-slate-500 font-semibold sm:hidden">
-              Tap camera or upload
-            </span>
-          </div>
+        {/* ================= TAB 4: CLIENT PROFILE WITH EDIT OPTION (BEAUTIFUL WHITE THEME) ================= */}
+        {activeTab === 'profile' && (
+          <div className="space-y-4">
+            
+            {/* Profile Saved Toast */}
+            {profileSavedToast && (
+              <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-2 text-xs sm:text-sm text-emerald-800 shadow-sm animate-fadeIn">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                <span className="font-bold">Client profile and business configuration saved successfully!</span>
+              </div>
+            )}
 
-          {request.items.map((item, idx) => {
-            const isDone = item.status === 'SUBMITTED' || item.status === 'VERIFIED';
-            const isCurrentUploading = uploading && activeItemId === item.id;
+            {/* Profile Header Card with Cover and Avatar */}
+            <div className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs">
+              
+              {/* Cover Photo */}
+              <div className="relative h-40 sm:h-52 w-full bg-gradient-to-r from-indigo-600 via-indigo-700 to-slate-800 overflow-hidden">
+                {profileData.coverUrl ? (
+                  <img src={profileData.coverUrl} alt="Cover" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center opacity-25">
+                    <Building className="w-20 h-20 text-white" />
+                  </div>
+                )}
+                
+                <input
+                  type="file"
+                  ref={coverInputRef}
+                  onChange={handleCoverChange}
+                  accept="image/*"
+                  className="hidden"
+                />
+                
+                {isEditingProfile && (
+                  <button
+                    type="button"
+                    onClick={() => coverInputRef.current?.click()}
+                    className="absolute top-3 right-3 px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-white font-bold text-xs backdrop-blur-md border border-slate-700 flex items-center gap-1.5 transition-all shadow-md"
+                  >
+                    <Camera className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>Change Cover</span>
+                  </button>
+                )}
+              </div>
 
-            return (
-              <div 
-                key={item.id}
-                className={`p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border transition-all ${
-                  isDone 
-                    ? 'bg-slate-800/60 border-emerald-900/70' 
-                    : 'bg-slate-800 border-slate-700 hover:border-slate-600'
-                }`}
-              >
-                {/* Desktop View (md+) */}
-                <div className="hidden sm:flex sm:items-center justify-between gap-3">
-                  <div className="flex items-start gap-3 min-w-0">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
-                      isDone ? 'bg-emerald-900/60 text-emerald-400' : 'bg-slate-700 text-slate-300'
-                    }`}>
-                      {isDone ? <CheckCircle2 className="w-4 h-4" /> : <FileText className="w-4 h-4" />}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-bold text-white truncate">{item.title}</h3>
-                        {item.isRequired && (
-                          <span className="text-[10px] font-semibold text-rose-400 bg-rose-950/60 px-1.5 py-0.2 rounded border border-rose-900 shrink-0">
-                            Required
-                          </span>
+              {/* Avatar & Header Details */}
+              <div className="px-4 sm:px-6 pb-6 pt-0 relative">
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-12 sm:-mt-14 mb-4">
+                  <div className="flex items-end gap-3.5">
+                    <div className="relative group">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-indigo-600 text-white font-black text-2xl flex items-center justify-center shadow-lg border-4 border-white overflow-hidden shrink-0">
+                        {profileData.avatarUrl ? (
+                          <img src={profileData.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                        ) : (
+                          <span>{profileData.companyName.slice(0, 2).toUpperCase()}</span>
                         )}
                       </div>
-                      <p className="text-xs text-slate-400 mt-0.5">{item.description}</p>
-                      
-                      {isDone && item.uploadedFile && (
-                        <div className="mt-2 flex items-center gap-2 text-[11px] text-emerald-300 bg-emerald-950/40 px-2.5 py-1 rounded-md border border-emerald-900/50">
-                          <FileCheck className="w-3.5 h-3.5 shrink-0" />
-                          <span className="font-medium truncate max-w-[200px]">{item.uploadedFile.name}</span>
-                          <span className="text-emerald-500 font-mono shrink-0">({item.uploadedFile.size})</span>
-                          <span className="text-[10px] bg-emerald-900/80 text-emerald-200 px-1.5 py-0.5 rounded ml-auto shrink-0">
-                            AI Verified
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => handleDownloadClassified(item.uploadedFile.aiExtracted || item.uploadedFile, 'json', `${item.title.replace(/\s+/g, '_')}_classified`)}
-                            className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2 py-0.5 rounded border border-slate-700 flex items-center gap-1 transition-colors shrink-0"
-                            title="Download Classified Info"
-                          >
-                            <Download className="w-2.5 h-2.5 text-indigo-400" />
-                            <span>Download Data</span>
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center gap-2 shrink-0">
-                    <label className={`cursor-pointer flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                      isDone 
-                        ? 'bg-slate-700 hover:bg-slate-600 text-slate-200' 
-                        : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20'
-                    } ${isCurrentUploading ? 'opacity-70 pointer-events-none' : ''}`}>
-                      {isCurrentUploading ? (
-                        <>
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                          <span>Scanning...</span>
-                        </>
-                      ) : (
-                        <>
-                          <UploadCloud className="w-3.5 h-3.5" />
-                          <span>{isDone ? 'Re-upload' : 'Upload File'}</span>
-                        </>
-                      )}
-                      <input 
-                        type="file" 
-                        className="hidden" 
-                        accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.docx"
-                        onChange={(e) => handleFileUpload(e, item)}
-                        disabled={uploading}
+                      <input
+                        type="file"
+                        ref={avatarInputRef}
+                        onChange={handleAvatarChange}
+                        accept="image/*"
+                        className="hidden"
                       />
-                    </label>
-                  </div>
-                </div>
-
-                {/* Mobile View (<sm) - Built specifically for touch screens */}
-                <div className="sm:hidden space-y-2.5">
-                  <div className="flex items-start gap-2.5 min-w-0">
-                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
-                      isDone ? 'bg-emerald-900/60 text-emerald-400' : 'bg-slate-700 text-slate-300'
-                    }`}>
-                      {isDone ? <CheckCircle2 className="w-3.5 h-3.5" /> : <FileText className="w-3.5 h-3.5" />}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        <h3 className="text-xs font-bold text-white break-words leading-tight">{item.title}</h3>
-                        {item.isRequired && (
-                          <span className="text-[9px] font-semibold text-rose-400 bg-rose-950/60 px-1.5 py-0.2 rounded border border-rose-900 shrink-0">
-                            Required
-                          </span>
-                        )}
-                      </div>
-                      {item.description && (
-                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed break-words">{item.description}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Attached file status banner if done */}
-                  {isDone && item.uploadedFile && (
-                    <div className="p-2 rounded-lg bg-emerald-950/40 border border-emerald-900/50 text-[11px] text-emerald-300 flex items-center justify-between gap-1.5">
-                      <div className="flex items-center gap-1.5 min-w-0 truncate">
-                        <FileCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span className="truncate font-medium">{item.uploadedFile.name}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <span className="text-[9px] bg-emerald-900/80 text-emerald-200 px-1.5 py-0.5 rounded">
-                          Verified
-                        </span>
+                      {isEditingProfile && (
                         <button
                           type="button"
-                          onClick={() => handleDownloadClassified(item.uploadedFile.aiExtracted || item.uploadedFile, 'json', `${item.title.replace(/\s+/g, '_')}_classified`)}
-                          className="text-[9px] bg-slate-800 text-slate-200 px-1.5 py-0.5 rounded border border-slate-700 flex items-center gap-1 transition-colors"
-                          title="Download Classified Info"
+                          onClick={() => avatarInputRef.current?.click()}
+                          className="absolute inset-0 bg-slate-900/60 rounded-2xl flex items-center justify-center text-white transition-opacity"
+                          title="Upload Avatar Photo"
                         >
-                          <Download className="w-2.5 h-2.5 text-indigo-400" />
-                          <span>Data</span>
+                          <Camera className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h2 className="text-base sm:text-xl font-black text-slate-900">
+                          {profileData.companyName}
+                        </h2>
+                        <span className="text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                          <ShieldCheck className="w-3 h-3 text-emerald-600" /> KYC VERIFIED
+                        </span>
+                      </div>
+                      <span className="text-xs text-slate-500 block font-medium mt-0.5">
+                        {profileData.entityType} • {profileData.name} ({profileData.designation})
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Top Action: Edit Profile Toggle Button */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {!isEditingProfile ? (
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingProfile(true)}
+                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 active:scale-95"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                        <span>Edit Profile</span>
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setIsEditingProfile(false)}
+                          className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all flex items-center gap-1"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                          <span>Cancel</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleSaveProfile}
+                          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+                        >
+                          <Save className="w-3.5 h-3.5" />
+                          <span>Save Changes</span>
                         </button>
                       </div>
-                    </div>
-                  )}
-
-                  {/* Touch Action Bar on Mobile: Big Finger-Friendly Targets */}
-                  <div className="flex items-center gap-2 pt-1">
-                    <label className={`flex-1 cursor-pointer flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-center ${
-                      isDone 
-                        ? 'bg-slate-700 hover:bg-slate-600 text-slate-200' 
-                        : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm'
-                    } ${isCurrentUploading ? 'opacity-70 pointer-events-none' : ''}`}>
-                      {isCurrentUploading ? (
-                        <>
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                          <span>AI Scanning...</span>
-                        </>
-                      ) : (
-                        <>
-                          <UploadCloud className="w-3.5 h-3.5" />
-                          <span>{isDone ? 'Replace File' : 'Choose File'}</span>
-                        </>
-                      )}
-                      <input 
-                        type="file" 
-                        className="hidden" 
-                        accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.docx"
-                        onChange={(e) => handleFileUpload(e, item)}
-                        disabled={uploading}
-                      />
-                    </label>
-
-                    {/* Smartphone Camera Direct Snap Button */}
-                    <label 
-                      className="cursor-pointer flex items-center justify-center gap-1 p-2.5 px-3.5 bg-slate-700 hover:bg-slate-600 text-indigo-300 rounded-xl font-bold text-xs shrink-0" 
-                      title="Snap photo with phone camera"
-                    >
-                      <Camera className="w-4 h-4" />
-                      <span className="text-[11px]">Camera</span>
-                      <input 
-                        type="file" 
-                        accept="image/*" 
-                        capture="environment" 
-                        className="hidden"
-                        onChange={(e) => handleFileUpload(e, item)}
-                        disabled={uploading}
-                      />
-                    </label>
+                    )}
                   </div>
                 </div>
 
+                {/* Profile Content: Switch between Read-Only View and Active Edit Form */}
+                {!isEditingProfile ? (
+                  /* ================= READ-ONLY PROFILE SUMMARY ================= */
+                  <div className="space-y-4 pt-3 border-t border-slate-100 text-xs">
+                    
+                    {/* Information Grid Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      
+                      <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/80 space-y-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block flex items-center gap-1">
+                          <Building2 className="w-3 h-3 text-indigo-600" /> Legal Entity & Classification
+                        </span>
+                        <strong className="text-sm font-bold text-slate-900 block">{profileData.companyName}</strong>
+                        <span className="text-xs text-slate-600 block">{profileData.entityType}</span>
+                      </div>
+
+                      <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/80 space-y-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block flex items-center gap-1">
+                          <User className="w-3 h-3 text-indigo-600" /> Authorized Signatory
+                        </span>
+                        <strong className="text-sm font-bold text-slate-900 block">{profileData.name}</strong>
+                        <span className="text-xs text-slate-600 block">{profileData.designation}</span>
+                      </div>
+
+                      <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/80 space-y-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block flex items-center gap-1">
+                          <Phone className="w-3 h-3 text-indigo-600" /> Contact Details
+                        </span>
+                        <strong className="text-xs font-bold text-slate-900 block">{profileData.email}</strong>
+                        <span className="text-xs text-slate-600 block">{profileData.phone}</span>
+                      </div>
+
+                      <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/80 space-y-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                          Company PAN
+                        </span>
+                        <strong className="text-sm font-mono font-bold text-indigo-700 block">{profileData.pan}</strong>
+                        <span className="text-[10px] text-emerald-600 font-bold">✓ Income Tax Verified</span>
+                      </div>
+
+                      <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/80 space-y-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                          GSTIN Registration
+                        </span>
+                        <strong className="text-sm font-mono font-bold text-indigo-700 block">{profileData.gstin}</strong>
+                        <span className="text-[10px] text-emerald-600 font-bold">✓ Active Regular Taxpayer</span>
+                      </div>
+
+                      <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200/80 space-y-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-indigo-600" /> Location / Region
+                        </span>
+                        <strong className="text-xs font-bold text-slate-900 block">{profileData.city}</strong>
+                        <span className="text-[11px] text-slate-500 truncate block">{profileData.address}</span>
+                      </div>
+                    </div>
+
+                    {/* Company Bio */}
+                    <div className="bg-slate-50/70 p-4 rounded-xl border border-slate-200/80 space-y-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block flex items-center gap-1">
+                        <Briefcase className="w-3 h-3 text-indigo-600" /> Business Overview & Core Operations
+                      </span>
+                      <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                        {profileData.bio}
+                      </p>
+                    </div>
+
+                    {/* Statutory KYC Clearance Certificate Box */}
+                    <div className="p-4 bg-emerald-50/70 rounded-xl border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                          <ShieldCheck className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <strong className="text-slate-900 block text-xs sm:text-sm">Compliance Clearance: Level-3 Passed</strong>
+                          <span className="text-slate-600 text-[11px] block">Verified via {profileData.kycDocType} • Audit Validated {profileData.kycDate}</span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold text-emerald-800 bg-white border border-emerald-300 px-3 py-1 rounded-full w-fit">
+                        ISO 27001 Validated
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  /* ================= ACTIVE EDIT PROFILE FORM ================= */
+                  <form onSubmit={handleSaveProfile} className="space-y-4 pt-3 border-t border-slate-100 text-xs animate-fadeIn">
+                    <div className="flex items-center justify-between bg-indigo-50/80 p-3 rounded-xl border border-indigo-200 text-indigo-900 text-xs">
+                      <span className="font-bold flex items-center gap-1.5">
+                        <Edit3 className="w-3.5 h-3.5 text-indigo-600" />
+                        Editing Profile Details (Make changes below and click Save):
+                      </span>
+                      <span className="text-[10px] text-indigo-700 font-semibold">Active Edit Mode</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">Company / Entity Legal Name *</label>
+                        <input
+                          type="text"
+                          value={profileData.companyName}
+                          onChange={(e) => setProfileData({ ...profileData, companyName: e.target.value })}
+                          className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">Entity Classification *</label>
+                        <select
+                          value={profileData.entityType}
+                          onChange={(e) => setProfileData({ ...profileData, entityType: e.target.value })}
+                          className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        >
+                          <option>Private Limited</option>
+                          <option>LLP (Limited Liability Partnership)</option>
+                          <option>Partnership Firm</option>
+                          <option>Proprietorship</option>
+                          <option>Public Limited</option>
+                          <option>Trust / Society</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">Authorized Contact Person *</label>
+                        <input
+                          type="text"
+                          value={profileData.name}
+                          onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                          className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">Designation</label>
+                        <input
+                          type="text"
+                          value={profileData.designation}
+                          onChange={(e) => setProfileData({ ...profileData, designation: e.target.value })}
+                          className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">Official Email Address *</label>
+                        <input
+                          type="email"
+                          value={profileData.email}
+                          onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                          className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">Phone Number *</label>
+                        <input
+                          type="text"
+                          value={profileData.phone}
+                          onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                          className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">Company PAN (10 Digits) *</label>
+                        <input
+                          type="text"
+                          value={profileData.pan}
+                          onChange={(e) => setProfileData({ ...profileData, pan: e.target.value.toUpperCase() })}
+                          className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono font-bold text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">GSTIN (15 Digits) *</label>
+                        <input
+                          type="text"
+                          value={profileData.gstin}
+                          onChange={(e) => setProfileData({ ...profileData, gstin: e.target.value.toUpperCase() })}
+                          className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono font-bold text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">City & State</label>
+                        <input
+                          type="text"
+                          value={profileData.city}
+                          onChange={(e) => setProfileData({ ...profileData, city: e.target.value })}
+                          className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="font-bold text-slate-700 block mb-1">Registered Office Address</label>
+                        <input
+                          type="text"
+                          value={profileData.address}
+                          onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
+                          className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="sm:col-span-2">
+                        <label className="font-bold text-slate-700 block mb-1">Company Bio & Core Business Activities</label>
+                        <textarea
+                          rows={3}
+                          value={profileData.bio}
+                          onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
+                          className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingProfile(false)}
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+                      >
+                        <Check className="w-4 h-4" />
+                        <span>Save Profile Changes</span>
+                      </button>
+                    </div>
+                  </form>
+                )}
+
               </div>
-            );
-          })}
-        </div>
+            </div>
 
-        {/* Client Help Note */}
-        <div className="mt-8 text-center text-xs text-slate-500 px-2 space-y-1">
-          <p className="leading-relaxed">
-            Files uploaded here are encrypted and delivered directly to <strong>{foundFirm.name}</strong>.
-          </p>
-          <p className="text-[11px]">
-            Queries? Contact your CA team at <span className="text-indigo-400 font-medium break-all">{foundFirm.email}</span>
-          </p>
-        </div>
+          </div>
+        )}
+
       </main>
-
-      {/* 3. Footer */}
-      <footer className="p-4 text-center text-slate-500 text-[10px] sm:text-[11px] border-t border-slate-800">
-        Powered by ClarioLoop • Multi-Tenant Client Document Collection for CA Firms
-      </footer>
 
     </div>
   );

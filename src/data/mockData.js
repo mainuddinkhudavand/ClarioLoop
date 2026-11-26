@@ -1187,3 +1187,7 @@ export const crmSaaSPackages = [
     ]
   }
 ];
+
+// Re-export Multi-Vertical Modules & Checklists
+export * from './verticalData';
+

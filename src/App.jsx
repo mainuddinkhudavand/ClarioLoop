@@ -21,6 +21,10 @@ import AdminPortal from './components/AdminPortal';
 import AuthModal from './components/AuthModal';
 import ProfileModal from './components/ProfileModal';
 import PortalAuthGateway from './components/PortalAuthGateway';
+import CooperativePortal from './components/CooperativePortal';
+import EducationPortal from './components/EducationPortal';
+import InsurancePortal from './components/InsurancePortal';
+import RoleGatewayModal from './components/RoleGatewayModal';
 import { mockFirms } from './data/mockData';
 
 export default function App() {
@@ -32,6 +36,13 @@ export default function App() {
   const [activeFirmId, setActiveFirmId] = useState('firm-1');
   const [isFirmSwitcherOpen, setIsFirmSwitcherOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [selectedSubscriptionVertical, setSelectedSubscriptionVertical] = useState('ca');
+
+  // Vertical Role Gateway State (2 options: Desk vs Vault for CA, Co-op, Edu, Insurance)
+  const [roleGatewayVertical, setRoleGatewayVertical] = useState(null); // 'ca' | 'cooperative' | 'education' | 'insurance' | null
+  const [coopRole, setCoopRole] = useState('admin'); // 'admin' | 'member'
+  const [eduRole, setEduRole] = useState('admin'); // 'admin' | 'student'
+  const [insuranceRole, setInsuranceRole] = useState('admin'); // 'admin' | 'policyholder'
 
   // User Profile & Authentication State (Strict Privacy: Default null = Not Logged In)
   const [currentUser, setCurrentUser] = useState(null);
@@ -80,6 +91,39 @@ export default function App() {
       }
       return f;
     }));
+  };
+
+  // 2-Option Role Gateway Selector for all 4 Verticals (CA vs Client, Admin vs Member/Student/Policyholder)
+  const handleEnterVertical = (verticalKey) => {
+    let vert = 'ca';
+    if (verticalKey === 'coop' || verticalKey === 'cooperative') vert = 'cooperative';
+    else if (verticalKey === 'edu' || verticalKey === 'education') vert = 'education';
+    else if (verticalKey === 'insurance') vert = 'insurance';
+    else if (verticalKey === 'ca' || verticalKey === 'app') vert = 'ca';
+    setRoleGatewayVertical(vert);
+  };
+
+  const handleRoleGatewaySelect = (roleId) => {
+    if (roleGatewayVertical === 'ca') {
+      setRoleGatewayVertical(null);
+      if (roleId === 'ca') {
+        handleQuickSwitch('app');
+      } else {
+        handleQuickSwitch('portal');
+      }
+    } else if (roleGatewayVertical === 'cooperative') {
+      setRoleGatewayVertical(null);
+      setCoopRole(roleId);
+      setCurrentView('coop');
+    } else if (roleGatewayVertical === 'education') {
+      setRoleGatewayVertical(null);
+      setEduRole(roleId);
+      setCurrentView('edu');
+    } else if (roleGatewayVertical === 'insurance') {
+      setRoleGatewayVertical(null);
+      setInsuranceRole(roleId);
+      setCurrentView('insurance');
+    }
   };
 
   // ⚡ 1-Click Fast Persona Switcher (Ultra User-Friendly for Developers, Clients, and Evaluators)
@@ -141,6 +185,59 @@ export default function App() {
         bio: 'Principal System Operations & Security Architect at ClarioLoop.'
       });
       setCurrentView('admin');
+    } else if (target === 'coop') {
+      setCurrentUser({
+        id: 'coop-admin-vasant',
+        role: 'coop_admin',
+        name: 'Shri Vasantrao Kulkarni',
+        email: 'chairman@sahyadricoop.in',
+        phone: '+91 98450 84920',
+        firmName: 'Sahyadri Urban Co-operative Credit Society Ltd',
+        isKycVerified: true,
+        kycDate: 'Nov 2026',
+        kycDocType: 'RCS Registration & Board Authority',
+        avatarInitials: 'VK',
+        designation: 'Society Chairman & Director',
+        city: 'Pune, Maharashtra',
+        location: 'Pune, Maharashtra'
+      });
+      setCurrentView('coop');
+    } else if (target === 'edu') {
+      setCurrentUser({
+        id: 'edu-dean-venkatesh',
+        role: 'edu_admin',
+        name: 'Dr. K. S. Venkatesh (Dean)',
+        email: 'dean.admissions@rvinstitute.edu.in',
+        phone: '+91 98800 11223',
+        firmName: 'RV Institute of Technology & Autonomous University',
+        isKycVerified: true,
+        kycDate: 'Nov 2026',
+        kycDocType: 'AICTE / University Directorate Record',
+        avatarInitials: 'KV',
+        designation: 'Principal & Head of Admissions',
+        city: 'Bengaluru, Karnataka',
+        location: 'Bengaluru, Karnataka'
+      });
+      setCurrentView('edu');
+    } else if (target === 'insurance') {
+      setCurrentUser({
+        id: 'ins-broker-sunil',
+        role: 'ins_broker',
+        name: 'Sunil Mathur (Licenced Broker)',
+        email: 'sunil@surakshainsurance.in',
+        phone: '+91 98200 44332',
+        firmName: 'Suraksha Insurance Advisory & Corporate Brokers',
+        isKycVerified: true,
+        kycDate: 'Nov 2026',
+        kycDocType: 'IRDAI Direct Broker Licence DB-849',
+        avatarInitials: 'SM',
+        designation: 'Principal Officer & Broker Director',
+        city: 'Mumbai, Maharashtra',
+        location: 'Mumbai, Maharashtra'
+      });
+      setCurrentView('insurance');
+    } else if (target === 'subscriptions') {
+      setCurrentView('subscriptions');
     } else if (target === 'home') {
       setCurrentView('home');
     }
@@ -161,6 +258,7 @@ export default function App() {
           onOpenMobileMenu={() => setIsMobileDrawerOpen(true)}
           currentUser={currentUser}
           onQuickSwitch={handleQuickSwitch}
+          onEnterVertical={handleEnterVertical}
           onOpenAuth={(targetRole) => {
             setAuthDefaultRole(targetRole || 'ca');
             setIsAuthModalOpen(true);
@@ -172,12 +270,83 @@ export default function App() {
       {/* VIEW 1: HOME PAGE (DEFAULT) */}
       {currentView === 'home' && (
         <HomePage 
-          onLaunchApp={() => setCurrentView('auth_ca')}
-          onLaunchPortal={() => setCurrentView('auth_client')}
-          onLaunchAdmin={() => setCurrentView('auth_admin')}
+          onLaunchApp={() => handleEnterVertical('ca')}
+          onLaunchPortal={() => handleQuickSwitch('portal')}
+          onLaunchAdmin={() => handleQuickSwitch('admin')}
+          onLaunchCoop={() => handleEnterVertical('cooperative')}
+          onLaunchEdu={() => handleEnterVertical('education')}
+          onLaunchInsurance={() => handleEnterVertical('insurance')}
+          onEnterVertical={handleEnterVertical}
+          onOpenSubscriptions={(vert) => {
+            setSelectedSubscriptionVertical(vert || 'ca');
+            setCurrentView('subscriptions');
+          }}
           onLaunchAI={() => setIsAIModalOpen(true)}
           onQuickSwitch={handleQuickSwitch}
         />
+      )}
+
+      {/* VIEW: COOPERATIVE BANKING & SOCIETY SUITE */}
+      {currentView === 'coop' && (
+        <CooperativePortal 
+          initialRole={coopRole}
+          currentUser={currentUser}
+          onOpenAuth={(vert) => {
+            setAuthDefaultRole(vert || 'cooperative');
+            setIsAuthModalOpen(true);
+          }}
+          onBack={() => setCurrentView('home')}
+          onOpenSubscribe={(vert) => {
+            setSelectedSubscriptionVertical(vert || 'cooperative');
+            setCurrentView('subscriptions');
+          }}
+        />
+      )}
+
+      {/* VIEW: EDUCATION & ADMISSIONS SUITE */}
+      {currentView === 'edu' && (
+        <EducationPortal 
+          initialRole={eduRole}
+          currentUser={currentUser}
+          onOpenAuth={(vert) => {
+            setAuthDefaultRole(vert || 'education');
+            setIsAuthModalOpen(true);
+          }}
+          onBack={() => setCurrentView('home')}
+          onOpenSubscribe={(vert) => {
+            setSelectedSubscriptionVertical(vert || 'education');
+            setCurrentView('subscriptions');
+          }}
+        />
+      )}
+
+      {/* VIEW: INSURANCE & CLAIMS SUITE */}
+      {currentView === 'insurance' && (
+        <InsurancePortal 
+          initialRole={insuranceRole}
+          currentUser={currentUser}
+          onOpenAuth={(vert) => {
+            setAuthDefaultRole(vert || 'insurance');
+            setIsAuthModalOpen(true);
+          }}
+          onBack={() => setCurrentView('home')}
+          onOpenSubscribe={(vert) => {
+            setSelectedSubscriptionVertical(vert || 'insurance');
+            setCurrentView('subscriptions');
+          }}
+        />
+      )}
+
+      {/* VIEW: MULTI-VERTICAL SUBSCRIPTIONS */}
+      {currentView === 'subscriptions' && (
+        <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+          <SubscriptionPlans 
+            activeFirm={activeFirm} 
+            onSubscriptionUpdated={handleSubscriptionUpdated}
+            onBack={() => setCurrentView('home')}
+            defaultVertical={selectedSubscriptionVertical}
+          />
+        </div>
       )}
 
       {/* DEDICATED PORTAL AUTH GATEWAYS (LOGIN + REGISTER WITH MANDATORY KYC) */}
@@ -222,6 +391,7 @@ export default function App() {
             onBackToFirm={() => setCurrentView('home')} 
             activeFirm={activeFirm}
             currentUser={currentUser}
+            onUpdateProfile={(updated) => setCurrentUser(prev => ({ ...prev, ...updated }))}
             onQuickSwitch={handleQuickSwitch}
             onLogout={() => {
               setCurrentUser(null);
@@ -292,6 +462,7 @@ export default function App() {
               onOpenFirmSwitcher={() => setIsFirmSwitcherOpen(true)}
               currentUser={currentUser}
               onQuickSwitch={handleQuickSwitch}
+              onOpenClientPortal={() => setCurrentView('portal')}
               onLogout={() => {
                 setCurrentUser(null);
                 setCurrentView('home');
@@ -413,6 +584,19 @@ export default function App() {
         />
       ))}
 
+      {/* 2-Option Role Gateway Selector Modal for CA, Co-op, Edu, Insurance */}
+      <RoleGatewayModal
+        isOpen={!!roleGatewayVertical}
+        onClose={() => setRoleGatewayVertical(null)}
+        vertical={roleGatewayVertical}
+        onSelectRole={handleRoleGatewaySelect}
+        onOpenAuth={(targetRole) => {
+          setAuthDefaultRole(targetRole || roleGatewayVertical);
+          setRoleGatewayVertical(null);
+          setIsAuthModalOpen(true);
+        }}
+      />
+
       {/* Global AI Copilot Modal */}
       <AIAssistantModal 
         isOpen={isAIModalOpen} 
@@ -447,7 +631,18 @@ export default function App() {
           setCurrentUser(profile);
           if (profile.role === 'admin') setCurrentView('admin');
           else if (profile.role === 'client') setCurrentView('portal');
-          else setCurrentView('app');
+          else if (profile.role === 'cooperative') {
+            setCoopRole('admin');
+            setCurrentView('coop');
+          } else if (profile.role === 'education') {
+            setEduRole('admin');
+            setCurrentView('edu');
+          } else if (profile.role === 'insurance') {
+            setInsuranceRole('admin');
+            setCurrentView('insurance');
+          } else {
+            setCurrentView('app');
+          }
         }}
       />
 
@@ -465,8 +660,8 @@ export default function App() {
         }}
       />
 
-      {/* Native-Style Mobile Bottom Navigation Bar (Hidden in client portal and admin views) */}
-      {currentView !== 'portal' && currentView !== 'admin' && (
+      {/* Native-Style Mobile Bottom Navigation Bar (Shown strictly inside CA Practice Portal) */}
+      {currentView === 'app' && (
         <MobileBottomNav 
           currentView={currentView}
           setCurrentView={setCurrentView}
@@ -475,40 +670,6 @@ export default function App() {
           onOpenAI={() => setIsAIModalOpen(true)}
         />
       )}
-
-      {/* Universal Floating Quick Role Switcher (Provides instant 1-click developer, client & CA navigation) */}
-      <aside 
-        aria-label="Portal Switcher" 
-        className={`fixed ${currentView !== 'portal' && currentView !== 'admin' ? 'bottom-16 md:bottom-3' : 'bottom-3'} left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 text-white backdrop-blur-md px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl shadow-2xl border border-slate-700/90 flex items-center gap-1 sm:gap-2 text-[10px] sm:text-xs font-bold max-w-[96vw] overflow-x-auto no-scrollbar`}
-      >
-        <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-indigo-400 flex items-center gap-1 shrink-0">
-          <span>⚡ Switch:</span>
-        </span>
-        <button
-          onClick={() => handleQuickSwitch('home')}
-          className={`px-2 sm:px-2.5 py-1 rounded-xl transition-all shrink-0 ${currentView === 'home' ? 'bg-slate-700 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
-        >
-          Home
-        </button>
-        <button
-          onClick={() => handleQuickSwitch('app')}
-          className={`px-2 sm:px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 shrink-0 ${currentView === 'app' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
-        >
-          <span>💼 CA</span>
-        </button>
-        <button
-          onClick={() => handleQuickSwitch('portal')}
-          className={`px-2 sm:px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 shrink-0 ${currentView === 'portal' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
-        >
-          <span>📱 Client</span>
-        </button>
-        <button
-          onClick={() => handleQuickSwitch('admin')}
-          className={`px-2 sm:px-2.5 py-1 rounded-xl transition-all flex items-center gap-1 shrink-0 ${currentView === 'admin' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
-        >
-          <span>🛡️ Admin</span>
-        </button>
-      </aside>
     </div>
   );
 }
