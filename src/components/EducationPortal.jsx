@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { mockEducationalInstitutions } from '../data/verticalData';
 import AIAssistantModal from './AIAssistantModal';
+import PortalSidebar from './PortalSidebar';
 
 const SECTIONS_META = [
   { code: 'A', name: 'A. Admission Application & Identity', count: 7 },
@@ -393,10 +394,18 @@ export default function EducationPortal({
               ))}
           </div>
         ) : (
-          /* ================= STAFF 11-SCREEN WORKSPACE ================= */
-          <>
-            <div className="bg-white rounded-2xl border border-slate-200 p-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
-              {[
+          /* ================= STAFF WORKSPACE WITH LEFT SIDEBAR ================= */
+          <div className="flex flex-col md:flex-row bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+            <PortalSidebar
+              title="RV Institute & Campus"
+              subtitle="Admissions & Compliance"
+              initials="ED"
+              accent="blue"
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              currentUser={currentUser}
+              onBack={onBack}
+              items={[
                 { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
                 { id: 'students', label: 'Students', icon: Users },
                 { id: 'checklists', label: 'Checklists', icon: CheckSquare },
@@ -407,23 +416,10 @@ export default function EducationPortal({
                 { id: 'templates', label: 'Templates', icon: BookOpen },
                 { id: 'reports', label: 'Reports', icon: BarChart3 },
                 { id: 'settings', label: 'Settings', icon: Settings },
-                { id: 'audit', label: 'Audit Log', icon: ShieldAlert },
-              ].map((t) => {
-                const Icon = t.icon;
-                return (
-                  <button
-                    key={t.id}
-                    onClick={() => setActiveTab(t.id)}
-                    className={`px-3 py-2 rounded-xl flex items-center gap-1.5 whitespace-nowrap transition-all ${
-                      activeTab === t.id ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    <span>{t.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+                { id: 'audit', label: 'Audit Log', icon: ShieldAlert }
+              ]}
+            />
+            <div className="flex-1 min-w-0 p-4 sm:p-6 bg-slate-50/50 space-y-5">
 
             {/* DASHBOARD */}
             {activeTab === 'dashboard' && (
@@ -766,7 +762,8 @@ export default function EducationPortal({
                 ))}
               </div>
             )}
-          </>
+            </div>
+          </div>
         )}
       </main>
 

@@ -626,6 +626,7 @@ export default function App() {
       <MobileSidebarDrawer
         isOpen={isMobileDrawerOpen}
         onClose={() => setIsMobileDrawerOpen(false)}
+        currentView={currentView}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         activeFirm={activeFirm}

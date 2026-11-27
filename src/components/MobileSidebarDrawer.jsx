@@ -31,9 +31,11 @@ export default function MobileSidebarDrawer({
   onOpenProfile,
   onOpenAuth,
   onEnterVertical,
-  onOpenSubscriptions
+  onOpenSubscriptions,
+  currentView = 'home'
 }) {
   if (!isOpen) return null;
+  const isInsideCAPortal = currentView === 'app';
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -133,37 +135,39 @@ export default function MobileSidebarDrawer({
 
         {/* Scrollable Navigation Body */}
         <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
-          {/* Industry Vertical Suites */}
-          <div className="p-3 space-y-1.5">
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block px-2 mb-1">
-              Industry Portals
-            </span>
-            {industrySuites.map(suite => {
-              const Icon = suite.icon;
-              return (
-                <button
-                  key={suite.id}
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    if (onEnterVertical) onEnterVertical(suite.id);
-                  }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all"
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className={`w-7 h-7 rounded-lg ${suite.bg} flex items-center justify-center shrink-0`}>
-                      <Icon className={`w-3.5 h-3.5 ${suite.color}`} />
+          {/* Industry Vertical Suites (Hidden when inside CA Portal so only CA sidebar appears) */}
+          {!isInsideCAPortal && (
+            <div className="p-3 space-y-1.5">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block px-2 mb-1">
+                Industry Portals
+              </span>
+              {industrySuites.map(suite => {
+                const Icon = suite.icon;
+                return (
+                  <button
+                    key={suite.id}
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      if (onEnterVertical) onEnterVertical(suite.id);
+                    }}
+                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className={`w-7 h-7 rounded-lg ${suite.bg} flex items-center justify-center shrink-0`}>
+                        <Icon className={`w-3.5 h-3.5 ${suite.color}`} />
+                      </div>
+                      <span className="truncate">{suite.label}</span>
                     </div>
-                    <span className="truncate">{suite.label}</span>
-                  </div>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                </button>
-              );
-            })}
-          </div>
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
-          {/* CA Workspace Modules (visible when signed in as CA) */}
-          {currentUser && currentUser.role === 'ca' && (
+          {/* CA Workspace Modules (Shown when inside CA Portal) */}
+          {isInsideCAPortal && currentUser && currentUser.role === 'ca' && (
             <nav className="p-3 space-y-1 text-xs">
               <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block px-2 mb-1">
                 CA Practice Menu
@@ -193,28 +197,30 @@ export default function MobileSidebarDrawer({
             </nav>
           )}
 
-          {/* Platform Quick Links */}
-          <div className="p-3 space-y-1.5 text-xs">
-            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block px-2 mb-1">
-              Platform
-            </span>
-            {onOpenSubscriptions && (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onOpenSubscriptions();
-                }}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-bold text-slate-700 hover:bg-slate-50"
-              >
-                <div className="flex items-center gap-2.5">
-                  <CreditCard className="w-4 h-4 text-amber-500" />
-                  <span>Industry Subscriptions</span>
-                </div>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              </button>
-            )}
-          </div>
+          {/* Platform Quick Links (Hidden when inside CA Portal) */}
+          {!isInsideCAPortal && (
+            <div className="p-3 space-y-1.5 text-xs">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block px-2 mb-1">
+                Platform
+              </span>
+              {onOpenSubscriptions && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenSubscriptions();
+                  }}
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-bold text-slate-700 hover:bg-slate-50"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <CreditCard className="w-4 h-4 text-amber-500" />
+                    <span>Industry Subscriptions</span>
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Drawer Footer */}

@@ -46,6 +46,7 @@ import {
   LogOut
 } from 'lucide-react';
 import ClientCRMView from './ClientCRMView';
+import PortalSidebar from './PortalSidebar';
 
 // Live Active User Sessions (Multi-Portal Directory)
 const initialLiveUsers = [
@@ -456,92 +457,29 @@ export default function AdminPortal({
         </div>
       </header>
 
-      {/* Subnav Navigation */}
-      <div className="bg-white border-b border-slate-200 px-3.5 sm:px-8 flex items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar text-xs font-bold shadow-2xs">
-        <button
-          onClick={() => setActiveTab('firms')}
-          className={`py-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
-            activeTab === 'firms' 
-              ? 'border-indigo-600 text-indigo-600 font-black' 
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Building2 className="w-4 h-4 text-indigo-600" />
-          <span>Tenant Practices ({totalFirms})</span>
-        </button>
+      {/* Admin Workspace with Left Sidebar (Desktop + Mobile Slide-Out Drawer) */}
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        <PortalSidebar
+          title="ClarioLoop Admin"
+          subtitle="Owner Control Center"
+          initials="AD"
+          accent="indigo"
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          currentUser={currentUser}
+          onBack={onBackToHome}
+          items={[
+            { id: 'firms', label: 'Tenant Practices', icon: Building2 },
+            { id: 'users', label: 'Live Logged-In Users', icon: Users },
+            { id: 'crm', label: 'Client Acquisition CRM', icon: UserPlus },
+            { id: 'overview', label: 'Platform Overview', icon: Activity },
+            { id: 'subscriptions', label: 'Revenue & Plans', icon: CreditCard },
+            { id: 'system', label: 'Infrastructure & AI', icon: Server }
+          ]}
+        />
 
-        {/* Live Logged-In Users Tab */}
-        <button
-          onClick={() => setActiveTab('users')}
-          className={`py-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
-            activeTab === 'users' 
-              ? 'border-indigo-600 text-indigo-600 font-black' 
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Users className="w-4 h-4 text-emerald-600" />
-          <span>Live Logged-In Users</span>
-          <span className="flex items-center gap-1 text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-black">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            {totalLiveUsers} Online
-          </span>
-        </button>
-
-        {/* CRM Exclusively under Admin */}
-        <button
-          onClick={() => setActiveTab('crm')}
-          className={`py-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
-            activeTab === 'crm' 
-              ? 'border-indigo-600 text-indigo-600 font-black' 
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <UserPlus className="w-4 h-4 text-cyan-600" />
-          <span>Client Acquisition CRM (248)</span>
-          <span className="text-[9px] bg-cyan-50 text-cyan-800 border border-cyan-200 px-1.5 py-0.2 rounded-full font-black">
-            ADMIN ONLY
-          </span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('overview')}
-          className={`py-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
-            activeTab === 'overview' 
-              ? 'border-indigo-600 text-indigo-600 font-black' 
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Activity className="w-4 h-4 text-indigo-600" />
-          <span>Platform Overview</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('subscriptions')}
-          className={`py-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
-            activeTab === 'subscriptions' 
-              ? 'border-indigo-600 text-indigo-600 font-black' 
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <CreditCard className="w-4 h-4 text-indigo-600" />
-          <span>Revenue & Plans</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('system')}
-          className={`py-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
-            activeTab === 'system' 
-              ? 'border-indigo-600 text-indigo-600 font-black' 
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Server className="w-4 h-4 text-indigo-600" />
-          <span>Infrastructure & AI Gateway</span>
-        </button>
-      </div>
-
-      {/* Main Admin Content Area */}
-      <main className="flex-1 p-4 sm:p-8 pb-24 md:pb-8 max-w-7xl mx-auto w-full space-y-6">
+        {/* Main Admin Content Area */}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-8 pb-24 md:pb-8 max-w-7xl mx-auto w-full space-y-6">
 
         {/* Global Platform KPIs */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
@@ -1264,7 +1202,8 @@ export default function AdminPortal({
           </div>
         )}
 
-      </main>
+        </main>
+      </div>
 
       {/* ================= EDIT FIRM MODAL ================= */}
       {editingFirm && (

@@ -32,6 +32,7 @@ export default function Navbar({
   onEnterVertical
 }) {
   const isHome = currentView === 'home';
+  const showIndustryNav = currentView === 'home' || currentView === 'subscriptions';
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 transition-all">
@@ -39,8 +40,8 @@ export default function Navbar({
         
         {/* Brand Logo & Vertical Portals */}
         <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-          {/* Mobile Menu Hamburger */}
-          {onOpenMobileMenu && (
+          {/* Mobile Menu Hamburger (Shown on Home, Subscriptions, and CA Portal; Co-op/Edu/Ins use their own PortalSidebar drawer) */}
+          {onOpenMobileMenu && !['coop', 'edu', 'insurance'].includes(currentView) && (
             <button
               onClick={onOpenMobileMenu}
               className="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shrink-0"
@@ -58,8 +59,9 @@ export default function Navbar({
             <Logo size="default" showTagline={false} className="hidden sm:flex" />
           </button>
 
-          {/* 4 Industry Suites Navigation (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-1 text-xs font-bold text-slate-600 bg-slate-100/80 p-1 rounded-2xl border border-slate-200/80">
+          {/* 4 Industry Suites Navigation (Desktop — hidden when inside a specific portal) */}
+          {showIndustryNav && (
+            <nav className="hidden lg:flex items-center gap-1 text-xs font-bold text-slate-600 bg-slate-100/80 p-1 rounded-2xl border border-slate-200/80">
             {/* CA Portal */}
             <button 
               onClick={() => {
@@ -149,6 +151,7 @@ export default function Navbar({
               <span>Subscriptions</span>
             </button>
           </nav>
+          )}
         </div>
 
         {/* Right CTA Actions */}

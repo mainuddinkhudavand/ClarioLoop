@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import { cooperativeMasterChecklist, mockCooperativeSocieties } from '../data/verticalData';
 import AIAssistantModal from './AIAssistantModal';
+import PortalSidebar from './PortalSidebar';
 
 export default function CooperativePortal({ 
   onBack, 
@@ -454,31 +455,26 @@ This is an automated operational checklist slip for statutory inspection under C
               </div>
             </div>
 
-            {/* Sub-Tabs Navigation */}
-            <div className="flex items-center gap-2 border-b border-slate-200 overflow-x-auto no-scrollbar text-xs font-bold">
-              {[
-                { id: 'modules', label: 'Master Checklists', icon: Layers },
-                { id: 'pigmy', label: 'Pigmy & Field Agents', icon: Coins },
-                { id: 'loans', label: 'Loan Sanction Dossiers', icon: FileCheck2 },
-                { id: 'governance', label: 'Audit & Board Minutes', icon: BookOpen }
-              ].map(tab => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`py-3 px-3.5 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
-                      activeTab === tab.id
-                        ? 'border-emerald-600 text-emerald-700 font-black'
-                        : 'border-transparent text-slate-500 hover:text-slate-800'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+            {/* Workspace with CA-style Left Sidebar */}
+            <div className="flex flex-col md:flex-row bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+              <PortalSidebar
+                title="Sahyadri Co-op Society"
+                subtitle="Banking & PACS Desk"
+                initials="SC"
+                accent="emerald"
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                currentUser={currentUser}
+                onBack={onBack}
+                items={[
+                  { id: 'modules', label: 'Master Checklists', icon: Layers },
+                  { id: 'pigmy', label: 'Pigmy & Field Agents', icon: Coins },
+                  { id: 'loans', label: 'Loan Sanction Dossiers', icon: FileCheck2 },
+                  { id: 'governance', label: 'Audit & Board Minutes', icon: BookOpen }
+                ]}
+              />
+
+              <div className="flex-1 min-w-0 p-4 sm:p-6 bg-slate-50/50 space-y-6">
 
             {/* TAB CONTENT 1: MASTER MODULES */}
             {activeTab === 'modules' && (
@@ -791,6 +787,8 @@ This is an automated operational checklist slip for statutory inspection under C
               </div>
             )}
 
+              </div>
+            </div>
           </div>
         )}
 
