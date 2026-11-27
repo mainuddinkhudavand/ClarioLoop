@@ -522,44 +522,7 @@ export default function HomePage({
                 </button>
               </div>
 
-              {/* Operational Guide Callout */}
-              <div className="bg-indigo-950 text-indigo-100 p-3.5 sm:px-6 border-b border-indigo-900/80 space-y-2 text-xs">
-                <div className="flex items-center gap-2 text-indigo-300 font-black text-xs uppercase tracking-wider">
-                  <Layers className="w-4 h-4 text-indigo-400 shrink-0" />
-                  <span>How to use this master checklist:</span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-[11px] text-slate-300">
-                  <div className="bg-slate-900/70 p-2 rounded-lg border border-slate-800">
-                    <span className="text-indigo-400 font-bold block mb-0.5">01. Select Workflow:</span>
-                    Select relevant industry and workflow for each client or project.
-                  </div>
-                  <div className="bg-slate-900/70 p-2 rounded-lg border border-slate-800">
-                    <span className="text-emerald-400 font-bold block mb-0.5">02. Mark Requirements:</span>
-                    Mark each requirement Mandatory, Conditional or Not Applicable.
-                  </div>
-                  <div className="bg-slate-900/70 p-2 rounded-lg border border-slate-800">
-                    <span className="text-amber-400 font-bold block mb-0.5">03. Received ≠ Verified:</span>
-                    Human review and professional judgement remain necessary.
-                  </div>
-                  <div className="bg-slate-900/70 p-2 rounded-lg border border-slate-800">
-                    <span className="text-cyan-400 font-bold block mb-0.5">04. Individual Tracking:</span>
-                    Treat each checkbox as an individual document requirement.
-                  </div>
-                  <div className="bg-slate-900/70 p-2 rounded-lg border border-slate-800 col-span-1 sm:col-span-2">
-                    <span className="text-purple-400 font-bold block mb-0.5">05. Configure Properties:</span>
-                    Configure requested period, due date, accepted file types & approval owner.
-                  </div>
-                </div>
-
-                <div className="p-2 bg-amber-950/50 border border-amber-800/60 rounded-lg flex items-start gap-2 text-[10px] text-amber-200">
-                  <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                  <span>
-                    <strong>Important:</strong> These are operational starting templates, not exhaustive statutory checklists or legal advice. Requirements vary by client, transaction, location and applicable period. Regulated workflows require review by qualified professionals.
-                  </span>
-                </div>
-              </div>
-
-              {/* Module Sub-Tabs (A to F) */}
+              {/* Module Sub-Tabs */}
               <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
                 <div>
                   <span className="text-xs font-bold text-slate-800 block mb-2">

@@ -130,25 +130,77 @@ export default function App() {
   };
 
   const handleRoleGatewaySelect = (roleId) => {
-    if (roleGatewayVertical === 'ca') {
-      setRoleGatewayVertical(null);
+    const vertical = roleGatewayVertical;
+    setRoleGatewayVertical(null);
+
+    if (vertical === 'ca') {
       if (roleId === 'ca') {
-        handleQuickSwitch('app');
+        if (currentUser?.role === 'ca') setCurrentView('app');
+        else {
+          setAuthDefaultRole('ca');
+          setIsAuthModalOpen(true);
+        }
       } else {
-        handleQuickSwitch('portal');
+        if (currentUser?.role === 'client') setCurrentView('portal');
+        else {
+          setAuthDefaultRole('client');
+          setIsAuthModalOpen(true);
+        }
       }
-    } else if (roleGatewayVertical === 'cooperative') {
-      setRoleGatewayVertical(null);
-      setCoopRole(roleId);
-      setCurrentView('coop');
-    } else if (roleGatewayVertical === 'education') {
-      setRoleGatewayVertical(null);
-      setEduRole(roleId);
-      setCurrentView('edu');
-    } else if (roleGatewayVertical === 'insurance') {
-      setRoleGatewayVertical(null);
-      setInsuranceRole(roleId);
-      setCurrentView('insurance');
+    } else if (vertical === 'cooperative') {
+      if (roleId === 'admin') {
+        if (currentUser?.role === 'cooperative') {
+          setCoopRole('admin');
+          setCurrentView('coop');
+        } else {
+          setAuthDefaultRole('cooperative');
+          setIsAuthModalOpen(true);
+        }
+      } else {
+        if (currentUser?.role === 'coop_member') {
+          setCoopRole('member');
+          setCurrentView('coop');
+        } else {
+          setAuthDefaultRole('coop_member');
+          setIsAuthModalOpen(true);
+        }
+      }
+    } else if (vertical === 'education') {
+      if (roleId === 'admin') {
+        if (currentUser?.role === 'education') {
+          setEduRole('admin');
+          setCurrentView('edu');
+        } else {
+          setAuthDefaultRole('education');
+          setIsAuthModalOpen(true);
+        }
+      } else {
+        if (currentUser?.role === 'edu_student') {
+          setEduRole('student');
+          setCurrentView('edu');
+        } else {
+          setAuthDefaultRole('edu_student');
+          setIsAuthModalOpen(true);
+        }
+      }
+    } else if (vertical === 'insurance') {
+      if (roleId === 'admin') {
+        if (currentUser?.role === 'insurance') {
+          setInsuranceRole('admin');
+          setCurrentView('insurance');
+        } else {
+          setAuthDefaultRole('insurance');
+          setIsAuthModalOpen(true);
+        }
+      } else {
+        if (currentUser?.role === 'ins_client') {
+          setInsuranceRole('policyholder');
+          setCurrentView('insurance');
+        } else {
+          setAuthDefaultRole('ins_client');
+          setIsAuthModalOpen(true);
+        }
+      }
     }
   };
 
@@ -280,6 +332,10 @@ export default function App() {
             setIsAuthModalOpen(true);
           }}
           onOpenProfile={() => setIsProfileModalOpen(true)}
+          onLogout={() => {
+            setCurrentUser(null);
+            setCurrentView('home');
+          }}
         />
       )}
 
@@ -655,11 +711,20 @@ export default function App() {
           else if (profile.role === 'cooperative') {
             setCoopRole('admin');
             setCurrentView('coop');
+          } else if (profile.role === 'coop_member') {
+            setCoopRole('member');
+            setCurrentView('coop');
           } else if (profile.role === 'education') {
             setEduRole('admin');
             setCurrentView('edu');
+          } else if (profile.role === 'edu_student') {
+            setEduRole('student');
+            setCurrentView('edu');
           } else if (profile.role === 'insurance') {
             setInsuranceRole('admin');
+            setCurrentView('insurance');
+          } else if (profile.role === 'ins_client') {
+            setInsuranceRole('policyholder');
             setCurrentView('insurance');
           } else {
             setCurrentView('app');

@@ -327,15 +327,7 @@ export default function WorkflowsView({ onLaunchWorkflow, activeFirm, onBack }) 
               </button>
             </div>
 
-            {/* Operational Guide Callout */}
-            <div className="bg-amber-50 border-b border-amber-200/80 p-3 sm:px-6 text-amber-900 text-xs flex items-start gap-2.5">
-              <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <div className="text-[11px] leading-relaxed">
-                <strong>How to use this master checklist:</strong> Select relevant requirements, mark each as <strong>Mandatory</strong>, <strong>Conditional</strong>, or <strong>Not Applicable</strong>. <em>Received does not mean Verified</em>; human review and professional judgement remain necessary. Each checkbox is an individual document requirement tracked in ClarioLoop.
-              </div>
-            </div>
-
-            {/* Modal Body: Two column or full layout */}
+            {/* Modal Body */}
             <div className="p-4 sm:p-6 overflow-y-auto space-y-5 text-xs sm:text-sm flex-1">
               
               {/* Configuration Controls Bar */}

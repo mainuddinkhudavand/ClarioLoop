@@ -233,103 +233,9 @@ export default function EducationPortal({
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 sm:px-6 lg:px-8 py-3 shadow-2xs">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            {onBack && (
-              <button onClick={onBack} className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 shrink-0">
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-            )}
-            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
-              <GraduationCap className="w-5 h-5" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-sm sm:text-base font-black text-slate-900 truncate">ClarioLoop Edu</h1>
-                <span className="text-[10px] font-black uppercase bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full">
-                  Student Lifecycle Workflow
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-500 truncate">
-                {activeInst.name} • Admission, Scholarships, Placements & Exit
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold">
-              <button
-                onClick={() => setViewRole('admin')}
-                className={`px-3 py-1.5 rounded-lg transition-all ${
-                  viewRole === 'admin' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600'
-                }`}
-              >
-                Staff Workspace
-              </button>
-              <button
-                onClick={() => setViewRole('student')}
-                className={`px-3 py-1.5 rounded-lg transition-all ${
-                  viewRole === 'student' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600'
-                }`}
-              >
-                Student Upload Link
-              </button>
-            </div>
-
-            {viewRole === 'admin' && aiAssistEnabled && (
-              <button
-                onClick={() => setIsAIClassifierOpen(true)}
-                className="px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 font-extrabold text-xs border border-indigo-200 flex items-center gap-1.5"
-              >
-                <Sparkles className="w-3.5 h-3.5" /> AI Assist (Advisory)
-              </button>
-            )}
-
-            {onOpenSubscribe && (
-              <button
-                onClick={() => onOpenSubscribe('education')}
-                className="px-3 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs"
-              >
-                Plans
-              </button>
-            )}
-
-            {currentUser ? (
-              <button
-                type="button"
-                onClick={() => onOpenProfile && onOpenProfile()}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-left transition-colors"
-                title="View & Edit Your Profile"
-              >
-                <div className="w-6 h-6 rounded-lg bg-blue-600 text-white font-extrabold text-[9px] flex items-center justify-center">
-                  {currentUser.avatarInitials || 'ED'}
-                </div>
-                <div className="hidden sm:block">
-                  <span className="text-[10px] font-bold text-slate-800 block truncate max-w-[110px] leading-tight">
-                    {currentUser.name}
-                  </span>
-                  <span className="text-[8px] font-black text-blue-700 block leading-tight">
-                    ✓ {currentUser.kycBadge || 'PROFILE'}
-                  </span>
-                </div>
-              </button>
-            ) : onOpenAuth ? (
-              <button
-                onClick={() => onOpenAuth('education')}
-                className="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 font-bold text-xs flex items-center gap-1"
-              >
-                <User className="w-3.5 h-3.5" /> Sign In
-              </button>
-            ) : null}
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 space-y-5">
+      <main className="w-full">
         {statusMsg && (
-          <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-semibold flex items-center justify-between">
+          <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-semibold flex items-center justify-between">
             <span>{statusMsg}</span>
             <button onClick={() => setStatusMsg(null)} className="font-bold text-emerald-700 ml-3">Dismiss</button>
           </div>
@@ -337,7 +243,7 @@ export default function EducationPortal({
 
         {viewRole === 'student' ? (
           /* ================= STUDENT / PARENT SECURE LINK VIEW ================= */
-          <div className="max-w-xl mx-auto space-y-4">
+          <div className="max-w-xl mx-auto px-4 pt-6 space-y-4">
             <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div>

@@ -130,75 +130,7 @@ export default function RequestBuilder({ onCreated, activeFirm, onBack }) {
         </div>
       </div>
 
-      {/* ================= HOW TO USE THIS MASTER CHECKLIST (OPERATIONAL GUIDE) ================= */}
-      <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-950 text-white p-4 sm:p-5 rounded-2xl border border-indigo-800/60 shadow-lg space-y-3">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600/90 text-white flex items-center justify-center shrink-0 shadow-md">
-              <Layers className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <h2 className="text-sm sm:text-base font-black text-white">
-                How to use this master checklist
-              </h2>
-              <span className="text-[11px] text-indigo-300 font-semibold">
-                Operational Framework • 1. Finance & Accounting
-              </span>
-            </div>
-          </div>
-          <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-500/30 text-indigo-200 px-2.5 py-0.5 rounded-full border border-indigo-400/30 shrink-0">
-            Standard Guide
-          </span>
-        </div>
-
-        {/* 5 Operational Rules */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-[11px] pt-1">
-          <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 flex items-start gap-2">
-            <span className="text-indigo-400 font-black shrink-0 text-xs">01.</span>
-            <span className="text-slate-200 leading-snug">
-              <strong>Select the relevant industry and workflow</strong> for each client, employee, vendor, patient, student or project.
-            </span>
-          </div>
-
-          <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 flex items-start gap-2">
-            <span className="text-emerald-400 font-black shrink-0 text-xs">02.</span>
-            <span className="text-slate-200 leading-snug">
-              <strong>Mark each requirement</strong> <span className="text-rose-400 font-bold">Mandatory</span>, <span className="text-amber-400 font-bold">Conditional</span> or <span className="text-slate-400 font-bold">Not Applicable</span> for the specific case.
-            </span>
-          </div>
-
-          <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 flex items-start gap-2">
-            <span className="text-amber-400 font-black shrink-0 text-xs">03.</span>
-            <span className="text-slate-200 leading-snug">
-              <strong>Received does not mean Verified</strong>; human review and professional judgement remain necessary.
-            </span>
-          </div>
-
-          <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 flex items-start gap-2">
-            <span className="text-cyan-400 font-black shrink-0 text-xs">04.</span>
-            <span className="text-slate-200 leading-snug">
-              <strong>Treat each checkbox</strong> as an individual document requirement that can be tracked in ClarioLoop.
-            </span>
-          </div>
-
-          <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 flex items-start gap-2 col-span-1 sm:col-span-2">
-            <span className="text-purple-400 font-black shrink-0 text-xs">05.</span>
-            <span className="text-slate-200 leading-snug">
-              <strong>Configure requested period, due date</strong>, accepted file types, verification criteria and approval owner.
-            </span>
-          </div>
-        </div>
-
-        {/* Operational Disclaimer */}
-        <div className="p-2.5 bg-amber-950/40 border border-amber-800/60 rounded-xl flex items-start gap-2 text-[10px] text-amber-200/90 leading-relaxed">
-          <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-          <span>
-            <strong>Important:</strong> These are operational starting templates, not exhaustive statutory checklists or legal advice. Requirements vary by client, transaction, location and applicable period. Regulated workflows require review by qualified professionals.
-          </span>
-        </div>
-      </div>
-
-      {/* ================= 1. FINANCE & ACCOUNTING WORKFLOW SELECTOR ================= */}
+      {/* ================= FINANCE & ACCOUNTING WORKFLOW SELECTOR ================= */}
       <div className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-100 pb-2">
           <div>

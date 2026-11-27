@@ -298,22 +298,6 @@ export default function RoleGatewayModal({
               );
             })}
           </div>
-
-          <div className="mt-5 flex flex-col sm:flex-row items-center justify-between gap-2 pt-3 border-t border-slate-200/80 text-[11px]">
-            <span className="text-slate-500">
-              You can toggle between Desk and Vault roles at any time inside the portal.
-            </span>
-            {onOpenAuth && (
-              <button
-                type="button"
-                onClick={() => onOpenAuth(vertical)}
-                className="font-extrabold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 shrink-0 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl border border-indigo-200/80 transition-all"
-              >
-                <span>Sign In to {currentConfig.title.split(' ')[0]}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
         </div>
 
       </div>

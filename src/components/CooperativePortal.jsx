@@ -219,186 +219,47 @@ This is an automated operational checklist slip for statutory inspection under C
 
   return (
     <div className="min-h-screen bg-slate-50/70 text-slate-800 pb-20">
-      
-      {/* Top Banner Navigation */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          
-          <div className="flex items-center gap-3">
-            {onBack && (
-              <button
-                onClick={onBack}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors"
-                title="Back to Home"
-              >
-                <ArrowLeft className="w-4 h-4 text-emerald-600" />
-                <span className="hidden sm:inline">Back</span>
-              </button>
-            )}
-
-            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black shadow-xs shrink-0">
-              <Landmark className="w-5 h-5" />
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
-                  {activeSociety.name}
-                </h1>
-                <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">
-                  Cooperative Banking Suite
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 font-mono mt-0.5">
-                Reg: {activeSociety.registrationNumber} • {activeSociety.city}
-              </p>
-            </div>
-          </div>
-
-          {/* Persona View Switcher & Action Controls */}
-          <div className="flex items-center gap-2 self-start md:self-auto flex-wrap">
-            {/* Society Switcher Dropdown */}
-            <select
-              value={selectedSocietyId}
-              onChange={(e) => setSelectedSocietyId(e.target.value)}
-              className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            >
-              {societies.map(s => (
-                <option key={s.id} value={s.id}>
-                  {s.type.includes('PACS') ? '🌾 ' : '🏦 '} {s.name.split(' ')[0]}... ({s.city})
-                </option>
-              ))}
-            </select>
-
-            {/* View Mode Switcher: Society Admin vs Member Portal */}
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200/80 text-xs font-bold">
-              <button
-                onClick={() => setViewRole('admin')}
-                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-                  viewRole === 'admin'
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Building2 className="w-3.5 h-3.5" />
-                <span>Society Desk</span>
-              </button>
-              <button
-                onClick={() => setViewRole('member')}
-                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-                  viewRole === 'member'
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Users className="w-3.5 h-3.5" />
-                <span>Member Vault</span>
-              </button>
-            </div>
-
-            {/* Built-in AI Document Classifier Button */}
-            <button
-              onClick={() => setIsAIClassifierOpen(true)}
-              className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-extrabold text-xs border border-indigo-200 transition-all flex items-center gap-1.5 shadow-2xs"
-              title="Groq AI Document Reader & Classification"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-              <span className="hidden sm:inline">AI Loan Classifier</span>
-            </button>
-
-            {onOpenSubscribe && (
-              <button
-                onClick={() => onOpenSubscribe('cooperative')}
-                className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold text-xs shadow-xs transition-all flex items-center gap-1.5"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Upgrade Co-op Plan</span>
-              </button>
-            )}
-
-            {/* Co-op Sign In / Clickable Verified Profile Pill */}
-            {currentUser ? (
-              <button
-                type="button"
-                onClick={() => onOpenProfile && onOpenProfile()}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-left transition-colors"
-                title="View & Edit Your Profile"
-              >
-                <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white font-extrabold text-[9px] flex items-center justify-center">
-                  {currentUser.avatarInitials || 'CP'}
-                </div>
-                <div className="hidden sm:block">
-                  <span className="text-[10px] font-bold text-slate-800 block truncate max-w-[110px] leading-tight">
-                    {currentUser.name}
-                  </span>
-                  <span className="text-[8px] font-black text-emerald-700 block leading-tight">
-                    ✓ {currentUser.kycBadge || 'PROFILE VERIFIED'}
-                  </span>
-                </div>
-              </button>
-            ) : onOpenAuth ? (
-              <button
-                onClick={() => onOpenAuth('cooperative')}
-                className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-extrabold text-xs border border-emerald-300 shadow-2xs transition-all flex items-center gap-1.5"
-              >
-                <User className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Co-op Sign In</span>
-              </button>
-            ) : null}
-          </div>
-
-        </div>
-      </header>
-
       {/* Main Workspace Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
-
-        {/* Operational Blueprint Guide Banner (From PDF Page 2) */}
-        <div className="bg-white border border-emerald-200 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <BadgeCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-              <h3 className="text-sm font-extrabold text-slate-900">
-                Cooperative Banking & Society Operational Checklist Framework
-              </h3>
-            </div>
-            <p className="text-xs text-slate-500 leading-relaxed max-w-3xl">
-              Configurable document and collection workflow platform for <strong>Cooperative Credit Societies, PACS, Urban Cooperative Banks (UCB), and DCCBs</strong>. 
-              Features 7 standardized workflow statuses: <em>Not Requested • Requested • Received • Under Review • Accepted • Rejected • Not Applicable</em>.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => handleDownloadAuditSlip('txt')}
-              className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-200 flex items-center gap-1.5 transition-all shadow-2xs"
-            >
-              <Download className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Audit Slip .TXT</span>
-            </button>
-            <button
-              onClick={() => handleDownloadAuditSlip('csv')}
-              className="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs border border-emerald-200 flex items-center gap-1.5 transition-all shadow-2xs"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Export CSV</span>
-            </button>
-          </div>
-        </div>
-
+      <main className="w-full">
         {/* Audit Slip Download Notification */}
         {auditSlipNotification && (
-          <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center gap-2 shadow-xs animate-fadeIn">
+          <div className="mx-4 sm:mx-6 mt-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center gap-2 shadow-xs animate-fadeIn">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>{auditSlipNotification}</span>
           </div>
         )}
 
         {/* ============================================================== */}
-        {/* VIEW 1: SOCIETY ADMIN & DESK VIEW */}
+        {/* VIEW 1: SOCIETY ADMIN & DESK VIEW (Clean Sidebar + Workspace) */}
         {/* ============================================================== */}
         {viewRole === 'admin' && (
           <div className="space-y-6">
+            {/* Workspace with CA-style Left Sidebar */}
+            <div className="flex flex-col md:flex-row bg-white overflow-hidden">
+              <PortalSidebar
+                title={activeSociety.name}
+                subtitle={activeSociety.city}
+                initials="SC"
+                accent="emerald"
+                activeTab={activeTab}
+                setActiveTab={(tab) => {
+                  if (tab === 'ai') setIsAIClassifierOpen(true);
+                  else if (tab === 'plans' && onOpenSubscribe) onOpenSubscribe('cooperative');
+                  else setActiveTab(tab);
+                }}
+                currentUser={currentUser}
+                onBack={onBack}
+                items={[
+                  { id: 'modules', label: 'Master Checklists', icon: Layers },
+                  { id: 'pigmy', label: 'Pigmy & Field Agents', icon: Coins },
+                  { id: 'loans', label: 'Loan Sanction Dossiers', icon: FileCheck2 },
+                  { id: 'governance', label: 'Audit & Board Minutes', icon: BookOpen },
+                  { id: 'ai', label: 'AI Loan Classifier', icon: Sparkles },
+                  ...(onOpenSubscribe ? [{ id: 'plans', label: 'Subscription Plans', icon: Building2 }] : [])
+                ]}
+              />
+
+              <div className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 bg-slate-50/50 space-y-6">
             
             {/* Top Operational Metrics */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -454,27 +315,6 @@ This is an automated operational checklist slip for statutory inspection under C
                 </div>
               </div>
             </div>
-
-            {/* Workspace with CA-style Left Sidebar */}
-            <div className="flex flex-col md:flex-row bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
-              <PortalSidebar
-                title="Sahyadri Co-op Society"
-                subtitle="Banking & PACS Desk"
-                initials="SC"
-                accent="emerald"
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                currentUser={currentUser}
-                onBack={onBack}
-                items={[
-                  { id: 'modules', label: 'Master Checklists', icon: Layers },
-                  { id: 'pigmy', label: 'Pigmy & Field Agents', icon: Coins },
-                  { id: 'loans', label: 'Loan Sanction Dossiers', icon: FileCheck2 },
-                  { id: 'governance', label: 'Audit & Board Minutes', icon: BookOpen }
-                ]}
-              />
-
-              <div className="flex-1 min-w-0 p-4 sm:p-6 bg-slate-50/50 space-y-6">
 
             {/* TAB CONTENT 1: MASTER MODULES */}
             {activeTab === 'modules' && (

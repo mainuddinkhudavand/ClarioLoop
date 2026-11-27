@@ -580,61 +580,7 @@ Official Audit Slip generated for ${foundFirm.name}
         {/* ================= TAB 1: 1. FINANCE & ACCOUNTING MASTER MODULES (A through F) ================= */}
         {activeTab === 'modules' && (
           <div className="space-y-4">
-            
-            {/* Operational Guide Card (How to use this master checklist) */}
-            <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl border border-indigo-900/60 p-4 sm:p-5 shadow-lg space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-900 pb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center shrink-0 shadow-xs">
-                    <Layers className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm sm:text-base font-black text-white">
-                      How to use this master checklist
-                    </h2>
-                    <span className="text-[10px] text-indigo-300 font-semibold">
-                      Client Compliance Operating Guidelines • 1. Finance & Accounting
-                    </span>
-                  </div>
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-500/20 text-indigo-300 px-2.5 py-0.5 rounded-full border border-indigo-400/30 w-fit">
-                  Standard Template
-                </span>
-              </div>
-
-              {/* 5 Operating Principles */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-[11px] text-slate-300">
-                <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80">
-                  <strong className="text-indigo-400 block mb-0.5">01. Select Workflow:</strong>
-                  Choose relevant workflow module (A through F) below for your entity.
-                </div>
-                <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80">
-                  <strong className="text-emerald-400 block mb-0.5">02. Requirements:</strong>
-                  Mark items Mandatory, Conditional, or Not Applicable for your case.
-                </div>
-                <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80">
-                  <strong className="text-amber-400 block mb-0.5">03. Received ≠ Verified:</strong>
-                  Human review and professional CA judgment remain necessary.
-                </div>
-                <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80">
-                  <strong className="text-cyan-400 block mb-0.5">04. Individual Tracking:</strong>
-                  Every requirement has a dedicated tracking and verification state.
-                </div>
-                <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 col-span-1 sm:col-span-2">
-                  <strong className="text-purple-400 block mb-0.5">05. Configure Properties:</strong>
-                  Upload in accepted formats (PDF, XLSX, JSON). AI verifies and logs audit slips.
-                </div>
-              </div>
-
-              <div className="p-2.5 bg-amber-950/40 border border-amber-800/60 rounded-xl flex items-start gap-2 text-[10px] text-amber-200/90 leading-relaxed">
-                <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                <span>
-                  <strong>Important:</strong> These are operational starting templates, not exhaustive statutory checklists or legal advice. Requirements vary by client, transaction, location and applicable period. Regulated workflows require review by qualified professionals.
-                </span>
-              </div>
-            </div>
-
-            {/* 6 Module Selector Cards (A to F) - Light White Theme */}
+            {/* Module Selector Cards */}
             <div className="space-y-2">
               <span className="text-xs font-bold text-slate-700 block">
                 Choose Compliance Module:

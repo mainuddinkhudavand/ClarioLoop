@@ -25,10 +25,13 @@ import {
 
 const ROLES_CONFIG = [
   { id: 'ca', label: 'CA Practice', icon: Building2, color: 'text-indigo-600', activeBg: 'bg-indigo-600 text-white', badge: 'ICAI COP VERIFIED' },
-  { id: 'cooperative', label: 'Co-op Banking', icon: Landmark, color: 'text-emerald-600', activeBg: 'bg-emerald-600 text-white', badge: 'RCS AUDIT VERIFIED' },
-  { id: 'education', label: 'Education', icon: GraduationCap, color: 'text-blue-600', activeBg: 'bg-blue-600 text-white', badge: 'UGC ACCREDITED' },
-  { id: 'insurance', label: 'Insurance', icon: ShieldCheck, color: 'text-purple-600', activeBg: 'bg-purple-600 text-white', badge: 'IRDAI LICENSED' },
-  { id: 'client', label: 'Client User', icon: Users, color: 'text-teal-600', activeBg: 'bg-teal-600 text-white', badge: 'MCA & GST VERIFIED' }
+  { id: 'client', label: 'CA Client', icon: Users, color: 'text-teal-600', activeBg: 'bg-teal-600 text-white', badge: 'MCA & GST VERIFIED' },
+  { id: 'cooperative', label: 'Co-op Desk', icon: Landmark, color: 'text-emerald-600', activeBg: 'bg-emerald-600 text-white', badge: 'RCS AUDIT VERIFIED' },
+  { id: 'coop_member', label: 'Co-op Member', icon: Users, color: 'text-emerald-700', activeBg: 'bg-emerald-700 text-white', badge: 'MEMBER KYC' },
+  { id: 'education', label: 'Edu Staff', icon: GraduationCap, color: 'text-blue-600', activeBg: 'bg-blue-600 text-white', badge: 'UGC ACCREDITED' },
+  { id: 'edu_student', label: 'Student', icon: Users, color: 'text-sky-600', activeBg: 'bg-sky-600 text-white', badge: 'STUDENT PORTAL' },
+  { id: 'insurance', label: 'Insurance Desk', icon: ShieldCheck, color: 'text-purple-600', activeBg: 'bg-purple-600 text-white', badge: 'IRDAI LICENSED' },
+  { id: 'ins_client', label: 'Policyholder', icon: Users, color: 'text-violet-600', activeBg: 'bg-violet-600 text-white', badge: 'POLICYHOLDER KYC' }
 ];
 
 const DEMO_CREDENTIALS = {
@@ -76,6 +79,33 @@ const DEMO_CREDENTIALS = {
     licenseNumber: 'GSTIN: 27AABCN1234F1Z5 • PAN: AABCN1234F',
     city: 'Pune, Maharashtra',
     badge: 'MCA & GST VERIFIED'
+  },
+  coop_member: {
+    name: 'Smt. Savitri Kulkarni',
+    email: 'savitri.kulkarni@sahyadricoop.in',
+    phone: '+91 98220 44556',
+    entityName: 'Sahyadri Co-op Member Account',
+    licenseNumber: 'Member ID: MEM-4920',
+    city: 'Pune, Maharashtra',
+    badge: 'MEMBER KYC VERIFIED'
+  },
+  edu_student: {
+    name: 'Aarav Sharma (B.E. CSE)',
+    email: 'aarav.sharma@rvce.edu.in',
+    phone: '+91 98450 77889',
+    entityName: 'RV Institute of Engineering',
+    licenseNumber: 'USN-2026-101',
+    city: 'Bengaluru, Karnataka',
+    badge: 'STUDENT VERIFIED'
+  },
+  ins_client: {
+    name: 'Meera Nair (Policyholder)',
+    email: 'meera.nair@gmail.com',
+    phone: '+91 98100 99887',
+    entityName: 'Apex Insurance Policyholder',
+    licenseNumber: 'Policy Ref: POL-2026-842',
+    city: 'Mumbai, Maharashtra',
+    badge: 'POLICYHOLDER KYC'
   },
   admin: {
     name: 'SuperAdmin (Platform Security Officer)',
@@ -218,8 +248,8 @@ export default function AuthModal({
             </button>
           </div>
 
-          {/* 6 Industry Role Switcher Chips */}
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 mt-4 pt-3 border-t border-white/15 text-[10px] font-bold">
+          {/* Industry Role Switcher Chips */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mt-4 pt-3 border-t border-white/15 text-[10px] font-bold">
             {ROLES_CONFIG.map(r => {
               const Icon = r.icon;
               const isSelected = role === r.id;
