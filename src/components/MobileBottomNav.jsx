@@ -61,23 +61,7 @@ export default function MobileBottomNav({
         <span className="text-[10px]">Requests</span>
       </button>
 
-      {/* 4. Client Mobile Portal Preview */}
-      <button
-        onClick={() => setCurrentView('portal')}
-        className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl transition-all ${
-          currentView === 'portal' 
-            ? 'text-indigo-600 font-extrabold scale-105' 
-            : 'text-slate-500 hover:text-slate-900 font-semibold'
-        }`}
-      >
-        <div className="relative">
-          <Smartphone className="w-4 h-4" />
-          <span className="absolute -top-1 -right-1.5 w-2 h-2 rounded-full bg-emerald-500" />
-        </div>
-        <span className="text-[10px]">Client Link</span>
-      </button>
-
-      {/* 5. AI Copilot Scanner */}
+      {/* 4. AI Copilot Scanner */}
       <button
         onClick={onOpenAI}
         className="flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-xl text-indigo-700 bg-indigo-50 font-bold transition-all border border-indigo-200/60"

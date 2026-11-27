@@ -28,8 +28,7 @@ const ROLES_CONFIG = [
   { id: 'cooperative', label: 'Co-op Banking', icon: Landmark, color: 'text-emerald-600', activeBg: 'bg-emerald-600 text-white', badge: 'RCS AUDIT VERIFIED' },
   { id: 'education', label: 'Education', icon: GraduationCap, color: 'text-blue-600', activeBg: 'bg-blue-600 text-white', badge: 'UGC ACCREDITED' },
   { id: 'insurance', label: 'Insurance', icon: ShieldCheck, color: 'text-purple-600', activeBg: 'bg-purple-600 text-white', badge: 'IRDAI LICENSED' },
-  { id: 'client', label: 'Client User', icon: Users, color: 'text-teal-600', activeBg: 'bg-teal-600 text-white', badge: 'MCA & GST VERIFIED' },
-  { id: 'admin', label: 'SuperAdmin', icon: ShieldCheck, color: 'text-rose-600', activeBg: 'bg-rose-600 text-white', badge: 'ROOT SYSTEM ADMIN' }
+  { id: 'client', label: 'Client User', icon: Users, color: 'text-teal-600', activeBg: 'bg-teal-600 text-white', badge: 'MCA & GST VERIFIED' }
 ];
 
 const DEMO_CREDENTIALS = {

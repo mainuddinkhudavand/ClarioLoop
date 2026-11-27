@@ -193,6 +193,41 @@ export default function PortalAuthGateway({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setErrorMessage('');
+
+    if (portalType === 'admin') {
+      const expectedEmail = (import.meta.env.VITE_ADMIN_EMAIL || '').trim().toLowerCase();
+      const expectedPassword = import.meta.env.VITE_ADMIN_PASSWORD || '';
+
+      if (!expectedEmail || !expectedPassword) {
+        setErrorMessage('Admin credentials are not configured in .env (VITE_ADMIN_EMAIL / VITE_ADMIN_PASSWORD).');
+        return;
+      }
+
+      if (
+        formData.email.trim().toLowerCase() !== expectedEmail ||
+        formData.password !== expectedPassword
+      ) {
+        setErrorMessage('Invalid admin email or password.');
+        return;
+      }
+
+      onSuccessLogin({
+        id: 'admin-root',
+        role: 'admin',
+        name: 'Root Platform Admin',
+        email: expectedEmail,
+        phone: '+91 98000 11111',
+        isKycVerified: true,
+        kycDate: 'Nov 2026',
+        kycDocType: 'Master Root Security Clearance',
+        avatarInitials: 'AD',
+        designation: 'Principal Operations & Security Architect',
+        location: 'Bengaluru, Karnataka',
+        bio: 'Principal System Operations & Security Architect at ClarioLoop.'
+      });
+      return;
+    }
 
     if (mode === 'register' && !kycVerified) {
       setErrorMessage('Mandatory KYC verification document must be uploaded before registration.');
@@ -296,66 +331,70 @@ export default function PortalAuthGateway({
             </div>
           </div>
 
-          {/* Quick 1-Click Instant Enter Box (Ultra User-Friendly) */}
-          <div className="mt-4 p-3.5 bg-gradient-to-r from-indigo-950/90 via-slate-900 to-indigo-950/90 border border-indigo-500/50 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
-            <div className="min-w-0">
-              <span className="text-[10px] font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1 mb-0.5">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                <span>1-Click Instant Enter (Zero Typing Needed)</span>
-              </span>
-              <div className="text-xs font-black text-white truncate">
-                {portalType === 'ca' && 'Enter as CA Rajesh Sharma (Apex & Partners)'}
-                {portalType === 'client' && 'Enter as Client Vikram Mehta (NexGen Digital)'}
-                {portalType === 'admin' && 'Enter as Root SuperAdmin'}
+          {/* Quick 1-Click Instant Enter Box (CA & Client only — never shown for Admin) */}
+          {portalType !== 'admin' && (
+            <>
+              <div className="mt-4 p-3.5 bg-gradient-to-r from-indigo-950/90 via-slate-900 to-indigo-950/90 border border-indigo-500/50 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
+                <div className="min-w-0">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1 mb-0.5">
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>1-Click Instant Enter (Zero Typing Needed)</span>
+                  </span>
+                  <div className="text-xs font-black text-white truncate">
+                    {portalType === 'ca' && 'Enter as CA Rajesh Sharma (Apex & Partners)'}
+                    {portalType === 'client' && 'Enter as Client Vikram Mehta (NexGen Digital)'}
+                  </div>
+                  <p className="text-[11px] text-slate-300 mt-0.5">
+                    {portalType === 'ca' && 'FRN 102938W • KYC Verified Badge • Practice Dashboard'}
+                    {portalType === 'client' && 'Zero passwords needed • Pre-loaded compliance checklist'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleOneClickEnter}
+                  className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-indigo-600/30 transition-all transform hover:scale-105 active:scale-95 whitespace-nowrap shrink-0 flex items-center justify-center gap-1.5"
+                >
+                  <span>Instant Enter →</span>
+                </button>
               </div>
-              <p className="text-[11px] text-slate-300 mt-0.5">
-                {portalType === 'ca' && 'FRN 102938W • KYC Verified Badge • Practice Dashboard'}
-                {portalType === 'client' && 'Zero passwords needed • Pre-loaded compliance checklist'}
-                {portalType === 'admin' && 'Multi-tenant practices • CRM leads & database partitions'}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={handleOneClickEnter}
-              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-indigo-600/30 transition-all transform hover:scale-105 active:scale-95 whitespace-nowrap shrink-0 flex items-center justify-center gap-1.5"
-            >
-              <span>Instant Enter →</span>
-            </button>
-          </div>
 
-          <div className="pt-2 text-center">
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-              — or test custom credentials / registration with KYC below —
-            </span>
-          </div>
+              <div className="pt-2 text-center">
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                  — or test custom credentials / registration with KYC below —
+                </span>
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Tab Switch: Login vs Register */}
+        {/* Tab Switch: Login vs Register (Admin is Direct Login Only) */}
         <div className="flex border-b border-slate-800 bg-slate-950/60 px-6 pt-3 text-xs font-bold gap-6">
           <button
             type="button"
             onClick={() => setMode('login')}
             className={`pb-3 border-b-2 transition-all flex items-center gap-1.5 ${
-              mode === 'login' ? 'border-indigo-500 text-indigo-400 font-black' : 'border-transparent text-slate-400 hover:text-slate-200'
+              mode === 'login' || portalType === 'admin' ? 'border-indigo-500 text-indigo-400 font-black' : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
             <KeyRound className="w-3.5 h-3.5" />
-            <span>Sign In to {portalType.toUpperCase()}</span>
+            <span>{portalType === 'admin' ? 'Direct Admin Sign In' : `Sign In to ${portalType.toUpperCase()}`}</span>
           </button>
           
-          <button
-            type="button"
-            onClick={() => setMode('register')}
-            className={`pb-3 border-b-2 transition-all flex items-center gap-1.5 ${
-              mode === 'register' ? 'border-indigo-500 text-indigo-400 font-black' : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <User className="w-3.5 h-3.5" />
-            <span>Register & Create Profile</span>
-            <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded-full font-bold">
-              + KYC Badge
-            </span>
-          </button>
+          {portalType !== 'admin' && (
+            <button
+              type="button"
+              onClick={() => setMode('register')}
+              className={`pb-3 border-b-2 transition-all flex items-center gap-1.5 ${
+                mode === 'register' ? 'border-indigo-500 text-indigo-400 font-black' : 'border-transparent text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <User className="w-3.5 h-3.5" />
+              <span>Register & Create Profile</span>
+              <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded-full font-bold">
+                + KYC Badge
+              </span>
+            </button>
+          )}
         </div>
 
         {/* Form Body */}

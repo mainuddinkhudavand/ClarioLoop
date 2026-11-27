@@ -394,11 +394,8 @@ export default function WorkflowsView({ onLaunchWorkflow, activeFirm, onBack }) 
                                 : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                             }`}
                           >
-                            <span className="text-[10px] font-black uppercase tracking-wider block opacity-80">
-                              Module {mod.code}
-                            </span>
                             <span className="text-[11px] font-extrabold line-clamp-1">
-                              {mod.title.split(' ')[0]} {mod.title.split(' ')[1]}
+                              {mod.title}
                             </span>
                           </button>
                         );
@@ -414,7 +411,7 @@ export default function WorkflowsView({ onLaunchWorkflow, activeFirm, onBack }) 
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1 border-b border-slate-100">
                           <div>
                             <h4 className="font-extrabold text-slate-900 text-sm">
-                              {currentModule.code}. {currentModule.title}
+                              {currentModule.title}
                             </h4>
                             <p className="text-[11px] text-slate-500">
                               {currentModule.description}

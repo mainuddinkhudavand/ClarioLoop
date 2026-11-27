@@ -40,7 +40,7 @@ const VERTICAL_CONFIGS = {
         buttonLabel: 'Enter CA Practice Desk',
         features: [
           'Practice dashboard, client CRM & engagement letters',
-          'Tax Audit (44AB), GST & ROC compliance checklists (Modules A–F)',
+          'Tax Audit (44AB), GST & ROC compliance checklists',
           'Automated WhatsApp/Email reminders & AI anomaly detection',
           'TDS & PF/ESI filing tracker with statutory due dates'
         ]
@@ -88,7 +88,7 @@ const VERTICAL_CONFIGS = {
         features: [
           'Daily Pigmy collection sheet, agent routes & cash remittance',
           'Crop, Gold, MSME & Housing loan document scrutiny',
-          'RCS compliance, board minutes & 12 master audit areas',
+          'RCS compliance, board minutes & master audit areas',
           'Multi-branch member KYC & nominee verification desk'
         ]
       },
@@ -133,9 +133,9 @@ const VERTICAL_CONFIGS = {
         buttonClass: 'bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/25',
         buttonLabel: 'Enter Admissions Desk',
         features: [
-          '10-Area Student Intake & Verification framework (Modules ED A–F)',
+          'Student Intake & Verification framework',
           'Govt scholarship & DBT Aadhaar-seeding tracker (NPCI)',
-          'UGC anti-ragging undertakings & 9-point faculty staff audit',
+          'UGC anti-ragging undertakings & faculty staff audit',
           'NAAC/NIRF documentary compliance & exportable rolls'
         ]
       },

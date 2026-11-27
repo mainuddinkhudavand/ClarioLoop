@@ -26,7 +26,6 @@ export default function MobileSidebarDrawer({
   activeFirm,
   onOpenFirmSwitcher,
   onBackHome,
-  onOpenAdmin,
   onOpenClientPortal,
   currentUser,
   onOpenProfile,
@@ -188,34 +187,9 @@ export default function MobileSidebarDrawer({
                       <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-500'}`} />
                       <span className="text-xs">{item.label}</span>
                     </div>
-
-                    {item.count !== undefined && item.count > 0 && (
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        isActive ? 'bg-indigo-700 text-white' : 'bg-slate-100 text-slate-600'
-                      }`}>
-                        {item.count}
-                      </span>
-                    )}
                   </button>
                 );
               })}
-
-              {onOpenClientPortal && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onOpenClientPortal();
-                  }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 mt-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <Smartphone className="w-4 h-4 text-emerald-600" />
-                    <span>Client Mobile Portal</span>
-                  </div>
-                  <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
-                </button>
-              )}
             </nav>
           )}
 
@@ -236,22 +210,6 @@ export default function MobileSidebarDrawer({
                 <div className="flex items-center gap-2.5">
                   <CreditCard className="w-4 h-4 text-amber-500" />
                   <span>Industry Subscriptions</span>
-                </div>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              </button>
-            )}
-            {onOpenAdmin && (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onOpenAdmin();
-                }}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-bold text-slate-700 hover:bg-rose-50"
-              >
-                <div className="flex items-center gap-2.5">
-                  <ShieldCheck className="w-4 h-4 text-rose-500" />
-                  <span>SuperAdmin Portal</span>
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
               </button>

@@ -69,7 +69,7 @@ export default function SubscriptionPlans({
             title="Back to Previous Screen"
           >
             <ArrowLeft className="w-4 h-4 text-indigo-600" />
-            <span>← Back</span>
+            <span>Back</span>
           </button>
         </div>
       )}

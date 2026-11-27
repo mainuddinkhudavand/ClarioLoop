@@ -660,20 +660,16 @@ Official Audit Slip generated for ${foundFirm.name}
                           : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-300 hover:shadow-xs'
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <span className={`text-[10px] font-black uppercase tracking-wider ${isSelected ? 'text-indigo-200' : 'text-indigo-600'}`}>
-                          Module {mod.code}
-                        </span>
-                        <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full ${
+                      <div className="flex items-center justify-between gap-2">
+                        <strong className="text-xs font-bold leading-tight block">
+                          {mod.title}
+                        </strong>
+                        <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full shrink-0 ${
                           modDone ? 'bg-emerald-500 text-white' : isSelected ? 'bg-indigo-700 text-white' : 'bg-slate-100 text-slate-600'
                         }`}>
                           {modUploadsCount}/{modTotal}
                         </span>
                       </div>
-
-                      <strong className="text-xs font-bold leading-tight block">
-                        {mod.title.split(' ')[0]} {mod.title.split(' ')[1]}
-                      </strong>
 
                       {/* Small progress bar */}
                       <div className="w-full h-1 bg-slate-200/80 rounded-full overflow-hidden mt-1">
@@ -692,15 +688,9 @@ Official Audit Slip generated for ${foundFirm.name}
             <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-6 space-y-4 shadow-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
                 <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-black text-indigo-600 uppercase tracking-wider">
-                      Module {activeModule.code}
-                    </span>
-                    <span className="text-xs text-slate-300">•</span>
-                    <h3 className="text-base sm:text-lg font-black text-slate-900">
-                      {activeModule.title}
-                    </h3>
-                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900">
+                    {activeModule.title}
+                  </h3>
                   <p className="text-xs text-slate-500 mt-0.5">
                     {activeModule.description}
                   </p>

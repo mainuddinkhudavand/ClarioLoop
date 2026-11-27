@@ -215,14 +215,16 @@ export default function ProfileModal({
 
           {/* Close & Action Badges on Cover */}
           <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
-            {/* Edit Switch Button */}
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className="px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-white font-bold backdrop-blur-md border border-white/20 transition-all flex items-center gap-1.5 shadow-sm"
-            >
-              <Edit3 className="w-3.5 h-3.5" />
-              <span>{isEditing ? 'Cancel Edit' : 'Edit Profile'}</span>
-            </button>
+            {/* Edit Switch Button (hidden while editing so Cancel isn't duplicated) */}
+            {!isEditing && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-white font-bold backdrop-blur-md border border-white/20 transition-all flex items-center gap-1.5 shadow-sm"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                <span>Edit Profile</span>
+              </button>
+            )}
 
             <button
               onClick={onClose}

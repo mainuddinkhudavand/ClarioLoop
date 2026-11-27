@@ -398,16 +398,16 @@ export default function EducationPortal({
             <div className="bg-white rounded-2xl border border-slate-200 p-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
               {[
                 { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-                { id: 'students', label: 'Students (30)', icon: Users },
+                { id: 'students', label: 'Students', icon: Users },
                 { id: 'checklists', label: 'Checklists', icon: CheckSquare },
-                { id: 'review', label: `Review Queue (${reviewQueue.length})`, icon: FileSearch },
+                { id: 'review', label: 'Review Queue', icon: FileSearch },
                 { id: 'scholarships', label: 'Scholarships', icon: Award },
                 { id: 'placements', label: 'Placements', icon: Briefcase },
                 { id: 'exit', label: 'Exit / No-Dues', icon: DoorOpen },
-                { id: 'templates', label: 'Templates (A-J)', icon: BookOpen },
+                { id: 'templates', label: 'Templates', icon: BookOpen },
                 { id: 'reports', label: 'Reports', icon: BarChart3 },
                 { id: 'settings', label: 'Settings', icon: Settings },
-                { id: 'audit', label: `Audit Log (${auditLogs.length})`, icon: ShieldAlert },
+                { id: 'audit', label: 'Audit Log', icon: ShieldAlert },
               ].map((t) => {
                 const Icon = t.icon;
                 return (
@@ -684,11 +684,8 @@ export default function EducationPortal({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {SECTIONS_META.map((sec) => (
                   <div key={sec.code} className="bg-white rounded-2xl border border-slate-200 p-4 space-y-1">
-                    <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">
-                      Section {sec.code}
-                    </span>
-                    <div className="text-xs font-extrabold text-slate-900 pt-1">{sec.name}</div>
-                    <div className="text-[11px] text-slate-500">{sec.count} configurable items</div>
+                    <div className="text-xs font-extrabold text-slate-900">{sec.name}</div>
+                    <div className="text-[11px] text-slate-500">Configurable checklist items</div>
                   </div>
                 ))}
               </div>

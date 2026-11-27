@@ -533,15 +533,15 @@ export default function InsurancePortal({
             <div className="bg-white rounded-2xl border border-slate-200 p-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
               {[
                 { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-                { id: 'clients', label: 'Clients (20)', icon: Users },
-                { id: 'cases', label: `Cases (${cases.length})`, icon: FolderKanban },
-                { id: 'review', label: `Review Queue (${reviewQueueItems.length})`, icon: FileSearch },
+                { id: 'clients', label: 'Clients', icon: Users },
+                { id: 'cases', label: 'Cases', icon: FolderKanban },
+                { id: 'review', label: 'Review Queue', icon: FileSearch },
                 { id: 'claims', label: 'Claims & Servicing', icon: FileCheck2 },
                 { id: 'renewals', label: 'Renewals', icon: RefreshCw },
-                { id: 'templates', label: 'Templates (15)', icon: BookOpen },
+                { id: 'templates', label: 'Templates', icon: BookOpen },
                 { id: 'reports', label: 'Reports', icon: BarChart3 },
                 { id: 'settings', label: 'Settings', icon: Settings },
-                { id: 'audit', label: `Audit Log (${auditLogs.length})`, icon: ShieldAlert },
+                { id: 'audit', label: 'Audit Log', icon: ShieldAlert },
               ].map((t) => {
                 const Icon = t.icon;
                 return (

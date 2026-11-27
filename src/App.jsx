@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
@@ -54,6 +54,32 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [activePortalToken, setActivePortalToken] = useState('nexgen-nov2026-demo-token');
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+
+  // Private Owner-Only Admin Access (URL: ?owner=admin or #/owner-admin, Shortcut: Ctrl+Shift+A)
+  useEffect(() => {
+    const openPrivateAdminGateway = () => {
+      if (currentUser && currentUser.role === 'admin') {
+        setCurrentView('admin');
+      } else {
+        setCurrentView('auth_admin');
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('owner') === 'admin' || window.location.hash === '#/owner-admin') {
+      openPrivateAdminGateway();
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+        e.preventDefault();
+        openPrivateAdminGateway();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentUser]);
 
   // Find currently active CA firm
   const activeFirm = firms.find(f => f.id === activeFirmId) || firms[0];
@@ -170,21 +196,11 @@ export default function App() {
       setActivePortalToken('nexgen-nov2026-demo-token');
       setCurrentView('portal');
     } else if (target === 'admin') {
-      setCurrentUser({
-        id: 'admin-root',
-        role: 'admin',
-        name: 'Root Platform Admin',
-        email: 'admin@clarioloop.com',
-        phone: '+91 98000 11111',
-        isKycVerified: true,
-        kycDate: 'Nov 2026',
-        kycDocType: 'Master Root Security Clearance',
-        avatarInitials: 'AD',
-        designation: 'Principal Operations & Security Architect',
-        location: 'Bengaluru, Karnataka',
-        bio: 'Principal System Operations & Security Architect at ClarioLoop.'
-      });
-      setCurrentView('admin');
+      if (currentUser && currentUser.role === 'admin') {
+        setCurrentView('admin');
+      } else {
+        setCurrentView('auth_admin');
+      }
     } else if (target === 'coop') {
       setCurrentUser({
         id: 'coop-admin-vasant',
@@ -272,7 +288,6 @@ export default function App() {
         <HomePage 
           onLaunchApp={() => handleEnterVertical('ca')}
           onLaunchPortal={() => handleQuickSwitch('portal')}
-          onLaunchAdmin={() => handleQuickSwitch('admin')}
           onLaunchCoop={() => handleEnterVertical('cooperative')}
           onLaunchEdu={() => handleEnterVertical('education')}
           onLaunchInsurance={() => handleEnterVertical('insurance')}
@@ -616,7 +631,6 @@ export default function App() {
         activeFirm={activeFirm}
         onOpenFirmSwitcher={() => setIsFirmSwitcherOpen(true)}
         onBackHome={() => setCurrentView('home')}
-        onOpenAdmin={() => setCurrentView('admin')}
         onOpenClientPortal={() => setCurrentView('portal')}
         onEnterVertical={handleEnterVertical}
         onOpenSubscriptions={() => setCurrentView('subscriptions')}
