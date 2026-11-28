@@ -30,6 +30,7 @@ import {
 import { mockInsuranceAgencies } from '../data/verticalData';
 import AIAssistantModal from './AIAssistantModal';
 import PortalSidebar from './PortalSidebar';
+import InstagramProfileFeed from './InstagramProfileFeed';
 
 const INSURERS = [
   { id: 'insurer-lic', name: 'LIC of India', code: 'LIC' },
@@ -104,8 +105,8 @@ export default function InsurancePortal({
   const [aiAssistEnabled, setAiAssistEnabled] = useState(false); // OFF by default
   const [isAIClassifierOpen, setIsAIClassifierOpen] = useState(false);
 
-  // Cases & Review Queue state
-  const [cases, setCases] = useState([
+  // Cases & Review Queue state (persisted in localStorage + live cross-tab sync)
+  const INITIAL_CASES = [
     {
       id: 'case-1',
       ref: 'PROP-LIC-2026-001',
@@ -163,7 +164,30 @@ export default function InsurancePortal({
         { id: 'c3-3', name: 'Premium Payment Receipt Upload (Tracking Only)', req: 'MANDATORY', status: 'REQUESTED', sensitive: false },
       ],
     },
-  ]);
+  ];
+
+  const [cases, setCases] = useState(() => {
+    try {
+      const saved = localStorage.getItem('clarioloop_ins_cases_v1');
+      return saved ? JSON.parse(saved) : INITIAL_CASES;
+    } catch {
+      return INITIAL_CASES;
+    }
+  });
+
+  React.useEffect(() => {
+    try { localStorage.setItem('clarioloop_ins_cases_v1', JSON.stringify(cases)); } catch {}
+  }, [cases]);
+
+  React.useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === 'clarioloop_ins_cases_v1' && e.newValue) {
+        try { setCases(JSON.parse(e.newValue)); } catch {}
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   const [auditLogs, setAuditLogs] = useState([
     {
@@ -390,6 +414,27 @@ export default function InsurancePortal({
               <p className="text-[11px] text-slate-500">
                 Showing only your requested records. Accepted formats: PDF, JPG, PNG (readability & duplicate checks active).
               </p>
+
+              {/* Claim / Proposal Live Stage Timeline */}
+              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-[10px] font-bold text-center">
+                <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  1. Link Opened ✓
+                </div>
+                <div className={`p-2 rounded-xl border ${clientPct > 0 ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-slate-50 text-slate-400 border-slate-200'}`}>
+                  2. Under Review ({clientDone}/{clientCase.items.length})
+                </div>
+                <div className={`p-2 rounded-xl border ${clientPct === 100 ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-400 border-slate-200'}`}>
+                  3. Approved ✓
+                </div>
+              </div>
+
+              {/* Renewal Alert Strip */}
+              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between gap-2 text-xs text-amber-900">
+                <span><strong>Renewal Alert:</strong> Next policy due in 15 days • Keep KYC &amp; NCB updated</span>
+                <span className="text-[10px] font-black bg-white px-2 py-0.5 rounded-full border border-amber-200 shrink-0">
+                  30/15/7d Active
+                </span>
+              </div>
             </div>
 
             {clientCase.items.map((item) => (
@@ -447,10 +492,11 @@ export default function InsurancePortal({
                 { id: 'templates', label: 'Templates', icon: BookOpen },
                 { id: 'reports', label: 'Reports', icon: BarChart3 },
                 { id: 'settings', label: 'Settings', icon: Settings },
-                { id: 'audit', label: 'Audit Log', icon: ShieldAlert }
+                { id: 'audit', label: 'Audit Log', icon: ShieldAlert },
+                { id: 'profile', label: 'Profile', mobileLabel: 'Profile', icon: User }
               ]}
             />
-            <div className="flex-1 min-w-0 p-4 sm:p-6 bg-slate-50/50 space-y-5">
+            <div className="flex-1 min-w-0 p-3 sm:p-6 bg-slate-50/50 pb-24 md:pb-6 space-y-5">
 
             {/* DASHBOARD */}
             {activeTab === 'dashboard' && (
@@ -836,6 +882,32 @@ export default function InsurancePortal({
                   </div>
                 ))}
               </div>
+            )}
+
+            {activeTab === 'profile' && (
+              <InstagramProfileFeed
+                name={activeAgency?.name || 'Apex Insurance Desk'}
+                subtitle="IRDAI Claims, Policy KYC & Renewals"
+                initials="IN"
+                accent="purple"
+                badgeText="IRDAI VERIFIED"
+                posts={READY_TEMPLATE_SUMMARIES.map((tpl, idx) => ({
+                  id: `ins-tpl-${idx}`,
+                  title: tpl.name,
+                  subtitle: `${tpl.count} Checklist Items`,
+                  category: tpl.scope,
+                  period: tpl.scope,
+                  status: idx % 3 === 0 ? 'VERIFIED' : idx % 3 === 1 ? 'SUBMITTED' : 'PENDING'
+                }))}
+                onPostAction={() => setActiveTab('cases')}
+                actionLabelMissing="Open Case"
+                actionLabelDone="View Policy"
+                profileFields={[
+                  { key: 'license', label: 'IRDAI License', value: activeAgency?.license || 'IRDAI-BRK-2026' },
+                  { key: 'city', label: 'City / Region', value: activeAgency?.city || 'Mumbai' },
+                ]}
+                onSaveProfile={() => setStatusBanner('Agency profile updated!')}
+              />
             )}
             </div>
           </div>

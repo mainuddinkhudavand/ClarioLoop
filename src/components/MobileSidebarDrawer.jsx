@@ -15,7 +15,8 @@ import {
   ShieldCheck,
   Landmark,
   GraduationCap,
-  ChevronRight
+  ChevronRight,
+  User
 } from 'lucide-react';
 
 export default function MobileSidebarDrawer({
@@ -32,27 +33,25 @@ export default function MobileSidebarDrawer({
   onOpenAuth,
   onEnterVertical,
   onOpenSubscriptions,
-  currentView = 'home'
+  currentView = 'home',
+  selectedVertical = 'ca',
+  onChangeVertical
 }) {
   if (!isOpen) return null;
   const isInsideCAPortal = currentView === 'app';
+  const liveDocCount = (activeFirm?.requests || []).reduce(
+    (acc, r) => acc + (r.items || []).length,
+    0
+  );
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'requests', label: 'Requests', icon: FileCheck2, count: activeFirm?.requests?.length || 2 },
-    { id: 'documents', label: 'Documents', icon: FileText, count: 10 },
-    { id: 'clients', label: 'Clients', icon: Users, count: activeFirm?.clients?.length || 3 },
+    { id: 'requests', label: 'Requests', icon: FileCheck2, count: activeFirm?.requests?.length || 0 },
+    { id: 'documents', label: 'Documents', icon: FileText, count: liveDocCount },
+    { id: 'clients', label: 'Clients', icon: Users, count: activeFirm?.clients?.length || 0 },
     { id: 'reports', label: 'Reports', icon: BarChart3 },
     { id: 'reminders', label: 'Smart Reminders', icon: BellRing },
-    { id: 'ai-analyzer', label: 'AI Copilot Reader', icon: Sparkles },
-    { id: 'subscriptions', label: 'Subscription Plans', icon: CreditCard },
-  ];
-
-  const industrySuites = [
-    { id: 'ca', label: 'CA & Tax Audit', icon: Building2, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { id: 'cooperative', label: 'Co-op Banking & PACS', icon: Landmark, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { id: 'education', label: 'Education & Campus', icon: GraduationCap, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { id: 'insurance', label: 'Insurance & Claims', icon: ShieldCheck, color: 'text-purple-600', bg: 'bg-purple-50' }
+    { id: 'profile', label: 'Profile', icon: User },
   ];
 
   const handleSelectTab = (tabId) => {
@@ -61,7 +60,7 @@ export default function MobileSidebarDrawer({
   };
 
   return (
-    <div className="fixed inset-0 z-50 lg:hidden flex">
+    <div className="fixed inset-0 z-50 md:hidden flex">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity animate-fadeIn"
@@ -135,34 +134,20 @@ export default function MobileSidebarDrawer({
 
         {/* Scrollable Navigation Body */}
         <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
-          {/* Industry Vertical Suites (Hidden when inside CA Portal so only CA sidebar appears) */}
-          {!isInsideCAPortal && (
+          {/* Switch Industry (Only when not inside CA Portal) */}
+          {!isInsideCAPortal && onChangeVertical && (
             <div className="p-3 space-y-1.5">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block px-2 mb-1">
-                Industry Portals
-              </span>
-              {industrySuites.map(suite => {
-                const Icon = suite.icon;
-                return (
-                  <button
-                    key={suite.id}
-                    type="button"
-                    onClick={() => {
-                      onClose();
-                      if (onEnterVertical) onEnterVertical(suite.id);
-                    }}
-                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className={`w-7 h-7 rounded-lg ${suite.bg} flex items-center justify-center shrink-0`}>
-                        <Icon className={`w-3.5 h-3.5 ${suite.color}`} />
-                      </div>
-                      <span className="truncate">{suite.label}</span>
-                    </div>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  </button>
-                );
-              })}
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onChangeVertical();
+                }}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 border border-slate-200"
+              >
+                <span>Switch Industry</span>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              </button>
             </div>
           )}
 
@@ -191,36 +176,21 @@ export default function MobileSidebarDrawer({
                       <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-500'}`} />
                       <span className="text-xs">{item.label}</span>
                     </div>
+                    {typeof item.count === 'number' && (
+                      <span
+                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                          isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                        }`}
+                      >
+                        {item.count}
+                      </span>
+                    )}
                   </button>
                 );
               })}
             </nav>
           )}
 
-          {/* Platform Quick Links (Hidden when inside CA Portal) */}
-          {!isInsideCAPortal && (
-            <div className="p-3 space-y-1.5 text-xs">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block px-2 mb-1">
-                Platform
-              </span>
-              {onOpenSubscriptions && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    onOpenSubscriptions();
-                  }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-bold text-slate-700 hover:bg-slate-50"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <CreditCard className="w-4 h-4 text-amber-500" />
-                    <span>Industry Subscriptions</span>
-                  </div>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                </button>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Drawer Footer */}

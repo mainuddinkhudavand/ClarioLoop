@@ -69,6 +69,30 @@ export default function MobileBottomNav({
         <Sparkles className="w-4 h-4 text-indigo-600" />
         <span className="text-[10px]">AI Copilot</span>
       </button>
+
+      {/* 5. Instagram-Style Profile Tab */}
+      <button
+        onClick={() => {
+          setCurrentView('app');
+          setActiveTab('profile');
+        }}
+        className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl transition-all ${
+          currentView === 'app' && activeTab === 'profile'
+            ? 'text-slate-950 font-black scale-105'
+            : 'text-slate-500 hover:text-slate-900 font-semibold'
+        }`}
+      >
+        <div
+          className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black ${
+            currentView === 'app' && activeTab === 'profile'
+              ? 'bg-indigo-600 text-white ring-2 ring-slate-900 ring-offset-1'
+              : 'bg-slate-200 text-slate-700'
+          }`}
+        >
+          CA
+        </div>
+        <span className="text-[10px]">Profile</span>
+      </button>
     </div>
   );
 }

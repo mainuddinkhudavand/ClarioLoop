@@ -10,31 +10,76 @@ import {
   Sparkles,
   Smartphone,
   Check,
-  ArrowLeft
+  ArrowLeft,
+  Link2,
+  Palette
 } from 'lucide-react';
 import { mockRequests } from '../data/mockData';
 
 export default function ReminderSettings({ activeFirm, onBack }) {
   const requests = activeFirm?.requests && activeFirm.requests.length > 0 ? activeFirm.requests : mockRequests;
-  const [selectedRequest, setSelectedRequest] = useState(requests[0] || mockRequests[0]);
+  const [selectedRequestId, setSelectedRequestId] = useState(requests[0]?.id || mockRequests[0]?.id);
+  const selectedRequest = requests.find(r => r.id === selectedRequestId) || requests[0] || mockRequests[0];
+  const setSelectedRequest = (r) => setSelectedRequestId(r?.id);
   const [channel, setChannel] = useState('WHATSAPP');
   const [sending, setSending] = useState(false);
   const [sentNotice, setSentNotice] = useState(null);
+  const [copiedLink, setCopiedLink] = useState(false);
 
-  const missingItems = selectedRequest.items.filter(i => i.status === 'PENDING');
+  // Smart Escalation Cadence Rules (persisted)
+  const [escalation, setEscalation] = useState(() => {
+    try {
+      const saved = localStorage.getItem('clarioloop_escalation');
+      return saved ? JSON.parse(saved) : { day1: 'WHATSAPP', day3: 'EMAIL', day7: 'MANAGER_ALERT', autoStop: true };
+    } catch {
+      return { day1: 'WHATSAPP', day3: 'EMAIL', day7: 'MANAGER_ALERT', autoStop: true };
+    }
+  });
+
+  // White-Label Client Portal Branding (persisted)
+  const [whiteLabel, setWhiteLabel] = useState(() => {
+    try {
+      const saved = localStorage.getItem('clarioloop_whitelabel');
+      return saved ? JSON.parse(saved) : { brandName: activeFirm?.name || '', accentColor: '#4f46e5', footerNote: 'Secure Encrypted Client Upload Portal' };
+    } catch {
+      return { brandName: activeFirm?.name || '', accentColor: '#4f46e5', footerNote: 'Secure Encrypted Client Upload Portal' };
+    }
+  });
+
+  const saveEscalation = (next) => {
+    setEscalation(next);
+    localStorage.setItem('clarioloop_escalation', JSON.stringify(next));
+  };
+
+  const saveWhiteLabel = (next) => {
+    setWhiteLabel(next);
+    localStorage.setItem('clarioloop_whitelabel', JSON.stringify(next));
+  };
+
+  const magicLinkUrl = `${window.location.origin}/?token=${selectedRequest.secureToken || 'nexgen-nov2026-demo-token'}`;
+
+  const handleCopyMagicLink = () => {
+    navigator.clipboard?.writeText(magicLinkUrl);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2500);
+  };
+
+  const missingItems = (selectedRequest.items || []).filter(i => i.status === 'PENDING' || i.status === 'REJECTED');
   const isComplete = selectedRequest.status === 'COMPLETE';
+  const firmLabel = activeFirm?.name || 'your CA Practice';
+  const partnerLabel = activeFirm?.partnerName || 'Lead Partner';
 
   // Format message text
   const whatsappPreview = `Hello *${selectedRequest.clientName}*,
 
-This is a gentle reminder from your accounting team at *Apex & Partners CA*.
+This is a gentle reminder from *${firmLabel}*.
 
 We are awaiting the following documents for *${selectedRequest.title}* (Due: *${new Date(selectedRequest.dueDate).toLocaleDateString('en-IN')}*):
 
 ${missingItems.map(item => `• ${item.title}`).join('\n')}
 
 Please click your secure link below to upload them from your phone:
-https://clarioloop.onrender.com/portal/${selectedRequest.secureToken}
+${magicLinkUrl}
 
 _Note: Automated reminders will stop immediately once your files are uploaded._
 Thank you!`;
@@ -49,60 +94,50 @@ In order to prepare and finalize your accounting and tax compliance before the d
 ${missingItems.map(item => `  - ${item.title}`).join('\n')}
 
 You can submit your documents securely using your dedicated client link below:
-https://clarioloop.onrender.com/portal/${selectedRequest.secureToken}
+${magicLinkUrl}
 
 Warm regards,
-CA Rajesh Sharma
-Apex & Partners Chartered Accountants`;
+${partnerLabel}
+${firmLabel}`;
 
   const handleSendReminder = () => {
     if (isComplete) return;
     setSending(true);
     setSentNotice(null);
 
+    if (channel === 'WHATSAPP') {
+      const phone = (selectedRequest.clientPhone || '').replace(/\D/g, '');
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(whatsappPreview)}`, '_blank', 'noopener,noreferrer');
+    } else {
+      window.location.href = `mailto:${selectedRequest.clientEmail || ''}?subject=${encodeURIComponent(emailPreviewSubject)}&body=${encodeURIComponent(emailPreviewBody)}`;
+    }
+
     setTimeout(() => {
       setSending(false);
-      setSentNotice(`Reminder successfully delivered via ${channel} to ${channel === 'WHATSAPP' ? selectedRequest.clientPhone : selectedRequest.clientEmail}!`);
+      setSentNotice(`Reminder opened via ${channel} for ${channel === 'WHATSAPP' ? selectedRequest.clientPhone : selectedRequest.clientEmail}!`);
       setTimeout(() => setSentNotice(null), 4000);
-    }, 1200);
+    }, 500);
   };
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      <div className="flex items-center gap-3">
-        {onBack && (
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200 shadow-xs transition-colors shrink-0"
-            title="Back to Dashboard"
-          >
-            <ArrowLeft className="w-4 h-4 text-indigo-600" />
-            <span>Back</span>
-          </button>
-        )}
-        <div>
-          <h1 className="text-xl font-extrabold text-slate-900">Smart Reminder Engine</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Automated, multi-channel client follow-ups that automatically halt when documents are uploaded
-          </p>
+      {/* Compact Header Toolbar */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-4 shadow-xs flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 min-w-0">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors shrink-0"
+              title="Back to Dashboard"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Back</span>
+            </button>
+          )}
+          <h1 className="text-base sm:text-lg font-black text-slate-900 truncate">Smart Reminder Engine</h1>
         </div>
-      </div>
-
-      {/* Auto-Stop Guarantee Banner */}
-      <div className="bg-gradient-to-r from-teal-900 to-slate-900 text-white p-4 rounded-2xl border border-teal-800 shadow-md flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-300 flex items-center justify-center shrink-0">
-            <CheckCircle2 className="w-5 h-5 text-teal-400" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-white">Guaranteed Client Goodwill</h3>
-            <p className="text-xs text-teal-200 mt-0.5">
-              Reminders <strong>auto-suppress immediately</strong> upon client submission. No double-chasing.
-            </p>
-          </div>
-        </div>
-        <span className="text-[11px] font-bold bg-teal-500/20 text-teal-300 border border-teal-500/40 px-3 py-1 rounded-full shrink-0">
-          Auto-Stop Engine Active
+        <span className="text-[11px] font-bold bg-teal-50 text-teal-700 border border-teal-200 px-2.5 py-1 rounded-xl shrink-0">
+          Auto-Stop Active
         </span>
       </div>
 
@@ -245,6 +280,103 @@ Apex & Partners Chartered Accountants`;
           )}
         </div>
 
+      </div>
+
+      {/* Magic-Link, Smart Escalation Rules & White-Label Branding */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Escalation Cadence + Magic Link */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-4 text-xs">
+          <div className="flex items-center justify-between">
+            <h3 className="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+              <Clock className="w-4 h-4 text-indigo-600" />
+              <span>Escalation Cadence & Magic Link</span>
+            </h3>
+            <label className="flex items-center gap-1.5 font-bold text-emerald-700 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={escalation.autoStop}
+                onChange={(e) => saveEscalation({ ...escalation, autoStop: e.target.checked })}
+                className="rounded text-emerald-600"
+              />
+              <span>Auto-Stop on Upload</span>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2">
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span className="text-[10px] font-bold text-slate-400 block">Day 1</span>
+              <strong className="text-slate-800">WhatsApp</strong>
+            </div>
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span className="text-[10px] font-bold text-slate-400 block">Day 3</span>
+              <strong className="text-slate-800">Email Nudge</strong>
+            </div>
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span className="text-[10px] font-bold text-slate-400 block">Day 7</span>
+              <strong className="text-rose-600">Partner Alert</strong>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-slate-100 space-y-2">
+            <label className="font-bold text-slate-700 flex items-center gap-1.5">
+              <Link2 className="w-3.5 h-3.5 text-indigo-600" />
+              <span>1-Tap Client Magic Upload Link</span>
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                readOnly
+                value={magicLinkUrl}
+                className="flex-1 p-2 rounded-xl bg-slate-50 border border-slate-200 font-mono text-[11px] text-slate-600"
+              />
+              <button
+                type="button"
+                onClick={handleCopyMagicLink}
+                className="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shrink-0"
+              >
+                {copiedLink ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* White-Label Client Portal Branding */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-3 text-xs">
+          <h3 className="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+            <Palette className="w-4 h-4 text-purple-600" />
+            <span>White-Label Client Portal Branding</span>
+          </h3>
+          <div>
+            <label className="font-bold text-slate-700 block mb-1">Custom Portal Brand Name</label>
+            <input
+              type="text"
+              placeholder="e.g. Apex & Partners Client Vault"
+              value={whiteLabel.brandName}
+              onChange={(e) => saveWhiteLabel({ ...whiteLabel, brandName: e.target.value })}
+              className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold"
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-3 items-center">
+            <div>
+              <label className="font-bold text-slate-700 block mb-1">Accent Color</label>
+              <input
+                type="color"
+                value={whiteLabel.accentColor}
+                onChange={(e) => saveWhiteLabel({ ...whiteLabel, accentColor: e.target.value })}
+                className="w-full h-9 rounded-xl border border-slate-200 cursor-pointer p-0.5"
+              />
+            </div>
+            <div className="col-span-2">
+              <label className="font-bold text-slate-700 block mb-1">Portal Subtitle / Note</label>
+              <input
+                type="text"
+                value={whiteLabel.footerNote}
+                onChange={(e) => saveWhiteLabel({ ...whiteLabel, footerNote: e.target.value })}
+                className="w-full p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-800"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

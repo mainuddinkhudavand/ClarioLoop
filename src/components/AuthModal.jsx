@@ -118,12 +118,23 @@ const DEMO_CREDENTIALS = {
   }
 };
 
+const VERTICAL_ROLE_MAP = {
+  ca: ['ca', 'client'],
+  cooperative: ['cooperative', 'coop_member'],
+  education: ['education', 'edu_student'],
+  insurance: ['insurance', 'ins_client']
+};
+
 export default function AuthModal({ 
   isOpen, 
   onClose, 
-  defaultRole = 'ca', 
+  defaultRole = 'ca',
+  allowedVertical = null,
   onAuthSuccess 
 }) {
+  const visibleRoles = allowedVertical && VERTICAL_ROLE_MAP[allowedVertical]
+    ? ROLES_CONFIG.filter(r => VERTICAL_ROLE_MAP[allowedVertical].includes(r.id))
+    : ROLES_CONFIG;
   if (!isOpen) return null;
 
   const [mode, setMode] = useState('login'); // 'login' | 'register'
@@ -248,9 +259,11 @@ export default function AuthModal({
             </button>
           </div>
 
-          {/* Industry Role Switcher Chips */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mt-4 pt-3 border-t border-white/15 text-[10px] font-bold">
-            {ROLES_CONFIG.map(r => {
+          {/* Industry Role Switcher Chips (Scoped strictly to active vertical when selected) */}
+          <div className={`grid gap-1.5 mt-4 pt-3 border-t border-white/15 text-[10px] font-bold ${
+            visibleRoles.length <= 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-4'
+          }`}>
+            {visibleRoles.map(r => {
               const Icon = r.icon;
               const isSelected = role === r.id;
               return (

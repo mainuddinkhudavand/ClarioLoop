@@ -27,6 +27,7 @@ import {
 import { mockEducationalInstitutions } from '../data/verticalData';
 import AIAssistantModal from './AIAssistantModal';
 import PortalSidebar from './PortalSidebar';
+import InstagramProfileFeed from './InstagramProfileFeed';
 
 const SECTIONS_META = [
   { code: 'A', name: 'A. Admission Application & Identity', count: 7 },
@@ -98,7 +99,28 @@ export default function EducationPortal({
   const [viewRole, setViewRole] = useState(initialRole); // 'admin' | 'student'
   const [activeTab, setActiveTab] = useState('dashboard');
   const [staffRole, setStaffRole] = useState('INSTITUTION_ADMIN'); // INSTITUTION_ADMIN | VERIFIER | SCHOLARSHIP_OFFICER | PLACEMENT_OFFICER | SECTION_CLEARANCE_STAFF | AUDITOR
-  const [students, setStudents] = useState(INITIAL_STUDENTS);
+  const [students, setStudents] = useState(() => {
+    try {
+      const saved = localStorage.getItem('clarioloop_edu_students_v1');
+      return saved ? JSON.parse(saved) : INITIAL_STUDENTS;
+    } catch {
+      return INITIAL_STUDENTS;
+    }
+  });
+
+  React.useEffect(() => {
+    try { localStorage.setItem('clarioloop_edu_students_v1', JSON.stringify(students)); } catch {}
+  }, [students]);
+
+  React.useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === 'clarioloop_edu_students_v1' && e.newValue) {
+        try { setStudents(JSON.parse(e.newValue)); } catch {}
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
   const [aiAssistEnabled, setAiAssistEnabled] = useState(false); // OFF by default
   const [isAIClassifierOpen, setIsAIClassifierOpen] = useState(false);
   const [reviewReason, setReviewReason] = useState('');
@@ -268,6 +290,37 @@ export default function EducationPortal({
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600">
                 <strong>Data Notice:</strong> Collected solely for academic verification. Accessible only to authorised staff. Retained per institution policy (10 years). Scans only — originals are never kept by the system.
               </div>
+
+              {/* Student No-Dues Clearance Tracker + Provisional Slip */}
+              <div className="pt-2 border-t border-slate-100 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <strong className="text-slate-900">Departmental No-Dues Clearance</strong>
+                  <button
+                    type="button"
+                    onClick={() => setAckStudent(portalStudent)}
+                    className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold"
+                  >
+                    Download Slip
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] font-bold">
+                  {Object.entries(portalStudent.noDues || {}).slice(0, 4).map(([dept, st]) => (
+                    <div
+                      key={dept}
+                      className={`p-2 rounded-lg border capitalize flex items-center justify-between ${
+                        st === 'CLEARED'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : st === 'PENDING'
+                          ? 'bg-amber-50 text-amber-700 border-amber-200'
+                          : 'bg-slate-50 text-slate-500 border-slate-200'
+                      }`}
+                    >
+                      <span>{dept}</span>
+                      <span>{st === 'CLEARED' ? '✓' : st === 'PENDING' ? '⏳' : 'N/A'}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {portalStudent.items
@@ -322,10 +375,11 @@ export default function EducationPortal({
                 { id: 'templates', label: 'Templates', icon: BookOpen },
                 { id: 'reports', label: 'Reports', icon: BarChart3 },
                 { id: 'settings', label: 'Settings', icon: Settings },
-                { id: 'audit', label: 'Audit Log', icon: ShieldAlert }
+                { id: 'audit', label: 'Audit Log', icon: ShieldAlert },
+                { id: 'profile', label: 'Profile', mobileLabel: 'Profile', icon: User }
               ]}
             />
-            <div className="flex-1 min-w-0 p-4 sm:p-6 bg-slate-50/50 space-y-5">
+            <div className="flex-1 min-w-0 p-3 sm:p-6 bg-slate-50/50 pb-24 md:pb-6 space-y-5">
 
             {/* DASHBOARD */}
             {activeTab === 'dashboard' && (
@@ -667,6 +721,34 @@ export default function EducationPortal({
                   </div>
                 ))}
               </div>
+            )}
+
+            {activeTab === 'profile' && (
+              <InstagramProfileFeed
+                name={activeInst?.name || 'RV Institute & Campus'}
+                subtitle="Admissions, Scholarships & Student Compliance"
+                initials="ED"
+                accent="blue"
+                badgeText="NAAC / AICTE"
+                posts={students.slice(0, 6).flatMap((st) =>
+                  (st.items || []).map((it) => ({
+                    id: `${st.id}_${it.id}`,
+                    title: it.title,
+                    subtitle: `${st.name} (${st.usn})`,
+                    category: it.tag,
+                    period: st.stage,
+                    status: it.status === 'VERIFIED' ? 'VERIFIED' : it.status === 'UNDER_REVIEW' ? 'SUBMITTED' : 'PENDING'
+                  }))
+                )}
+                onPostAction={() => setActiveTab('review')}
+                actionLabelMissing="Collect Doc"
+                actionLabelDone="Review File"
+                profileFields={[
+                  { key: 'code', label: 'Institution Code', value: activeInst?.code || 'RV-2026' },
+                  { key: 'city', label: 'Campus City', value: activeInst?.city || 'Bengaluru' },
+                ]}
+                onSaveProfile={() => setStatusMsg('Institution profile updated!')}
+              />
             )}
             </div>
           </div>

@@ -1,45 +1,28 @@
 import React, { useState } from 'react';
 import Logo from './Logo';
-import { 
-  ArrowRight, 
-  Sparkles, 
-  CheckCircle2, 
-  Clock, 
-  ShieldCheck, 
-  Smartphone, 
-  UploadCloud, 
-  BellRing, 
-  MessageSquare, 
-  Zap, 
-  Check, 
-  ChevronRight, 
-  FileText, 
-  Lock, 
-  TrendingUp, 
-  FileCheck2, 
-  Users, 
-  Cpu, 
-  FileSearch, 
-  Calendar, 
-  BarChart3, 
-  Calculator, 
-  Scale, 
-  HeartPulse, 
-  GraduationCap, 
-  Building, 
-  Umbrella, 
-  Factory, 
-  Truck, 
-  Handshake, 
-  Play,
-  Layers,
-  AlertCircle,
-  Tag,
-  CreditCard
+import {
+  ArrowRight,
+  ArrowLeft,
+  ShieldCheck,
+  Smartphone,
+  Check,
+  Building2,
+  Landmark,
+  GraduationCap,
+  Users,
+  UserCheck,
+  CreditCard,
+  UploadCloud,
+  Cpu,
+  FileSearch,
+  BellRing,
+  Calendar,
+  BarChart3,
+  Sparkles,
+  Lock
 } from 'lucide-react';
-import { coreFeatures, industryWorkflows, financeMasterChecklist } from '../data/mockData';
+import { coreFeatures, financeMasterChecklist } from '../data/mockData';
 
-// Icon lookup for 7 pillars
 const pillarIconMap = {
   UploadCloud,
   Cpu,
@@ -50,315 +33,370 @@ const pillarIconMap = {
   BarChart3
 };
 
-// Icon lookup for 10 industries
-const industryIconMap = {
-  Calculator,
-  Users,
-  Scale,
-  HeartPulse,
-  Cross: HeartPulse,
-  GraduationCap,
-  Building,
-  Umbrella,
-  Factory,
-  Truck,
-  Handshake
+const VERTICAL_HOME_CONFIG = {
+  ca: {
+    badge: 'CA & TAX AUDIT',
+    title: 'CA & Tax Audit Document Workspace',
+    subtitle: 'Automated client document collection, Tax Audit (44AB), GST, ROC & TDS compliance for Chartered Accountants and their Clients.',
+    heroGradient: 'from-slate-950 via-indigo-950 to-slate-950',
+    glowBg: 'bg-indigo-500/25',
+    accentText: 'text-indigo-600',
+    pillClass: 'bg-indigo-500/20 border-indigo-400/30 text-indigo-200',
+    deskTopBar: 'from-indigo-600 to-blue-600',
+    clientTopBar: 'from-teal-500 to-emerald-600',
+    deskIconBg: 'bg-gradient-to-br from-indigo-600 to-blue-600',
+    clientIconBg: 'bg-gradient-to-br from-teal-500 to-emerald-600',
+    primaryBtn: 'bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white',
+    secondaryBtn: 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white',
+    subBtn: 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200',
+    highlightBorder: 'hover:border-indigo-300',
+    deskRole: 'ca',
+    clientRole: 'client',
+    desk: {
+      title: 'CA Practice Desk',
+      subtitle: 'For Chartered Accountants, tax consultants, audit managers & article staff',
+      icon: Building2,
+      badge: 'AUDIT DESK',
+      badgeClass: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
+      features: [
+        'Practice dashboard, client CRM & engagement letters',
+        'Tax Audit (44AB), GST, TDS & ROC compliance checklists',
+        'Automated WhatsApp & Email reminders with instant stop on upload',
+        'AI document reader & verification reports'
+      ],
+      cta: 'Login / Register as CA Practice'
+    },
+    client: {
+      title: 'Client / Taxpayer Portal',
+      subtitle: 'For corporate clients, directors, proprietors & taxpayers',
+      icon: Smartphone,
+      badge: 'CLIENT PORTAL',
+      badgeClass: 'bg-teal-50 text-teal-700 border border-teal-200',
+      features: [
+        'Simple document upload for PAN, GST, bank statements & financials',
+        'Real-time verification status & missing document alerts',
+        'Encrypted 256-bit upload with instant acknowledgement',
+        'Stops automated reminders immediately after upload'
+      ],
+      cta: 'Login / Register as Client'
+    },
+    highlights: [
+      'ITR, AIS & 26AS Collection',
+      'GSTR-1 / GSTR-3B & Ledgers',
+      'Section 44AB Tax Audit Pack',
+      'Payroll, Form 24Q/26Q & EPF/ESI',
+      'MCA / ROC & Board Resolutions',
+      'Automated Client Follow-ups'
+    ]
+  },
+
+  insurance: {
+    badge: 'INSURANCE & CLAIMS',
+    title: 'Insurance & Claims Document Workspace',
+    subtitle: 'Streamlined KYC, policy servicing, renewals, and cashless/reimbursement claim documentation for Insurance Agencies, Brokers & Policyholders.',
+    heroGradient: 'from-slate-950 via-purple-950 to-slate-950',
+    glowBg: 'bg-purple-500/25',
+    accentText: 'text-purple-600',
+    pillClass: 'bg-purple-500/20 border-purple-400/30 text-purple-200',
+    deskTopBar: 'from-purple-600 to-fuchsia-600',
+    clientTopBar: 'from-violet-600 to-indigo-600',
+    deskIconBg: 'bg-gradient-to-br from-purple-600 to-fuchsia-600',
+    clientIconBg: 'bg-gradient-to-br from-violet-600 to-indigo-600',
+    primaryBtn: 'bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white',
+    secondaryBtn: 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white',
+    subBtn: 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200',
+    highlightBorder: 'hover:border-purple-300',
+    deskRole: 'insurance',
+    clientRole: 'ins_client',
+    desk: {
+      title: 'Agency & Broker Claims Desk',
+      subtitle: 'For insurance agents, brokerages, TPAs, surveyors & corporate agencies',
+      icon: ShieldCheck,
+      badge: 'CLAIMS DESK',
+      badgeClass: 'bg-purple-50 text-purple-700 border border-purple-200',
+      features: [
+        'Life, Health, Motor & General insurance document checklists',
+        'Cashless TPA pre-auth, hospital bills & motor FIR claim tracking',
+        'Policy renewal reminders & nominee documentation',
+        'Full audit log & review queue for claim readiness'
+      ],
+      cta: 'Login / Register as Agency / Broker'
+    },
+    client: {
+      title: 'Policyholder / Claimant Portal',
+      subtitle: 'For policyholders, insured members, nominees & claimants',
+      icon: Users,
+      badge: 'POLICYHOLDER',
+      badgeClass: 'bg-violet-50 text-violet-700 border border-violet-200',
+      features: [
+        'Upload Aadhaar, PAN, policy copy & medical/accident bills',
+        'Submit discharge summaries, RC/DL & bank cancelled cheque',
+        'Track claim document review & missing item status',
+        'Receive instant acknowledgement on submission'
+      ],
+      cta: 'Login / Register as Policyholder'
+    },
+    highlights: [
+      'Life Death & Maturity Claims',
+      'Health Cashless & Reimbursement',
+      'Motor Accident & Damage Claims',
+      'Nominee & Beneficiary KYC',
+      'Corporate / Group Insurance',
+      'Policy Renewal & Servicing'
+    ]
+  },
+
+  education: {
+    badge: 'EDUCATION & ADMISSIONS',
+    title: 'Education & Admissions Document Workspace',
+    subtitle: 'End-to-end student intake verification, scholarship DBT tracking, placements, and exit clearance for Institutions and Students.',
+    heroGradient: 'from-slate-950 via-blue-950 to-slate-950',
+    glowBg: 'bg-blue-500/25',
+    accentText: 'text-blue-600',
+    pillClass: 'bg-blue-500/20 border-blue-400/30 text-blue-200',
+    deskTopBar: 'from-blue-600 to-indigo-600',
+    clientTopBar: 'from-sky-500 to-cyan-600',
+    deskIconBg: 'bg-gradient-to-br from-blue-600 to-indigo-600',
+    clientIconBg: 'bg-gradient-to-br from-sky-500 to-cyan-600',
+    primaryBtn: 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white',
+    secondaryBtn: 'bg-gradient-to-r from-sky-600 to-cyan-600 hover:from-sky-700 hover:to-cyan-700 text-white',
+    subBtn: 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200',
+    highlightBorder: 'hover:border-blue-300',
+    deskRole: 'education',
+    clientRole: 'edu_student',
+    desk: {
+      title: 'Admissions & Staff Desk',
+      subtitle: 'For registrars, admission officers, HODs & campus auditors',
+      icon: GraduationCap,
+      badge: 'ADMISSIONS DESK',
+      badgeClass: 'bg-blue-50 text-blue-700 border border-blue-200',
+      features: [
+        'Student intake & document verification across all routes',
+        'Govt scholarship & DBT Aadhaar-seeding tracker',
+        'UGC anti-ragging undertakings & placement consent tracking',
+        'Exit / No-Dues clearance & NAAC/NIRF ready records'
+      ],
+      cta: 'Login / Register as Institution Staff'
+    },
+    client: {
+      title: 'Student / Parent Portal',
+      subtitle: 'For applicants, enrolled students & parents/guardians',
+      icon: UserCheck,
+      badge: 'STUDENT PORTAL',
+      badgeClass: 'bg-sky-50 text-sky-700 border border-sky-200',
+      features: [
+        'Upload 10th/12th marks cards, TC, migration & rank cards',
+        'Submit income, caste & scholarship concession certificates',
+        'Track document verification & fee clearance receipts',
+        'Get instant alerts if any admission file is pending'
+      ],
+      cta: 'Login / Register as Student / Parent'
+    },
+    highlights: [
+      'Admissions & Identity Verification',
+      'Marks Cards, TC & Migration',
+      'Scholarship & DBT Aadhaar Seeding',
+      'Hostel & Anti-Ragging Undertakings',
+      'Placements & Internship Records',
+      'Exit / No-Dues Clearance'
+    ]
+  },
+
+  cooperative: {
+    badge: 'CO-OPERATIVE BANKING',
+    title: 'Co-operative Banking & PACS Workspace',
+    subtitle: 'Daily Pigmy collection sheets, loan sanction dossiers, member KYC, and RCS audit readiness for Societies and Members.',
+    heroGradient: 'from-slate-950 via-emerald-950 to-slate-950',
+    glowBg: 'bg-emerald-500/25',
+    accentText: 'text-emerald-600',
+    pillClass: 'bg-emerald-500/20 border-emerald-400/30 text-emerald-200',
+    deskTopBar: 'from-emerald-600 to-teal-600',
+    clientTopBar: 'from-teal-500 to-cyan-600',
+    deskIconBg: 'bg-gradient-to-br from-emerald-600 to-teal-600',
+    clientIconBg: 'bg-gradient-to-br from-teal-500 to-cyan-600',
+    primaryBtn: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white',
+    secondaryBtn: 'bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white',
+    subBtn: 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200',
+    highlightBorder: 'hover:border-emerald-300',
+    deskRole: 'cooperative',
+    clientRole: 'coop_member',
+    desk: {
+      title: 'Society & Field Agent Desk',
+      subtitle: 'For branch managers, cashiers, secretaries & pigmy agents',
+      icon: Landmark,
+      badge: 'SOCIETY DESK',
+      badgeClass: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+      features: [
+        'Daily Pigmy collection sheet, agent routes & cash remittance',
+        'Crop, Gold, MSME & Housing loan document scrutiny',
+        'RCS compliance, board minutes & statutory audit areas',
+        'Member KYC & nominee verification management'
+      ],
+      cta: 'Login / Register as Society Desk'
+    },
+    client: {
+      title: 'Member / Account Holder Portal',
+      subtitle: 'For society members, borrowers, farmers & daily depositors',
+      icon: Users,
+      badge: 'MEMBER PORTAL',
+      badgeClass: 'bg-teal-50 text-teal-700 border border-teal-200',
+      features: [
+        'Digital passbook balance & daily Pigmy collection entries',
+        'Upload land records (RTC/Pahani) & loan KYC documents',
+        'Track loan approval status & share capital records',
+        'Instant digital acknowledgement on submission'
+      ],
+      cta: 'Login / Register as Member'
+    },
+    highlights: [
+      'Daily Pigmy Agent Collections',
+      'Crop, Gold & Housing Loan Dossiers',
+      'Member KYC & Share Capital',
+      'Land Records (RTC / Pahani)',
+      'RCS Audit & Board Minutes',
+      'Instant Deposit Acknowledgements'
+    ]
+  }
 };
 
-export default function HomePage({ 
-  onLaunchApp, 
-  onLaunchPortal, 
-  onLaunchAI,
-  onLaunchCoop,
-  onLaunchEdu,
-  onLaunchInsurance,
-  onOpenSubscriptions,
-  onEnterVertical
+export default function HomePage({
+  selectedVertical = 'ca',
+  onSelectRole,
+  onChangeVertical,
+  onOpenSubscriptions
 }) {
-  const [selectedIndustryModal, setSelectedIndustryModal] = useState(null);
+  const cfg = VERTICAL_HOME_CONFIG[selectedVertical] || VERTICAL_HOME_CONFIG.ca;
+  const DeskIcon = cfg.desk.icon;
+  const ClientIcon = cfg.client.icon;
   const [activeFinanceModule, setActiveFinanceModule] = useState('A');
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-indigo-500 selection:text-white">
-      
-      {/* ================= HERO SECTION (Matches Blueprint & Poster) ================= */}
-      <section className="relative overflow-hidden pt-10 pb-16 sm:pt-14 sm:pb-24 border-b border-slate-100">
-        {/* Soft Ambient Background Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[520px] bg-gradient-to-b from-indigo-50/70 via-blue-50/40 to-transparent -z-10 blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      {/* ================= EXECUTIVE DARK HERO ================= */}
+      <section className={`relative overflow-hidden pt-8 pb-24 sm:pt-12 sm:pb-28 bg-gradient-to-br ${cfg.heroGradient} text-white border-b border-slate-800`}>
+        <div className={`absolute -top-20 left-1/2 -translate-x-1/2 w-[620px] h-[280px] rounded-full blur-3xl pointer-events-none ${cfg.glowBg}`} />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          {/* Top Slogan from Poster */}
-          <div className="flex justify-center mb-4 sm:mb-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-700 text-xs font-extrabold shadow-xs">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-              <span>One Platform • All Industries • All Your Document Workflows</span>
-            </div>
-          </div>
-
-          {/* Main Headline from Poster */}
-          <div className="text-center max-w-4xl mx-auto space-y-4">
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]">
-              Collect. Verify.{' '}
-              <span className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
-                Manage. Complete.
-              </span>
-            </h1>
-
-            <p className="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed pt-1">
-              The smart and secure way to collect, verify and manage documents from <strong>clients, employees, students, patients, vendors and more</strong> — across every sector.
-            </p>
-
-            {/* Action CTAs: Explore Universal Industry Suites */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
-              <a
-                href="#industry-suites"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm shadow-lg shadow-indigo-600/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
-              >
-                <span>Explore Industry Suites</span>
-                <ArrowRight className="w-4 h-4" />
-              </a>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-slate-500 pt-3">
-              <span className="flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-emerald-600" /> Zero client passwords
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-emerald-600" /> Bank-grade 256-bit encryption
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Check className="w-4 h-4 text-emerald-600" /> Instant stop on upload
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 4 DEDICATED INDUSTRY OPERATING SUITES ================= */}
-      <section id="industry-suites" className="py-14 sm:py-16 bg-white border-b border-slate-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-10">
-            <span className="text-xs font-black uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">
-              Dedicated Flagship Solutions
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="flex items-center justify-between gap-2 mb-6 sm:mb-8">
+            <span className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border text-[11px] font-black uppercase tracking-wider ${cfg.pillClass}`}>
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{cfg.badge}</span>
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 mt-2 tracking-tight">
-              Four Purpose-Built Portals for Your Industry
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl mx-auto leading-relaxed">
-              Every vertical runs on its own specialized master checklists, role-based workflows, separate subscription pricing, and counterpart portals.
-            </p>
+
+            {onChangeVertical && (
+              <button
+                type="button"
+                onClick={onChangeVertical}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-200 hover:text-white bg-white/10 hover:bg-white/15 border border-white/15 px-3.5 py-1.5 rounded-xl transition-colors"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Switch Industry</span>
+              </button>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {/* 1. CA & Tax Audit Suite */}
-            <div className="bg-slate-50/60 rounded-3xl p-5 sm:p-6 border border-slate-200 flex flex-col justify-between hover:border-indigo-400 hover:shadow-xl transition-all group">
+          <div className="text-center max-w-3xl mx-auto space-y-3.5">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.15]">
+              {cfg.title}
+            </h1>
+            <p className="text-xs sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto">
+              {cfg.subtitle}
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-1 text-[11px] font-semibold text-slate-300">
+              <span className="flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-emerald-400" /> 256-Bit Encrypted
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-emerald-400" /> Separate Desk & Member Access
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-emerald-400" /> Real-Time Status Tracking
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= FLOATING 2 ROLE CARDS ================= */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-14 relative z-10 pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Side 1: Desk / Staff / Agency */}
+          <div className="bg-white rounded-3xl border border-slate-200/90 overflow-hidden flex flex-col justify-between">
+            <div className={`h-1.5 w-full bg-gradient-to-r ${cfg.deskTopBar}`} />
+            <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black shadow-md shadow-indigo-600/20 group-hover:scale-105 transition-transform">
-                    <Building className="w-6 h-6" />
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`w-12 h-12 rounded-2xl ${cfg.deskIconBg} text-white flex items-center justify-center shadow-md`}>
+                    <DeskIcon className="w-6 h-6" />
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">
-                    Finance & Tax
+                  <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${cfg.desk.badgeClass}`}>
+                    {cfg.desk.badge}
                   </span>
                 </div>
+                <h2 className="text-lg sm:text-xl font-black text-slate-900">{cfg.desk.title}</h2>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">{cfg.desk.subtitle}</p>
 
-                <h3 className="text-base font-extrabold text-slate-900 leading-tight">
-                  CA & Tax Audit Suite
-                </h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                  For Chartered Accountants, tax consultants, and corporate statutory auditors.
-                </p>
-
-                <div className="mt-4 pt-3 border-t border-slate-200/60 space-y-1 text-xs text-slate-600 font-medium">
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-                    <span>Modules A–F (Tax Audit, GST, ROC, TDS)</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-                    <span>Passwordless Client Mobile Upload Vault</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-                    <span>Starting ₹999/mo (Starter, Pro, Business)</span>
-                  </div>
+                <div className="mt-5 pt-4 border-t border-slate-100 space-y-2.5 text-xs text-slate-700">
+                  {cfg.desk.features.map((feat, idx) => (
+                    <div key={idx} className="flex items-start gap-2.5">
+                      <span className="w-4 h-4 rounded-full bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
+                        <Check className={`w-3 h-3 ${cfg.accentText}`} />
+                      </span>
+                      <span className="leading-snug">{feat}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-200/60 space-y-2">
+              <div className="mt-6 pt-4 border-t border-slate-100">
                 <button
-                  onClick={() => onEnterVertical ? onEnterVertical('ca') : onLaunchApp()}
-                  className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md shadow-indigo-600/20 transition-all flex items-center justify-center gap-1.5"
+                  type="button"
+                  onClick={() => onSelectRole(cfg.deskRole)}
+                  className={`w-full py-3.5 px-4 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all ${cfg.primaryBtn}`}
                 >
-                  <Building className="w-3.5 h-3.5" />
-                  <span>Launch CA Practice Desk</span>
-                </button>
-                <button
-                  onClick={() => onOpenSubscriptions && onOpenSubscriptions('ca')}
-                  className="w-full py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs border border-indigo-200 transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <CreditCard className="w-3.5 h-3.5 text-indigo-600" />
-                  <span>View CA Subscriptions</span>
+                  <span>{cfg.desk.cta}</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
+          </div>
 
-            {/* 2. Cooperative Banking & Society Suite */}
-            <div className="bg-slate-50/60 rounded-3xl p-5 sm:p-6 border border-slate-200 flex flex-col justify-between hover:border-emerald-400 hover:shadow-xl transition-all group">
+          {/* Side 2: Client / Policyholder / Student / Member */}
+          <div className="bg-white rounded-3xl border border-slate-200/90 overflow-hidden flex flex-col justify-between">
+            <div className={`h-1.5 w-full bg-gradient-to-r ${cfg.clientTopBar}`} />
+            <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black shadow-md shadow-emerald-600/20 group-hover:scale-105 transition-transform">
-                    <Building className="w-6 h-6" />
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`w-12 h-12 rounded-2xl ${cfg.clientIconBg} text-white flex items-center justify-center shadow-md`}>
+                    <ClientIcon className="w-6 h-6" />
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                    Banking & PACS
+                  <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${cfg.client.badgeClass}`}>
+                    {cfg.client.badge}
                   </span>
                 </div>
+                <h2 className="text-lg sm:text-xl font-black text-slate-900">{cfg.client.title}</h2>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">{cfg.client.subtitle}</p>
 
-                <h3 className="text-base font-extrabold text-slate-900 leading-tight">
-                  Co-op Banking & Societies
-                </h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                  For Credit Societies, PACS, Urban Co-op Banks & DCCB branches.
-                </p>
-
-                <div className="mt-4 pt-3 border-t border-slate-200/60 space-y-1 text-xs text-slate-600 font-medium">
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Modules 1–12 (Pigmy, RD, FD, Crop Loans)</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Field Agent Daily Sheet & Cash Remittance</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Starting ₹1,499/mo (Society, PACS, DCCB)</span>
-                  </div>
+                <div className="mt-5 pt-4 border-t border-slate-100 space-y-2.5 text-xs text-slate-700">
+                  {cfg.client.features.map((feat, idx) => (
+                    <div key={idx} className="flex items-start gap-2.5">
+                      <span className="w-4 h-4 rounded-full bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
+                        <Check className="w-3 h-3 text-emerald-600" />
+                      </span>
+                      <span className="leading-snug">{feat}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-200/60 space-y-2">
+              <div className="mt-6 pt-4 border-t border-slate-100">
                 <button
-                  onClick={() => onEnterVertical ? onEnterVertical('cooperative') : onLaunchCoop()}
-                  className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-1.5"
+                  type="button"
+                  onClick={() => onSelectRole(cfg.clientRole)}
+                  className={`w-full py-3.5 px-4 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition-all ${cfg.secondaryBtn}`}
                 >
-                  <Building className="w-3.5 h-3.5" />
-                  <span>Launch Co-op Desk</span>
-                </button>
-                <button
-                  onClick={() => onOpenSubscriptions && onOpenSubscriptions('cooperative')}
-                  className="w-full py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200 transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <span>View Co-op Subscriptions</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
-                </button>
-              </div>
-            </div>
-
-            {/* 3. Education & Admissions Suite */}
-            <div className="bg-slate-50/60 rounded-3xl p-5 sm:p-6 border border-slate-200 flex flex-col justify-between hover:border-blue-400 hover:shadow-xl transition-all group">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-black shadow-md shadow-blue-600/20 group-hover:scale-105 transition-transform">
-                    <GraduationCap className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200">
-                    Academic
-                  </span>
-                </div>
-
-                <h3 className="text-base font-extrabold text-slate-900 leading-tight">
-                  Education & Admissions
-                </h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                  For Schools, PU Colleges, Degree Institutions & Autonomous Universities.
-                </p>
-
-                <div className="mt-4 pt-3 border-t border-slate-200/60 space-y-1 text-xs text-slate-600 font-medium">
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                    <span>Modules A–J (Admissions, Marks, TC, UGC)</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                    <span>Aadhaar-seeding DBT & Scholarship Tracker</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                    <span>Starting ₹1,299/mo (Campus, College, Univ)</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-slate-200/60 space-y-2">
-                <button
-                  onClick={() => onEnterVertical ? onEnterVertical('education') : onLaunchEdu()}
-                  className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-600/20 transition-all flex items-center justify-center gap-1.5"
-                >
-                  <GraduationCap className="w-3.5 h-3.5" />
-                  <span>Launch Education Desk</span>
-                </button>
-                <button
-                  onClick={() => onOpenSubscriptions && onOpenSubscriptions('education')}
-                  className="w-full py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200 transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <span>View Edu Subscriptions</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-blue-600" />
-                </button>
-              </div>
-            </div>
-
-            {/* 4. Insurance & Claims Suite */}
-            <div className="bg-slate-50/60 rounded-3xl p-5 sm:p-6 border border-slate-200 flex flex-col justify-between hover:border-purple-400 hover:shadow-xl transition-all group">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center font-black shadow-md shadow-purple-600/20 group-hover:scale-105 transition-transform">
-                    <ShieldCheck className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 border border-purple-200">
-                    Claims & IRDAI
-                  </span>
-                </div>
-
-                <h3 className="text-base font-extrabold text-slate-900 leading-tight">
-                  Insurance & Claims Suite
-                </h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                  For Insurance Agents, Brokerages, TPAs, Surveyors & Corporate Agencies.
-                </p>
-
-                <div className="mt-4 pt-3 border-t border-slate-200/60 space-y-1 text-xs text-slate-600 font-medium">
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                    <span>Modules 1–14 (Life, Health, Motor & Claims)</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                    <span>Cashless Hospital Bills & FIR Motor Claims</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                    <span>Starting ₹799/mo (Solo, Broker, Corporate)</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-slate-200/60 space-y-2">
-                <button
-                  onClick={() => onEnterVertical ? onEnterVertical('insurance') : onLaunchInsurance()}
-                  className="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-xs shadow-md shadow-purple-600/20 transition-all flex items-center justify-center gap-1.5"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Launch Insurance Desk</span>
-                </button>
-                <button
-                  onClick={() => onOpenSubscriptions && onOpenSubscriptions('insurance')}
-                  className="w-full py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200 transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <span>View Insurance Subscriptions</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-purple-600" />
+                  <span>{cfg.client.cta}</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -366,40 +404,90 @@ export default function HomePage({
         </div>
       </section>
 
-      {/* ================= 7 CORE FEATURE PILLARS (Exact Row from the Poster) ================= */}
-      <section className="py-12 bg-slate-50 border-b border-slate-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-8">
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              Core Document Automation
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Engineered to replace manual email and WhatsApp document follow-up chaos.
-            </p>
+      {/* ================= RELEVANT INDUSTRY HIGHLIGHTS ================= */}
+      <section className="py-12 sm:py-14 bg-white border-t border-b border-slate-200/80">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-7">
+          <div>
+            <div>
+              <h2 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
+                Included in {cfg.badge}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                Built-in checklists, secure document collection & automated verification.
+              </p>
+            </div>
           </div>
 
-          {/* 7 Feature Cards Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
-            {coreFeatures.map(feat => {
-              const Icon = pillarIconMap[feat.icon] || Sparkles;
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {cfg.highlights.map((item, idx) => (
+              <div
+                key={idx}
+                className={`p-4 rounded-2xl border border-slate-200/90 bg-slate-50/70 flex items-center gap-3 text-xs font-bold text-slate-800 transition-colors ${cfg.highlightBorder}`}
+              >
+                <div className={`w-7 h-7 rounded-xl bg-white border border-slate-200 flex items-center justify-center shrink-0 ${cfg.accentText}`}>
+                  <Check className="w-4 h-4" />
+                </div>
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
 
+          {/* CA-Only Statutory Checklist Preview */}
+          {selectedVertical === 'ca' && (
+            <div className="pt-2 space-y-3 bg-slate-50/60 p-4 sm:p-5 rounded-3xl border border-slate-200/80">
+              <div className="flex flex-wrap gap-2">
+                {financeMasterChecklist.map(mod => {
+                  const isSelected = activeFinanceModule === mod.code;
+                  return (
+                    <button
+                      key={mod.code}
+                      type="button"
+                      onClick={() => setActiveFinanceModule(mod.code)}
+                      className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
+                        isSelected
+                          ? 'bg-indigo-600 text-white border-indigo-600'
+                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      {mod.title}
+                    </button>
+                  );
+                })}
+              </div>
+              {(() => {
+                const currentMod = financeMasterChecklist.find(m => m.code === activeFinanceModule) || financeMasterChecklist[0];
+                return (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {currentMod.items.slice(0, 6).map((item, idx) => (
+                      <div key={idx} className="p-3 rounded-xl border border-slate-200 bg-white flex items-center justify-between gap-2 text-xs">
+                        <span className="font-semibold text-slate-800 truncate">{item.name}</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 shrink-0">
+                          {item.defaultTag}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* Core Platform Features with Icons */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 pt-2">
+            {coreFeatures.map(feat => {
+              const FeatIcon = pillarIconMap[feat.icon] || Sparkles;
               return (
-                <div 
+                <div
                   key={feat.id}
-                  className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-indigo-300 transition-all flex flex-col items-center text-center justify-between"
+                  className="bg-white p-3.5 rounded-2xl border border-slate-200/90 text-center flex flex-col items-center gap-2"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 mb-2">
-                    <Icon className="w-5 h-5" />
+                  <div className={`w-8 h-8 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center ${cfg.accentText}`}>
+                    <FeatIcon className="w-4 h-4" />
                   </div>
-                  <div>
-                    <h3 className="text-xs font-black text-slate-900 leading-tight">
-                      {feat.title}
-                    </h3>
-                    <p className="text-[10px] text-slate-500 mt-1 leading-snug line-clamp-3">
-                      {feat.description}
-                    </p>
-                  </div>
-                  <span className="mt-2 text-[9px] font-bold text-indigo-600 bg-indigo-50/80 px-2 py-0.5 rounded-full">
+                  <h3 className="text-[11px] font-black text-slate-900 leading-tight">
+                    {feat.title}
+                  </h3>
+                  <span className="text-[9px] font-bold text-slate-500 block">
                     {feat.badge}
                   </span>
                 </div>
@@ -409,279 +497,15 @@ export default function HomePage({
         </div>
       </section>
 
-      {/* ================= WHO CAN USE CLARIOLOOP? (All 10 Industries from Poster) ================= */}
-      <section className="py-14 sm:py-20 bg-white border-b border-slate-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">
-              Universal Sector Coverage
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 mt-2 tracking-tight">
-              Who Can Use <span className="text-indigo-600">ClarioLoop</span>?
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Select any industry below to inspect pre-configured checklists and automated workflows:
-            </p>
-          </div>
-
-          {/* Additional Industry Checklists Grid (excludes sectors already covered by the 4 Flagship Suites above) */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-4">
-            {industryWorkflows
-              .filter(wf => !['finance-accounting', 'education', 'insurance-banking'].includes(wf.id))
-              .map(wf => {
-              const Icon = industryIconMap[wf.icon] || Users;
-
-              return (
-                <button
-                  key={wf.id}
-                  onClick={() => setSelectedIndustryModal(wf)}
-                  className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-indigo-400 transition-all text-left flex flex-col justify-between group transform hover:-translate-y-1"
-                >
-                  <div>
-                    <div className={`w-10 h-10 rounded-xl ${wf.lightBg} ${wf.textColor} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 leading-tight">
-                      {wf.name}
-                    </h3>
-                    <span className="text-[11px] font-semibold text-slate-400 block mt-0.5">
-                      {wf.subtext}
-                    </span>
-                  </div>
-
-                  <div className="mt-4 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-indigo-600 font-bold">
-                    <span>View Checklist</span>
-                    <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= FOOTER BANNER (Exact Match from Poster) ================= */}
-      <footer className="bg-slate-950 text-white py-8 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
-            <Logo size="small" inverted={true} showTagline={false} />
-            <div className="h-4 w-px bg-slate-700 hidden sm:block" />
-            <p className="text-xs text-slate-400">
-              The Universal Document Workflow Platform for Modern Businesses
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={onLaunchApp}
-              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md transition-all"
-            >
-              <span>Go Digital with ClarioLoop</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 pt-4 border-t border-slate-900 text-center text-[10px] text-slate-500">
-          © 2026 ClarioLoop Technologies Inc. All Rights Reserved. • ISO 27001 Certified • Bank Grade 256-Bit SSL
+      {/* ================= FOOTER ================= */}
+      <footer className="bg-slate-950 text-white py-7 border-t border-slate-800">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <Logo size="small" inverted={true} showTagline={false} />
+          <span className="text-[11px] text-slate-400">
+            © 2026 ClarioLoop Technologies • 256-Bit Encrypted Document Workflows
+          </span>
         </div>
       </footer>
-
-      {/* ================= MODAL: INDUSTRY DETAIL CHECKLIST ================= */}
-      {selectedIndustryModal && (
-        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          {selectedIndustryModal.id === 'finance-accounting' ? (
-            /* Rich Full-Featured Master Checklist Modal for 1. Finance & Accounting */
-            <div className="bg-white w-full max-w-4xl rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[94vh] animate-scaleUp">
-              {/* Modal Header */}
-              <div className="bg-slate-900 text-white p-4 sm:p-5 flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md">
-                    <Calculator className="w-5 h-5" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-base sm:text-lg font-black text-white truncate">
-                        Finance & Accounting Master Checklist
-                      </h3>
-                      <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-500/30 text-indigo-200 px-2.5 py-0.5 rounded-full border border-indigo-400/30">
-                        Operational Template
-                      </span>
-                    </div>
-                    <span className="text-xs text-indigo-300 font-medium truncate block">
-                      Users: CA firms, tax consultants, accountants, auditors and bookkeeping firms
-                    </span>
-                  </div>
-                </div>
-
-                <button 
-                  onClick={() => setSelectedIndustryModal(null)} 
-                  className="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-800 transition-colors"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {/* Module Sub-Tabs */}
-              <div className="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
-                <div>
-                  <span className="text-xs font-bold text-slate-800 block mb-2">
-                    Select Workflow Module:
-                  </span>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-                    {financeMasterChecklist.map(mod => {
-                      const isSelected = activeFinanceModule === mod.code;
-                      return (
-                        <button
-                          key={mod.code}
-                          type="button"
-                          onClick={() => setActiveFinanceModule(mod.code)}
-                          className={`p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between gap-1 ${
-                            isSelected
-                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
-                              : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                          }`}
-                        >
-                          <span className="text-[11px] font-bold line-clamp-1">
-                            {mod.title}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Active Module Detailed Checklist */}
-                {(() => {
-                  const currentModule = financeMasterChecklist.find(m => m.code === activeFinanceModule) || financeMasterChecklist[0];
-                  return (
-                    <div className="space-y-3 pt-2">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
-                        <div>
-                          <h4 className="font-extrabold text-slate-900 text-sm sm:text-base">
-                            {currentModule.title}
-                          </h4>
-                          <p className="text-xs text-slate-500 mt-0.5">
-                            {currentModule.description}
-                          </p>
-                        </div>
-                        <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200 shrink-0">
-                          {currentModule.items.length} Statutory Items
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
-                        {currentModule.items.map((item, idx) => (
-                          <div 
-                            key={idx}
-                            className="p-2.5 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-indigo-300 transition-all flex items-center justify-between gap-2"
-                          >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className="w-5 h-5 rounded-md bg-indigo-100 text-indigo-700 font-bold text-[10px] flex items-center justify-center shrink-0">
-                                {idx + 1}
-                              </span>
-                              <div className="min-w-0">
-                                <span className="font-bold text-xs text-slate-800 truncate block">
-                                  {item.name}
-                                </span>
-                                <span className="text-[10px] text-slate-400 block truncate">
-                                  {item.category}
-                                </span>
-                              </div>
-                            </div>
-
-                            <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full shrink-0 ${
-                              item.defaultTag === 'Mandatory' 
-                                ? 'bg-rose-50 text-rose-700 border border-rose-200' 
-                                : 'bg-amber-50 text-amber-700 border border-amber-200'
-                            }`}>
-                              {item.defaultTag}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
-
-              {/* Modal Footer */}
-              <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2 shrink-0">
-                <span className="text-xs text-slate-500 hidden sm:inline">
-                  Select, customize, and dispatch this checklist to any client in seconds.
-                </span>
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                  <button 
-                    onClick={() => setSelectedIndustryModal(null)}
-                    className="px-4 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs rounded-xl"
-                  >
-                    Close
-                  </button>
-                  <button 
-                    onClick={() => {
-                      setSelectedIndustryModal(null);
-                      onLaunchApp();
-                    }}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-md shadow-indigo-600/30"
-                  >
-                    <Play className="w-3 h-3 fill-current" />
-                    <span>Open in Request Builder</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            /* Standard Modal for other industries */
-            <div className="bg-white w-full max-w-lg rounded-2xl p-5 sm:p-6 shadow-2xl border border-slate-200 space-y-4 animate-scaleUp">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div>
-                  <h3 className="font-black text-slate-900 text-base">
-                    {selectedIndustryModal.name} Checklist
-                  </h3>
-                  <span className="text-xs text-slate-500">{selectedIndustryModal.subtext}</span>
-                </div>
-                <button onClick={() => setSelectedIndustryModal(null)} className="text-slate-400 hover:text-slate-700">✕</button>
-              </div>
-
-              <p className="text-xs text-slate-600 leading-relaxed">
-                {selectedIndustryModal.description}
-              </p>
-
-              <div className="space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-xs">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                  Standard Automated Requirements:
-                </span>
-                {selectedIndustryModal.sampleChecklist.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-slate-700">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <button 
-                  onClick={() => setSelectedIndustryModal(null)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl"
-                >
-                  Close
-                </button>
-                <button 
-                  onClick={() => {
-                    setSelectedIndustryModal(null);
-                    onLaunchApp();
-                  }}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5"
-                >
-                  <Play className="w-3 h-3 fill-current" />
-                  <span>Launch in Workspace</span>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
     </div>
   );
 }

@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import { mockClients, financeMasterChecklist } from '../data/mockData';
 
-export default function RequestBuilder({ onCreated, activeFirm, onBack }) {
+export default function RequestBuilder({ onCreated, onCreateRequest, activeFirm, onBack }) {
   const firmClients = activeFirm?.clients && activeFirm.clients.length > 0 ? activeFirm.clients : mockClients;
   const [selectedClient, setSelectedClient] = useState(firmClients[0]?.id || 'c1');
   const [requestTitle, setRequestTitle] = useState('December 2026 Monthly Accounting & GST Verification');
@@ -98,36 +98,41 @@ export default function RequestBuilder({ onCreated, activeFirm, onBack }) {
 
   const handleDispatch = (e) => {
     e.preventDefault();
+    if (onCreateRequest) {
+      onCreateRequest({
+        clientId: selectedClient,
+        title: requestTitle,
+        period,
+        dueDate,
+        isRecurring,
+        items
+      });
+    }
     setCreatedSuccess(true);
     setTimeout(() => {
       setCreatedSuccess(false);
       if (onCreated) onCreated();
-    }, 2000);
+    }, 1200);
   };
 
   return (
     <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 w-full overflow-hidden">
       
-      {/* Header with Back button */}
-      <div className="flex items-center gap-2.5 sm:gap-3">
+      {/* Compact Header Toolbar */}
+      <div className="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-4 shadow-xs flex items-center gap-3">
         {onBack && (
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200 shadow-xs transition-colors shrink-0"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors shrink-0"
             title="Back to Dashboard"
           >
-            <ArrowLeft className="w-4 h-4 text-indigo-600" />
+            <ArrowLeft className="w-3.5 h-3.5 text-indigo-600" />
             <span>Back</span>
           </button>
         )}
-        <div className="min-w-0">
-          <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 truncate">
-            Request Builder & Master Checklists
-          </h1>
-          <p className="text-xs text-slate-500 mt-0.5 truncate hidden sm:block">
-            Pre-configured operational checklists for CA firms, tax consultants, accountants & auditors
-          </p>
-        </div>
+        <h1 className="text-base sm:text-lg font-black text-slate-900 truncate">
+          Request Builder &amp; Checklists
+        </h1>
       </div>
 
       {/* ================= FINANCE & ACCOUNTING WORKFLOW SELECTOR ================= */}

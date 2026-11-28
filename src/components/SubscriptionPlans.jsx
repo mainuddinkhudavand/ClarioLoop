@@ -21,7 +21,8 @@ export default function SubscriptionPlans({
   activeFirm, 
   onSubscriptionUpdated, 
   onBack,
-  defaultVertical = 'ca'
+  defaultVertical = 'ca',
+  lockVertical = false
 }) {
   const [selectedVertical, setSelectedVertical] = useState(defaultVertical);
 
@@ -87,7 +88,8 @@ export default function SubscriptionPlans({
         </p>
       </div>
 
-      {/* 4 VERTICAL TABS SELECTOR */}
+      {/* 4 VERTICAL TABS SELECTOR (Hidden when locked to a single industry) */}
+      {!lockVertical && (
       <div className="flex items-center justify-center">
         <div className="bg-slate-100 p-1.5 rounded-2xl border border-slate-200/90 grid grid-cols-2 md:grid-cols-4 gap-1.5 w-full max-w-4xl">
           {[
@@ -115,6 +117,7 @@ export default function SubscriptionPlans({
           })}
         </div>
       </div>
+      )}
 
       {/* Subscription Status Bar */}
       <div className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -191,18 +191,54 @@ export default function PortalAuthGateway({
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
 
     if (portalType === 'admin') {
+      const enteredEmail = formData.email.trim().toLowerCase();
+      const enteredPassword = formData.password;
+
+      // Try server-side JWT admin authentication first when Express backend is running
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: enteredEmail, password: enteredPassword })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.token) {
+            sessionStorage.setItem('clarioloop_admin_token', data.token);
+          }
+          onSuccessLogin({
+            id: 'admin-root',
+            role: 'admin',
+            name: 'Root Platform Admin',
+            email: data.user?.email || enteredEmail,
+            phone: '+91 98000 11111',
+            isKycVerified: true,
+            kycDate: 'Nov 2026',
+            kycDocType: 'Master Root Security Clearance',
+            avatarInitials: 'AD',
+            designation: 'Principal Operations & Security Architect',
+            location: 'Bengaluru, Karnataka',
+            bio: 'Principal System Operations & Security Architect at ClarioLoop.'
+          });
+          return;
+        }
+        if (res.status === 401 || res.status === 403) {
+          setErrorMessage('Invalid admin email or password.');
+          return;
+        }
+      } catch {
+        // Static Vite / frontend-only mode fallback below
+      }
+
       const expectedEmail = (import.meta.env.VITE_ADMIN_EMAIL || 'admin@clarioloop.com').trim().toLowerCase();
       const expectedPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'ClarioOwner@2026';
 
-      if (
-        formData.email.trim().toLowerCase() !== expectedEmail ||
-        formData.password !== expectedPassword
-      ) {
+      if (enteredEmail !== expectedEmail || enteredPassword !== expectedPassword) {
         setErrorMessage('Invalid admin email or password.');
         return;
       }

@@ -7,13 +7,15 @@ export default function Logo({ size = 'default', showTagline = false, className 
   return (
     <div className={`flex items-center gap-2 sm:gap-2.5 min-w-0 ${className}`}>
       {/* Official 3D ClarioLoop Ribbon Infinity Trademark Logo */}
-      <div className={`relative flex items-center justify-center shrink-0 rounded-xl overflow-hidden drop-shadow-sm transition-transform hover:scale-105 duration-300 ${
-        isLarge ? 'w-12 h-12' : isSmall ? 'w-7 h-7 sm:w-8 sm:h-8' : 'w-9 h-9'
+      <div className={`relative flex items-center justify-center shrink-0 rounded-full overflow-hidden drop-shadow-sm transition-transform hover:scale-105 duration-300 ${
+        inverted ? 'bg-white p-0.5 ring-2 ring-white/20' : 'bg-white ring-1 ring-slate-200/80'
+      } ${
+        isLarge ? 'w-12 h-12' : isSmall ? 'w-8 h-8' : 'w-9 h-9'
       }`}>
         <img 
           src="/logo.png" 
           alt="ClarioLoop Logo" 
-          className="w-full h-full object-contain filter drop-shadow-xs"
+          className="w-full h-full object-cover rounded-full"
           onError={(e) => {
             // Graceful SVG fallback if image is loading
             e.currentTarget.style.display = 'none';

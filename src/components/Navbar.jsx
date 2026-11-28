@@ -17,7 +17,8 @@ import {
   Umbrella,
   CreditCard,
   X,
-  LogOut
+  LogOut,
+  Bell
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -31,10 +32,15 @@ export default function Navbar({
   onOpenAuth,
   onOpenProfile,
   onEnterVertical,
-  onLogout
+  onLogout,
+  selectedVertical,
+  onChangeVertical,
+  notifications = [],
+  onOpenNotifications
 }) {
   const isHome = currentView === 'home';
-  const showIndustryNav = currentView === 'home' || currentView === 'subscriptions';
+  const isSubscribed = activeFirm?.subscription?.status === 'ACTIVE';
+  const showVerticalControls = (currentView === 'home' || currentView === 'subscriptions') && !isSubscribed;
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 transition-all">
@@ -46,7 +52,7 @@ export default function Navbar({
           {onOpenMobileMenu && !['coop', 'edu', 'insurance'].includes(currentView) && (
             <button
               onClick={onOpenMobileMenu}
-              className="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shrink-0"
+              className="md:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shrink-0"
               title="Open Navigation Menu"
             >
               <Menu className="w-4 h-4" />
@@ -61,128 +67,41 @@ export default function Navbar({
             <Logo size="default" showTagline={false} className="hidden sm:flex" />
           </button>
 
-          {/* 4 Industry Suites Navigation (Desktop — hidden when inside a specific portal) */}
-          {showIndustryNav && (
-            <nav className="hidden lg:flex items-center gap-1 text-xs font-bold text-slate-600 bg-slate-100/80 p-1 rounded-2xl border border-slate-200/80">
-            {/* CA Portal */}
-            <button 
-              onClick={() => {
-                if (onEnterVertical) {
-                  onEnterVertical('ca');
-                } else {
-                  setCurrentView('app');
-                }
-              }}
-              className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
-                currentView === 'app' 
-                  ? 'bg-indigo-600 text-white shadow-xs' 
-                  : 'hover:text-indigo-600 text-slate-700'
-              }`}
-            >
-              <Building2 className="w-3.5 h-3.5 text-indigo-500" />
-              <span>CA Practice</span>
-            </button>
-
-            {/* Cooperative Banking */}
-            <button 
-              onClick={() => {
-                if (onEnterVertical) {
-                  onEnterVertical('cooperative');
-                } else {
-                  setCurrentView('coop');
-                }
-              }}
-              className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
-                currentView === 'coop' 
-                  ? 'bg-emerald-600 text-white shadow-xs' 
-                  : 'hover:text-emerald-700 text-slate-700'
-              }`}
-            >
-              <Landmark className="w-3.5 h-3.5 text-emerald-500" />
-              <span>Co-op Banking</span>
-            </button>
-
-            {/* Education */}
-            <button 
-              onClick={() => {
-                if (onEnterVertical) {
-                  onEnterVertical('education');
-                } else {
-                  setCurrentView('edu');
-                }
-              }}
-              className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
-                currentView === 'edu' 
-                  ? 'bg-blue-600 text-white shadow-xs' 
-                  : 'hover:text-blue-700 text-slate-700'
-              }`}
-            >
-              <GraduationCap className="w-3.5 h-3.5 text-blue-500" />
-              <span>Education</span>
-            </button>
-
-            {/* Insurance */}
-            <button 
-              onClick={() => {
-                if (onEnterVertical) {
-                  onEnterVertical('insurance');
-                } else {
-                  setCurrentView('insurance');
-                }
-              }}
-              className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
-                currentView === 'insurance' 
-                  ? 'bg-purple-600 text-white shadow-xs' 
-                  : 'hover:text-purple-700 text-slate-700'
-              }`}
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-purple-500" />
-              <span>Insurance</span>
-            </button>
-
-            {/* Subscriptions */}
-            <button 
-              onClick={() => setCurrentView('subscriptions')}
-              className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
-                currentView === 'subscriptions' 
-                  ? 'bg-slate-900 text-white shadow-xs' 
-                  : 'hover:text-slate-900 text-slate-700'
-              }`}
-            >
-              <CreditCard className="w-3.5 h-3.5 text-amber-500" />
-              <span>Subscriptions</span>
-            </button>
-          </nav>
+          {/* Single-Industry Nav Links */}
+          {showVerticalControls && (
+            <nav className="flex items-center gap-1 text-xs font-bold text-slate-600 bg-slate-100/80 p-1 rounded-2xl border border-slate-200/80">
+              <button 
+                onClick={() => setCurrentView('subscriptions')}
+                className={`px-2.5 sm:px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+                  currentView === 'subscriptions' 
+                    ? 'bg-slate-900 text-white shadow-xs' 
+                    : 'hover:text-slate-900 text-slate-700'
+                }`}
+              >
+                <CreditCard className="w-3.5 h-3.5 text-amber-500" />
+                <span>Subscriptions</span>
+              </button>
+            </nav>
           )}
         </div>
 
         {/* Right CTA Actions */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* User Profile / KYC Pill + Logout when signed in */}
+          {/* User Profile / KYC Pill + Notification Bell + Logout when signed in */}
           {currentUser ? (
             <div className="flex items-center gap-1.5 shrink-0">
               <button
-                onClick={onOpenProfile}
-                className="flex items-center gap-1.5 p-1 sm:p-1.5 sm:pr-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all text-left shadow-2xs shrink-0"
-                title="Click to View Verified Profile & KYC Details"
+                type="button"
+                onClick={() => onOpenNotifications && onOpenNotifications()}
+                className="relative p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 transition-colors"
+                title="Open Notifications Center"
               >
-                <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white font-extrabold text-[10px] flex items-center justify-center">
-                  {currentUser.avatarInitials || 'RS'}
-                </div>
-                <div className="hidden sm:block text-left">
-                  <span className="text-[11px] font-bold text-slate-800 block truncate max-w-[100px] leading-tight">
-                    {currentUser.name}
+                <Bell className="w-4 h-4" />
+                {notifications.length > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-600 text-white text-[9px] font-black flex items-center justify-center">
+                    {notifications.length > 9 ? '9+' : notifications.length}
                   </span>
-                  {currentUser.isKycVerified ? (
-                    <span className="text-[9px] font-black text-emerald-600 flex items-center gap-0.5 leading-tight">
-                      <ShieldCheck className="w-2.5 h-2.5" /> KYC VERIFIED
-                    </span>
-                  ) : (
-                    <span className="text-[9px] font-bold text-amber-600 leading-tight">
-                      KYC PENDING
-                    </span>
-                  )}
-                </div>
+                )}
               </button>
 
               {onLogout && (
@@ -198,7 +117,7 @@ export default function Navbar({
             </div>
           ) : (
             <button
-              onClick={() => onOpenAuth && onOpenAuth('ca')}
+              onClick={() => onOpenAuth && onOpenAuth(selectedVertical || 'ca')}
               className="text-[11px] sm:text-xs font-bold text-indigo-600 hover:text-indigo-800 px-2.5 sm:px-3 py-1.5 rounded-xl bg-indigo-50 border border-indigo-200/80 transition-all whitespace-nowrap shrink-0"
             >
               Sign In

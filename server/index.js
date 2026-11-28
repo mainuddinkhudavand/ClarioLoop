@@ -16,6 +16,7 @@ import { analyzeDocumentAI, generateSmartReminderAI } from './services/aiService
 import cooperativeRouter from './cooperative/routes.js';
 import insuranceRouter from './insurance/routes.js';
 import eduRouter from './edu/routes.js';
+import adminAuthRouter from './adminAuth.js';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use(express.json());
 app.use('/api/coop', cooperativeRouter);
 app.use('/api/insurance', insuranceRouter);
 app.use('/api/edu', eduRouter);
+app.use('/api/admin', adminAuthRouter);
 
 // Ensure uploads folder exists
 const uploadsDir = path.join(__dirname, '..', 'uploads');
@@ -530,6 +532,152 @@ app.post('/api/reminders/send', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// ================= CA <-> CLIENT REAL-TIME WORKSPACE SYNC & FILE UPLOADS =================
+const caWorkspaceFile = path.join(__dirname, 'data', 'ca_workspace.json');
+
+function readCAWorkspace() {
+  try {
+    if (!fs.existsSync(caWorkspaceFile)) return null;
+    const raw = fs.readFileSync(caWorkspaceFile, 'utf8');
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function writeCAWorkspace(payload) {
+  const dir = path.dirname(caWorkspaceFile);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(caWorkspaceFile, JSON.stringify(payload, null, 2), 'utf8');
+}
+
+// Get synced CA firms workspace
+app.get('/api/ca/workspace', (req, res) => {
+  const data = readCAWorkspace();
+  if (!data) {
+    return res.json({ firms: null, updatedAt: null });
+  }
+  res.json(data);
+});
+
+// Save synced CA firms workspace
+app.put('/api/ca/workspace', (req, res) => {
+  try {
+    const { firms } = req.body || {};
+    if (!Array.isArray(firms)) {
+      return res.status(400).json({ error: 'firms array required' });
+    }
+    const payload = { firms, updatedAt: new Date().toISOString() };
+    writeCAWorkspace(payload);
+    res.json({ ok: true, updatedAt: payload.updatedAt });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Strictly token-scoped Client Portal endpoint (never exposes other clients or CA internalNotes)
+app.get('/api/ca/portal/:token', (req, res) => {
+  const { token } = req.params;
+  const data = readCAWorkspace();
+  if (!data || !Array.isArray(data.firms)) {
+    return res.status(404).json({ error: 'Workspace not initialized yet' });
+  }
+
+  for (const firm of data.firms) {
+    const matchedClient = (firm.clients || []).find((c) => c.secureToken === token);
+    const matchedRequests = (firm.requests || []).filter(
+      (r) =>
+        r.secureToken === token ||
+        (matchedClient &&
+          ((r.clientId && r.clientId === matchedClient.id) ||
+            (r.clientName &&
+              matchedClient.businessName &&
+              r.clientName.toLowerCase() === matchedClient.businessName.toLowerCase())))
+    );
+
+    if (matchedClient || matchedRequests.length > 0) {
+      return res.json({
+        updatedAt: data.updatedAt,
+        firm: {
+          id: firm.id,
+          name: firm.name,
+          partnerName: firm.partnerName,
+          logoInitials: firm.logoInitials,
+          email: firm.email,
+          phone: firm.phone,
+          requests: matchedRequests,
+        },
+        client: matchedClient
+          ? {
+              id: matchedClient.id,
+              businessName: matchedClient.businessName,
+              gstin: matchedClient.gstin,
+              pan: matchedClient.pan,
+              email: matchedClient.email,
+              phone: matchedClient.phone,
+              filingReceipts: matchedClient.filingReceipts || [],
+              secretPassphrase: matchedClient.secretPassphrase || '',
+            }
+          : null,
+      });
+    }
+  }
+
+  return res.status(404).json({ error: 'Invalid or expired client portal token' });
+});
+
+// Real file upload endpoint for Client -> CA documents
+app.post('/api/ca/upload', upload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  const sizeKb = (req.file.size / 1024).toFixed(1);
+  res.json({
+    name: req.file.originalname,
+    size: `${sizeKb} KB`,
+    date: new Date().toISOString().split('T')[0],
+    fileUrl: `/uploads/${req.file.filename}`,
+  });
+});
+
+// ================= CO-OPERATIVE BANKING <-> MEMBER REAL-TIME SYNC =================
+const coopWorkspaceFile = path.join(__dirname, 'data', 'coop_workspace.json');
+
+app.get('/api/coop/workspace', (req, res) => {
+  try {
+    if (!fs.existsSync(coopWorkspaceFile)) return res.json({ uploadedDocs: null, updatedAt: null });
+    res.json(JSON.parse(fs.readFileSync(coopWorkspaceFile, 'utf8')));
+  } catch {
+    res.json({ uploadedDocs: null, updatedAt: null });
+  }
+});
+
+app.put('/api/coop/workspace', (req, res) => {
+  try {
+    const { uploadedDocs } = req.body || {};
+    if (!uploadedDocs || typeof uploadedDocs !== 'object') {
+      return res.status(400).json({ error: 'uploadedDocs object required' });
+    }
+    const dir = path.dirname(coopWorkspaceFile);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    const payload = { uploadedDocs, updatedAt: new Date().toISOString() };
+    fs.writeFileSync(coopWorkspaceFile, JSON.stringify(payload, null, 2), 'utf8');
+    res.json({ ok: true, updatedAt: payload.updatedAt });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/coop/upload', upload.single('file'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+  res.json({
+    fileName: req.file.originalname,
+    size: `${(req.file.size / 1024).toFixed(1)} KB`,
+    uploadedAt: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+    fileUrl: `/uploads/${req.file.filename}`,
+  });
 });
 
 // SPA catch-all route for Render single-instance hosting
